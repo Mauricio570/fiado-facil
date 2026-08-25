@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fiado_facil
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show_sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+
+server:
+  error:
+    include-message: always
+
+jwt:
+  public:
+    key: classpath:authz.pub
+  private:
+    key: classpath:authz.pem
+
+logging:
+  level:
+    org.springframework.security: DEBUG
