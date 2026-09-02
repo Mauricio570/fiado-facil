@@ -65,80 +65,57 @@ public class VendaService {
         Cliente cliente = clienteRepository.findByIdAndUsuarioId(request.getFkCliente(), usuarioLogado.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
 
-        BigDecimal valorItens = BigDecimal.ZERO;
-        for (ItemVendaRequest itemRequest : request.getItens()) {
-            valorItens = valorItens.add(
-                    itemRequest.getValorUnitario().multiply(BigDecimal.valueOf(itemRequest.getQuantidade())));
-        }
-
         Venda venda = Venda.builder()
                 .cliente(cliente)
                 .status(StatusVenda.EM_ABERTO)
                 .build();
         venda = vendaRepository.save(venda);
 
-        List<ItemVenda> itens = new ArrayList<>();
-        for (ItemVendaRequest itemRequest : request.getItens()) {
-            itens.add(itemVendaRepository.save(vendaMapper.toEntity(itemRequest, venda)));
-        }
+        List<ItemVenda> itens = salvarItens(venda, request.getItens());
+        BigDecimal valorItens = somarItens(itens);
 
-        PagamentoRequest pagamentoRequest = request.getPagamento();
-        Pagamento pagamento;
-        List<Parcela> parcelas = new ArrayList<>();
+        PagamentoCalculado calculado = processarPagamento(venda, request.getPagamento(), valorItens);
+        List<Parcela> parcelas = persistirPagamento(calculado);
 
-        if (pagamentoRequest.getFormaPagamento() == FormaPagamento.A_VISTA) {
-            pagamento = Pagamento.builder()
-                    .venda(venda)
-                    .formaPagamento(FormaPagamento.A_VISTA)
-                    .quantidadeParcelas(1)
-                    .jurosMes(BigDecimal.ZERO)
-                    .valorEntrada(valorItens)
-                    .build();
-            venda.setStatus(StatusVenda.PAGO);
-
-        } else {
-            Integer quantidadeParcelas = pagamentoRequest.getQuantidadeParcelas();
-            if (quantidadeParcelas == null || quantidadeParcelas < 1) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Informe a quantidade de parcelas para pagamento parcelado.");
-            }
-
-            BigDecimal valorEntrada = pagamentoRequest.getValorEntrada() != null
-                    ? pagamentoRequest.getValorEntrada() : BigDecimal.ZERO;
-            BigDecimal jurosMes = pagamentoRequest.getJurosMes() != null
-                    ? pagamentoRequest.getJurosMes() : BigDecimal.ZERO;
-
-            BigDecimal valorFinanciado = valorItens.subtract(valorEntrada);
-            if (valorFinanciado.compareTo(BigDecimal.ZERO) < 0) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "O valor de entrada não pode ser maior que o total da compra.");
-            }
-
-            BigDecimal taxaTotal = jurosMes.divide(BigDecimal.valueOf(100))
-                    .multiply(BigDecimal.valueOf(quantidadeParcelas));
-            BigDecimal jurosTotal = valorFinanciado.multiply(taxaTotal);
-            BigDecimal valorFinal = valorFinanciado.add(jurosTotal).setScale(2, RoundingMode.HALF_UP);
-
-            pagamento = Pagamento.builder()
-                    .venda(venda)
-                    .formaPagamento(FormaPagamento.CREDITO)
-                    .quantidadeParcelas(quantidadeParcelas)
-                    .jurosMes(jurosMes)
-                    .valorEntrada(valorEntrada)
-                    .build();
-
-            parcelas = gerarParcelas(valorFinal, quantidadeParcelas);
-        }
-
-        pagamento = pagamentoRepository.save(pagamento);
         vendaRepository.save(venda);
 
-        for (Parcela parcela : parcelas) {
-            parcela.setPagamento(pagamento);
-            parcelaRepository.save(parcela);
-        }
+        return vendaMapper.toResponse(venda, itens, calculado.pagamento(), parcelas);
+    }
 
-        return vendaMapper.toResponse(venda, itens, pagamento, parcelas);
+    @Transactional
+    public VendaResponse editar(Long id, VendaRequest request) {
+        Usuario usuarioLogado = usuarioAutenticadoService.get();
+
+        Venda venda = vendaRepository.findByIdAndCliente_Usuario_Id(id, usuarioLogado.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Venda não encontrada."));
+
+        validarEdicaoOuExclusaoPermitida(venda);
+        apagarItensPagamentoEParcelas(venda);
+
+        List<ItemVenda> itens = salvarItens(venda, request.getItens());
+        BigDecimal valorItens = somarItens(itens);
+
+        venda.setStatus(StatusVenda.EM_ABERTO);
+
+        PagamentoCalculado calculado = processarPagamento(venda, request.getPagamento(), valorItens);
+        List<Parcela> parcelas = persistirPagamento(calculado);
+
+        vendaRepository.save(venda);
+
+        return vendaMapper.toResponse(venda, itens, calculado.pagamento(), parcelas);
+    }
+
+    @Transactional
+    public void excluir(Long id) {
+        Usuario usuarioLogado = usuarioAutenticadoService.get();
+
+        Venda venda = vendaRepository.findByIdAndCliente_Usuario_Id(id, usuarioLogado.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Venda não encontrada."));
+
+        validarEdicaoOuExclusaoPermitida(venda);
+        apagarItensPagamentoEParcelas(venda);
+
+        vendaRepository.delete(venda);
     }
 
     @Transactional(readOnly = true)
@@ -151,12 +128,7 @@ public class VendaService {
         return vendaRepository
                 .findAllByCliente_IdAndCliente_Usuario_IdOrderByDataCriacaoDesc(clienteId, usuarioLogado.getId())
                 .stream()
-                .map(venda -> {
-                    BigDecimal total = itemVendaRepository.findAllByVendaId(venda.getId()).stream()
-                            .map(ItemVenda::getValorTotal)
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
-                    return vendaMapper.toResumoResponse(venda, total);
-                })
+                .map(venda -> vendaMapper.toResumoResponse(venda, somarItens(itemVendaRepository.findAllByVendaId(venda.getId()))))
                 .toList();
     }
 
@@ -176,6 +148,126 @@ public class VendaService {
         return vendaMapper.toResponse(venda, itens, pagamento, parcelas);
     }
 
+    // Bloqueia edição/exclusão se a venda já está PAGO (cobre à
+    // vista, que já nasce paga) OU se qualquer parcela já foi paga
+    // (cobre parcelada com pagamento parcial).
+    private void validarEdicaoOuExclusaoPermitida(Venda venda) {
+        if (venda.getStatus() == StatusVenda.PAGO) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Não é possível alterar ou excluir uma venda já quitada.");
+        }
+
+        Pagamento pagamento = pagamentoRepository.findByVendaId(venda.getId()).orElse(null);
+        if (pagamento != null) {
+            boolean temParcelaPaga = parcelaRepository.findAllByPagamentoIdOrderByNumeroAsc(pagamento.getId())
+                    .stream()
+                    .anyMatch(p -> p.getStatus() == StatusParcela.PAGO);
+            if (temParcelaPaga) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Não é possível alterar ou excluir uma venda que já teve parcela paga.");
+            }
+        }
+    }
+
+    // Apaga item_venda, parcela e pagamento EXPLICITAMENTE pelo
+    // Hibernate — não dá pra confiar só no ON DELETE CASCADE do
+    // banco aqui, porque validarEdicaoOuExclusaoPermitida() já
+    // carregou pagamento/parcelas na memória da sessão do Hibernate.
+    // Se a gente deixasse o banco apagar por trás, o Hibernate ainda
+    // acha que esses objetos "vivem", e reclama de inconsistência na
+    // hora do commit. Usado tanto em editar() quanto em excluir().
+    private void apagarItensPagamentoEParcelas(Venda venda) {
+        itemVendaRepository.deleteAll(itemVendaRepository.findAllByVendaId(venda.getId()));
+
+        Pagamento pagamentoAntigo = pagamentoRepository.findByVendaId(venda.getId()).orElse(null);
+        if (pagamentoAntigo != null) {
+            parcelaRepository.deleteAll(parcelaRepository.findAllByPagamentoIdOrderByNumeroAsc(pagamentoAntigo.getId()));
+            pagamentoRepository.delete(pagamentoAntigo);
+        }
+        pagamentoRepository.flush();
+    }
+
+    private List<ItemVenda> salvarItens(Venda venda, List<ItemVendaRequest> itensRequest) {
+        List<ItemVenda> itens = new ArrayList<>();
+        for (ItemVendaRequest itemRequest : itensRequest) {
+            itens.add(itemVendaRepository.save(vendaMapper.toEntity(itemRequest, venda)));
+        }
+        return itens;
+    }
+
+    private BigDecimal somarItens(List<ItemVenda> itens) {
+        return itens.stream()
+                .map(ItemVenda::getValorTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    // Calcula (sem persistir ainda) o Pagamento e as Parcelas com
+    // base na forma de pagamento escolhida — usado tanto no cadastro
+    // quanto na edição, pra não duplicar a regra de juros em dois
+    // lugares.
+    private PagamentoCalculado processarPagamento(Venda venda, PagamentoRequest pagamentoRequest, BigDecimal valorItens) {
+        if (pagamentoRequest.getFormaPagamento() == FormaPagamento.A_VISTA) {
+            Pagamento pagamento = Pagamento.builder()
+                    .venda(venda)
+                    .formaPagamento(FormaPagamento.A_VISTA)
+                    .quantidadeParcelas(1)
+                    .jurosMes(BigDecimal.ZERO)
+                    .valorEntrada(valorItens)
+                    .build();
+            venda.setStatus(StatusVenda.PAGO);
+
+            return new PagamentoCalculado(pagamento, List.of());
+        }
+
+        Integer quantidadeParcelas = pagamentoRequest.getQuantidadeParcelas();
+        if (quantidadeParcelas == null || quantidadeParcelas < 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Informe a quantidade de parcelas para pagamento parcelado.");
+        }
+
+        BigDecimal valorEntrada = pagamentoRequest.getValorEntrada() != null
+                ? pagamentoRequest.getValorEntrada() : BigDecimal.ZERO;
+        BigDecimal jurosMes = pagamentoRequest.getJurosMes() != null
+                ? pagamentoRequest.getJurosMes() : BigDecimal.ZERO;
+
+        BigDecimal valorFinanciado = valorItens.subtract(valorEntrada);
+        if (valorFinanciado.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "O valor de entrada não pode ser maior que o total da compra.");
+        }
+
+        BigDecimal taxaTotal = jurosMes.divide(BigDecimal.valueOf(100))
+                .multiply(BigDecimal.valueOf(quantidadeParcelas));
+        BigDecimal jurosTotal = valorFinanciado.multiply(taxaTotal);
+        BigDecimal valorFinal = valorFinanciado.add(jurosTotal).setScale(2, RoundingMode.HALF_UP);
+
+        Pagamento pagamento = Pagamento.builder()
+                .venda(venda)
+                .formaPagamento(FormaPagamento.CREDITO)
+                .quantidadeParcelas(quantidadeParcelas)
+                .jurosMes(jurosMes)
+                .valorEntrada(valorEntrada)
+                .build();
+
+        List<Parcela> parcelas = gerarParcelas(valorFinal, quantidadeParcelas);
+
+        return new PagamentoCalculado(pagamento, parcelas);
+    }
+
+    private List<Parcela> persistirPagamento(PagamentoCalculado calculado) {
+        Pagamento pagamentoSalvo = pagamentoRepository.save(calculado.pagamento());
+
+        List<Parcela> parcelasSalvas = new ArrayList<>();
+        for (Parcela parcela : calculado.parcelas()) {
+            parcela.setPagamento(pagamentoSalvo);
+            parcelasSalvas.add(parcelaRepository.save(parcela));
+        }
+        return parcelasSalvas;
+    }
+
+    // Divide valorFinal em N parcelas iguais; a última absorve a
+    // diferença de arredondamento, pra soma das parcelas bater
+    // exatamente com valorFinal.
     private List<Parcela> gerarParcelas(BigDecimal valorFinal, int quantidade) {
         List<Parcela> parcelas = new ArrayList<>();
         BigDecimal valorParcela = valorFinal.divide(BigDecimal.valueOf(quantidade), 2, RoundingMode.DOWN);
@@ -198,5 +290,8 @@ public class VendaService {
         }
 
         return parcelas;
+    }
+
+    private record PagamentoCalculado(Pagamento pagamento, List<Parcela> parcelas) {
     }
 }

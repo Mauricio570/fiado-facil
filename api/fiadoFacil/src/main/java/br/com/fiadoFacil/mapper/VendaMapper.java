@@ -82,7 +82,7 @@ public class VendaMapper {
                 .build();
     }
 
-    private ParcelaResponse toParcelaResponse(Parcela parcela) {
+    public ParcelaResponse toParcelaResponse(Parcela parcela) {
         return ParcelaResponse.builder()
                 .id(parcela.getId())
                 .numero(parcela.getNumero())
