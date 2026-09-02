@@ -1,0 +1,74 @@
+<main class="login-page">
+  <section class="brand-panel" aria-label="SafeBook">
+    <span class="brand">
+      <span class="brand-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M5 4.5h11.5A2.5 2.5 0 0 1 19 7v12.5H7.5A2.5 2.5 0 0 1 5 17V4.5Z" />
+          <path d="M5 17a2.5 2.5 0 0 1 2.5-2.5H19M8 8h7" />
+        </svg>
+      </span>
+      <span>SafeBook</span>
+    </span>
+
+    <div class="brand-content">
+      <span class="eyebrow">Controle simples e seguro</span>
+      <h1>Organize suas vendas fiadas com tranquilidade.</h1>
+      <p>Cadastre clientes, acompanhe pagamentos e tenha suas contas sempre em ordem.</p>
+    </div>
+
+    <p class="brand-footer">© 2026 SafeBook</p>
+  </section>
+
+  <section class="login-panel" aria-labelledby="login-title">
+    <div class="login-card">
+      <div class="login-heading">
+        <span class="mobile-brand" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 4.5h11.5A2.5 2.5 0 0 1 19 7v12.5H7.5A2.5 2.5 0 0 1 5 17V4.5Z" />
+            <path d="M5 17a2.5 2.5 0 0 1 2.5-2.5H19M8 8h7" />
+          </svg>
+        </span>
+        <h2 id="login-title">Bem-vindo de volta!</h2>
+        <p>Entre com seus dados para acessar sua conta.</p>
+      </div>
+
+      <form [formGroup]="formularioLogin" (ngSubmit)="entrar()">
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input
+            id="email"
+            type="email"
+            autocomplete="email"
+            placeholder="Digite seu e-mail"
+            formControlName="email"
+            [attr.aria-invalid]="formularioLogin.controls.email.invalid && formularioLogin.controls.email.touched"
+          />
+        </div>
+
+        <div class="field">
+          <label for="senha">Senha</label>
+          <input
+            id="senha"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Digite sua senha"
+            formControlName="senha"
+            [attr.aria-invalid]="formularioLogin.controls.senha.invalid && formularioLogin.controls.senha.touched"
+          />
+        </div>
+
+        @if (mensagemErro()) {
+          <p class="form-message error-message" aria-live="polite">{{ mensagemErro() }}</p>
+        }
+
+        @if (mensagemSucesso()) {
+          <p class="form-message success-message" aria-live="polite">{{ mensagemSucesso() }}</p>
+        }
+
+        <button class="login-button" type="submit" [disabled]="carregando()">
+          {{ carregando() ? 'Entrando...' : 'Entrar' }}
+        </button>
+      </form>
+    </div>
+  </section>
+</main>
