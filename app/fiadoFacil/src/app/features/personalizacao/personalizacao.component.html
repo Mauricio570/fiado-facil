@@ -1,0 +1,178 @@
+<div class="cabecalho-pagina">
+  <h1 class="titulo-pagina">Personalização</h1>
+  <p class="subtitulo-pagina">
+    Ajuste a aparência do sistema e mantenha os dados da sua empresa atualizados.
+  </p>
+</div>
+
+<section class="painel secao">
+  <div class="cabecalho-secao">
+    <h2 class="titulo-secao">Aparência</h2>
+    <p>Escolha o tamanho do texto. A mudança vale para todas as telas e é salva na sua conta.</p>
+  </div>
+
+  <div class="opcoes-tamanho" role="radiogroup" aria-label="Tamanho do texto">
+    @for (opcao of opcoesTamanho; track opcao.valor) {
+      <button
+        class="opcao-tamanho"
+        type="button"
+        role="radio"
+        [class.selecionada]="preferenciaService.tamanhoTexto() === opcao.valor"
+        [attr.aria-checked]="preferenciaService.tamanhoTexto() === opcao.valor"
+        [disabled]="salvandoTamanho()"
+        (click)="escolherTamanho(opcao.valor)"
+      >
+        <span class="amostra" [class]="'amostra-' + opcao.valor.toLowerCase()">
+          {{ opcao.amostra }}
+        </span>
+        <span class="titulo-opcao">{{ opcao.titulo }}</span>
+        <span class="descricao-opcao">{{ opcao.descricao }}</span>
+
+        @if (preferenciaService.tamanhoTexto() === opcao.valor) {
+          <span class="marca-selecionada" aria-hidden="true">
+            <svg class="icone" viewBox="0 0 24 24">
+              <path d="M5 12.5 10 17l9-10" />
+            </svg>
+          </span>
+        }
+      </button>
+    }
+  </div>
+
+  @if (mensagemErroTamanho()) {
+    <div class="alerta-erro" role="alert" aria-live="polite">
+      <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7.5v5M12 15.8v.2" />
+      </svg>
+      <span>{{ mensagemErroTamanho() }}</span>
+    </div>
+  }
+</section>
+
+@if (carregando()) {
+  <p class="mensagem-estado">Carregando seus dados...</p>
+} @else {
+  <form class="painel secao" [formGroup]="formulario" (ngSubmit)="salvarDados()">
+    <div class="cabecalho-secao">
+      <h2 class="titulo-secao">Meus dados</h2>
+      <p>Informações da sua empresa e do acesso ao sistema.</p>
+    </div>
+
+    <div class="grade-campos">
+      <div class="campo">
+        <label for="nomeEmpresa">Nome da empresa <span class="obrigatorio">*</span></label>
+        <input
+          id="nomeEmpresa"
+          type="text"
+          placeholder="Digite o nome da empresa"
+          formControlName="nomeEmpresa"
+          [attr.aria-invalid]="invalido('nomeEmpresa')"
+        />
+        @if (invalido('nomeEmpresa')) {
+          <span class="erro-campo">Informe o nome da empresa.</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label for="cnpj">CNPJ <span class="obrigatorio">*</span></label>
+        <input
+          id="cnpj"
+          type="text"
+          placeholder="00.000.000/0000-00"
+          formControlName="cnpj"
+          appMascara="cnpj"
+          [attr.aria-invalid]="invalido('cnpj')"
+        />
+        @if (invalido('cnpj')) {
+          <span class="erro-campo">Informe o CNPJ da empresa.</span>
+        }
+      </div>
+
+      <div class="campo coluna-inteira">
+        <label for="email">E-mail de acesso <span class="obrigatorio">*</span></label>
+        <input
+          id="email"
+          type="email"
+          autocomplete="username"
+          placeholder="Digite o e-mail"
+          formControlName="email"
+          [attr.aria-invalid]="invalido('email')"
+        />
+        <span class="dica">Este é o e-mail usado para entrar no sistema.</span>
+        @if (invalido('email')) {
+          <span class="erro-campo">Informe um e-mail válido.</span>
+        }
+      </div>
+    </div>
+
+    <div class="cabecalho-secao">
+      <h3 class="subtitulo-secao">Alterar senha</h3>
+      <p>Deixe em branco para manter a senha atual.</p>
+    </div>
+
+    <div class="grade-senha">
+      <div class="campo">
+        <label for="senhaAtual">Senha atual</label>
+        <input
+          id="senhaAtual"
+          type="password"
+          autocomplete="current-password"
+          placeholder="Digite a senha atual"
+          formControlName="senhaAtual"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="novaSenha">Nova senha</label>
+        <input
+          id="novaSenha"
+          type="password"
+          autocomplete="new-password"
+          placeholder="Mínimo de 8 caracteres"
+          formControlName="novaSenha"
+          [attr.aria-invalid]="invalido('novaSenha')"
+        />
+        @if (invalido('novaSenha')) {
+          <span class="erro-campo">A nova senha precisa ter ao menos 8 caracteres.</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label for="repetirNovaSenha">Repetir nova senha</label>
+        <input
+          id="repetirNovaSenha"
+          type="password"
+          autocomplete="new-password"
+          placeholder="Repita a nova senha"
+          formControlName="repetirNovaSenha"
+        />
+      </div>
+    </div>
+
+    @if (mensagemErroDados()) {
+      <div class="alerta-erro" role="alert" aria-live="polite">
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7.5v5M12 15.8v.2" />
+        </svg>
+        <span>{{ mensagemErroDados() }}</span>
+      </div>
+    }
+
+    @if (mensagemSucesso()) {
+      <div class="alerta-sucesso" role="status" aria-live="polite">
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12.5 10 17l9-10" />
+        </svg>
+        <span>{{ mensagemSucesso() }}</span>
+      </div>
+    }
+
+    <div class="acoes-formulario">
+      <button class="botao-primario" type="submit" [disabled]="salvandoDados()">
+        {{ salvandoDados() ? 'Salvando...' : 'Salvar alterações' }}
+      </button>
+    </div>
+  </form>
+}

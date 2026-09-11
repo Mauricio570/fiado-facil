@@ -1,0 +1,191 @@
+.cabecalho-pagina {
+  margin-bottom: 18px;
+}
+
+.filtros {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.campo-busca {
+  display: flex;
+  min-width: min(260px, 100%);
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid var(--borda-forte);
+  border-radius: 6px;
+  background: var(--superficie);
+}
+
+.campo-busca:focus-within {
+  border-color: var(--verde);
+}
+
+.campo-busca .icone {
+  stroke: #9da3a4;
+  stroke-width: 2;
+}
+
+.campo-busca input {
+  width: 100%;
+  height: 40px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 0.875rem;
+}
+
+.filtros select {
+  min-width: min(165px, 100%);
+  height: 42px;
+  padding: 0 10px;
+  border: 1px solid var(--borda-forte);
+  border-radius: 6px;
+  outline: 0;
+  color: var(--texto-suave);
+  background: var(--superficie);
+  font: inherit;
+  font-size: 0.875rem;
+}
+
+.filtros select:focus {
+  border-color: var(--verde);
+}
+
+.grade-clientes {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(min(265px, 100%), 1fr));
+}
+
+.cartao-cliente {
+  display: flex;
+  min-height: 168px;
+  flex-direction: column;
+  gap: 12px;
+  padding: 15px 16px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+}
+
+.cartao-novo {
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  border: 1px solid #bcd9cd;
+  color: inherit;
+  background: #eef7f3;
+  text-decoration: none;
+}
+
+.cartao-novo:hover {
+  border-color: var(--verde);
+}
+
+.cartao-novo .iniciais {
+  width: 42px;
+  height: 42px;
+  background: #d7e8e1;
+}
+
+.cartao-novo .topo-cartao {
+  flex-direction: column;
+  gap: 10px;
+}
+
+.acao-novo {
+  background: var(--superficie);
+}
+
+.topo-cartao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.identificacao {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.nome-cliente {
+  font-size: 0.938rem;
+  font-weight: 700;
+}
+
+.telefone {
+  color: var(--texto-suave);
+  font-size: 0.813rem;
+}
+
+.topo-cartao .selo {
+  margin-left: auto;
+}
+
+.dados-cartao {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.813rem;
+}
+
+.dados-cartao > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.dados-cartao dt {
+  color: var(--texto-suave);
+}
+
+.dados-cartao dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.acoes-cartao {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  margin-top: auto;
+}
+
+.acoes-cartao a {
+  min-height: 36px;
+  padding: 0 10px;
+  font-size: 0.813rem;
+}
+
+.lista-vazia {
+  padding: 26px;
+  color: var(--texto-suave);
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  /* O telefone é curto e não deve quebrar: sem isso ele partia em três
+     linhas ('(51)' / '99932-' / '3245') dentro do cartão estreito. */
+  .telefone {
+    white-space: nowrap;
+  }
+
+  /* Lado a lado, 'Ver Contas' e 'Nova Venda' quebravam em duas linhas cada. */
+  .acoes-cartao {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .filtros select {
+    flex: 1;
+  }
+}

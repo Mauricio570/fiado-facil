@@ -1,0 +1,129 @@
+<a class="botao-voltar" [routerLink]="store.vendaEmEdicao()
+    ? ['/clientes', store.clienteId(), 'vendas', store.vendaEmEdicao(), 'editar']
+    : ['/clientes', store.clienteId(), 'vendas', 'nova']">
+  <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="m14 7-5 5 5 5" />
+  </svg>
+  {{ store.vendaEmEdicao() ? 'Voltar para a edição da venda' : 'Voltar para a nova venda' }}
+</a>
+
+<div class="cabecalho-pagina">
+  <h1 class="titulo-pagina">{{ store.vendaEmEdicao() ? 'Salvar alterações da venda' : 'Finalizar venda' }}</h1>
+  <p class="subtitulo-pagina">
+    Você está em finalizar venda, escolha a forma de pagamento e veja detalhes da compra.
+  </p>
+</div>
+
+<form [formGroup]="formulario" (ngSubmit)="finalizar()">
+  <section class="painel pagamento">
+    <h2 class="titulo-secao">Forma de pagamento</h2>
+
+    <div class="opcoes-pagamento">
+      <label class="opcao">
+        <input type="radio" value="A_VISTA" formControlName="formaPagamento" />
+        <span>À vista</span>
+      </label>
+      <label class="opcao">
+        <input type="radio" value="CREDITO" formControlName="formaPagamento" />
+        <span>Crédito</span>
+      </label>
+    </div>
+
+    @if (ehCredito()) {
+      <div class="grade-campos">
+        <div class="campo">
+          <label for="parcelas">Quantidade de vezes <span class="obrigatorio">*</span></label>
+          <input
+            id="parcelas"
+            type="number"
+            min="1"
+            placeholder="3 vezes"
+            formControlName="quantidadeParcelas"
+          />
+        </div>
+
+        <div class="campo">
+          <label for="juros">% de juros por mês <span class="obrigatorio">*</span></label>
+          <span class="campo-com-prefixo">
+            <input id="juros" type="number" min="0" step="0.01" placeholder="5" formControlName="jurosMes" />
+            <span class="sufixo">%</span>
+          </span>
+        </div>
+
+        <div class="campo">
+          <label for="entrada">Valor de entrada <span class="obrigatorio">*</span></label>
+          <span class="campo-com-prefixo">
+            <span class="prefixo">R$</span>
+            <input
+              id="entrada"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="0,00"
+              formControlName="valorEntrada"
+            />
+          </span>
+        </div>
+      </div>
+    }
+  </section>
+
+  <section class="painel resumo">
+    <h2 class="titulo-secao">Resumo da venda</h2>
+
+    <div class="colunas-resumo">
+      <div class="coluna">
+        <div class="linha">
+          <span>Valor final sem juros:</span>
+          <span>{{ resumo().total | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</span>
+        </div>
+        <div class="linha">
+          <span>Valor final com juros:</span>
+          <strong>{{ resumo().valorComJuros | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+        </div>
+        <div class="linha">
+          <span>Valor já pago (entrada):</span>
+          <span class="verde">
+            {{ resumo().entrada | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+          </span>
+        </div>
+
+        <div class="linha falta-pagar">
+          <span>Falta pagar:</span>
+          <strong>{{ resumo().faltaPagar | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+        </div>
+      </div>
+
+      <div class="coluna">
+        <div class="linha">
+          <span>Quantidade de parcelas:</span>
+          <strong>{{ resumo().quantidadeParcelas }} vezes</strong>
+        </div>
+        <div class="linha">
+          <span>Juros por mês (%):</span>
+          <strong>{{ resumo().jurosMes }}%</strong>
+        </div>
+
+        <h3>Parcelas</h3>
+        @if (ehCredito()) {
+          <div class="linha">
+            <span>São {{ resumo().quantidadeParcelas }} parcelas de:</span>
+            <span>{{ resumo().valorParcela | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</span>
+          </div>
+        } @else {
+          <p class="observacao">Venda à vista: quitada no ato, sem parcelas em aberto.</p>
+        }
+      </div>
+    </div>
+
+    @if (mensagemErro()) {
+      <p class="mensagem-erro" aria-live="polite">{{ mensagemErro() }}</p>
+    }
+
+    <div class="acoes">
+      <button class="botao-primario" type="submit" [disabled]="salvando()">
+        {{ salvando() ? 'Salvando...' : store.vendaEmEdicao() ? 'Salvar alterações' : 'Finalizar venda' }}
+      </button>
+    </div>
+  </section>
+</form>

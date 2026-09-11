@@ -52,12 +52,17 @@ public class VendaMapper {
                 .build();
     }
 
-    public VendaResumoResponse toResumoResponse(Venda venda, BigDecimal valorTotal) {
+    public VendaResumoResponse toResumoResponse(Venda venda, BigDecimal valorTotal,
+                                               BigDecimal valorTotalComJuros,
+                                               BigDecimal totalEmAberto, boolean podeAlterar) {
         return VendaResumoResponse.builder()
                 .id(venda.getId())
                 .status(venda.getStatus())
                 .dataCriacao(venda.getDataCriacao())
                 .valorTotal(valorTotal)
+                .valorTotalComJuros(valorTotalComJuros)
+                .totalEmAberto(totalEmAberto)
+                .podeAlterar(podeAlterar)
                 .build();
     }
 

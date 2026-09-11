@@ -1,0 +1,153 @@
+.cabecalho-pagina {
+  margin-bottom: 18px;
+}
+
+.cartao-cliente {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.avatar-grande {
+  width: 74px;
+  height: 74px;
+  flex: none;
+  font-size: 1.5rem;
+}
+
+.identificacao {
+  display: grid;
+  gap: 3px;
+  color: var(--texto-suave);
+  font-size: 0.875rem;
+}
+
+.identificacao .titulo-secao {
+  color: var(--texto);
+}
+
+.topo-produtos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.contador {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contador button {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--borda-forte);
+  border-radius: 5px;
+  color: var(--texto-suave);
+  background: var(--superficie);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  line-height: 1;
+  place-items: center;
+}
+
+.contador button:hover:not(:disabled) {
+  border-color: var(--verde);
+  color: var(--verde);
+}
+
+.contador button:disabled {
+  cursor: not-allowed;
+  opacity: 45%;
+}
+
+.valor-contador {
+  min-width: 18px;
+  text-align: center;
+}
+
+.contador-modal {
+  gap: 0;
+  border: 1px solid var(--borda-forte);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.contador-modal button {
+  width: 44px;
+  height: 40px;
+  border: 0;
+  border-radius: 0;
+}
+
+.contador-modal input {
+  width: 100%;
+  min-height: 40px;
+  border: 0;
+  border-right: 1px solid var(--borda-forte);
+  border-left: 1px solid var(--borda-forte);
+  outline: 0;
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.botao-icone.excluir {
+  color: var(--vermelho);
+}
+
+.rodape-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  background: #eef0f1;
+  flex-wrap: wrap;
+}
+
+.total {
+  display: grid;
+  gap: 2px;
+  color: var(--texto-suave);
+  font-size: 0.813rem;
+}
+
+.total strong {
+  color: var(--verde);
+  font-size: 1.563rem;
+}
+
+
+.modal {
+  display: grid;
+  width: min(100%, 620px);
+  gap: 16px;
+  padding: 24px 26px;
+  border-radius: var(--raio);
+  background: var(--superficie);
+  box-shadow: 0 18px 44px rgb(16 24 40 / 22%);
+}
+
+.modal .subtitulo-pagina {
+  margin-top: -10px;
+}
+
+.acoes-modal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.acoes-modal button {
+  min-width: 140px;
+}

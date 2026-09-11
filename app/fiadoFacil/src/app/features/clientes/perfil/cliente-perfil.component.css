@@ -1,0 +1,515 @@
+.cabecalho-pagina {
+  margin-bottom: 18px;
+}
+
+/* Cartão do perfil ------------------------------------------------------- */
+
+.cartao-perfil {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.topo-perfil {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.avatar-grande {
+  width: 74px;
+  height: 74px;
+  flex: none;
+  font-size: 1.5rem;
+}
+
+.identificacao {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+  color: var(--texto-suave);
+  font-size: 0.875rem;
+}
+
+.identificacao .titulo-secao {
+  color: var(--texto);
+}
+
+.endereco {
+  max-width: 60ch;
+}
+
+.acoes-perfil {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.botao-icone.borda {
+  border: 1px solid var(--borda-forte);
+}
+
+.rodape-perfil {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.destaque-aberto {
+  display: grid;
+  gap: 4px;
+  padding: 12px 20px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  color: var(--texto-suave);
+  font-size: 0.875rem;
+}
+
+.destaque-aberto strong {
+  color: var(--verde);
+  font-size: 1.438rem;
+}
+
+/* Cabeçalho do histórico ------------------------------------------------- */
+
+.topo-historico {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.titulo-historico {
+  display: grid;
+  gap: 8px;
+}
+
+.indicadores {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.indicador {
+  padding: 3px 11px;
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  color: var(--texto-suave);
+  background: #f7f9f9;
+  font-size: 0.75rem;
+}
+
+.indicador strong {
+  color: var(--texto);
+}
+
+.indicador.aberto {
+  border-color: #f6cfcb;
+  background: var(--vermelho-suave);
+}
+
+.indicador.aberto strong {
+  color: #b42318;
+}
+
+.indicador.paga {
+  border-color: #b7e3cd;
+  background: #d3f2e2;
+}
+
+.indicador.paga strong {
+  color: #05603a;
+}
+
+.topo-historico select {
+  min-width: 160px;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--borda-forte);
+  border-radius: 6px;
+  outline: 0;
+  color: var(--texto-suave);
+  background: var(--superficie);
+  font: inherit;
+  font-size: 0.875rem;
+}
+
+/* Lista de compras ------------------------------------------------------- */
+
+.lista-compras {
+  display: grid;
+  gap: 12px;
+}
+
+.compra {
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+  overflow: hidden;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.compra:hover {
+  border-color: #c6d3cf;
+}
+
+.compra.expandida {
+  border-color: var(--verde);
+  box-shadow: 0 2px 12px rgb(0 133 98 / 10%);
+}
+
+.linha-compra {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  flex-wrap: wrap;
+}
+
+.marcador {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 10px;
+  color: #b42318;
+  background: var(--vermelho-suave);
+  place-items: center;
+}
+
+.marcador.pago {
+  color: #05603a;
+  background: #d3f2e2;
+}
+
+.dados-compra {
+  display: grid;
+  min-width: 120px;
+  gap: 2px;
+}
+
+.titulo-compra {
+  font-size: 0.938rem;
+  font-weight: 700;
+}
+
+.data-compra {
+  color: var(--texto-suave);
+  font-size: 0.813rem;
+}
+
+.valores-compra {
+  display: flex;
+  gap: 28px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+.valor {
+  display: grid;
+  gap: 2px;
+}
+
+.valor span {
+  color: var(--texto-suave);
+  font-size: 0.75rem;
+}
+
+.valor strong {
+  font-size: 0.938rem;
+}
+
+.destaque-vermelho {
+  color: var(--vermelho);
+}
+
+.botao-detalhe {
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 0.813rem;
+}
+
+.botao-detalhe .seta {
+  width: 15px;
+  height: 15px;
+  transition: transform 160ms ease;
+}
+
+.compra.expandida .botao-detalhe .seta {
+  transform: rotate(180deg);
+}
+
+
+.acoes-compra {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.botao-icone.acao {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--borda-forte);
+  color: var(--texto-suave);
+}
+
+.botao-icone.acao:hover:not(:disabled) {
+  border-color: var(--verde);
+  color: var(--verde);
+  background: var(--verde-suave);
+}
+
+.botao-icone.acao.excluir:hover:not(:disabled) {
+  border-color: var(--vermelho);
+  color: var(--vermelho);
+  background: var(--vermelho-suave);
+}
+
+.botao-icone.acao:disabled {
+  cursor: not-allowed;
+  opacity: 40%;
+}
+
+.botao-icone.acao:disabled:hover {
+  background: transparent;
+}
+
+.aviso-bloqueio {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px 12px;
+  color: var(--texto-suave);
+  font-size: 0.75rem;
+}
+
+.aviso-bloqueio .icone {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+
+/* Painel de detalhe ------------------------------------------------------ */
+
+.detalhe {
+  padding: 16px;
+  border-top: 1px solid var(--borda);
+  background: #fafbfb;
+}
+
+.carregando-detalhe {
+  color: var(--texto-suave);
+  font-size: 0.875rem;
+}
+
+.resumo-pagamento {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--superficie);
+}
+
+.dado {
+  display: grid;
+  gap: 3px;
+}
+
+.dado span {
+  color: var(--texto-suave);
+  font-size: 0.75rem;
+}
+
+.dado strong {
+  font-size: 0.938rem;
+}
+
+.colunas-detalhe {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: repeat(auto-fit, minmax(min(290px, 100%), 1fr));
+}
+
+.bloco h3 {
+  margin-bottom: 10px;
+  font-size: 0.938rem;
+}
+
+.tabela-produtos {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.813rem;
+}
+
+.tabela-produtos td {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--borda);
+}
+
+.quantidade {
+  margin-right: 6px;
+  color: var(--verde);
+  font-weight: 700;
+}
+
+.unitario {
+  color: var(--texto-suave);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.total-item {
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.tabela-produtos tfoot td {
+  padding-top: 10px;
+  border-bottom: 0;
+  color: var(--texto-suave);
+}
+
+.linha-total-final td {
+  padding-top: 8px;
+  border-top: 1px solid var(--borda);
+  color: var(--texto);
+  font-weight: 700;
+}
+
+.linha-total-final .total-item {
+  color: var(--verde);
+}
+
+.tabela-produtos tfoot .total-item {
+  color: var(--texto);
+  font-size: 0.938rem;
+}
+
+/* Parcelas --------------------------------------------------------------- */
+
+.topo-parcelas {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.contagem-parcelas {
+  color: var(--texto-suave);
+  font-size: 0.75rem;
+}
+
+.lista-parcelas {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.parcela {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--superficie);
+}
+
+.parcela.paga {
+  border-color: #b7e3cd;
+  background: #f2fbf6;
+}
+
+.numero-parcela {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 50%;
+  color: var(--texto-suave);
+  background: #eef0f1;
+  font-size: 0.75rem;
+  font-weight: 700;
+  place-items: center;
+}
+
+.parcela.paga .numero-parcela {
+  color: #fff;
+  background: var(--verde);
+}
+
+.info-parcela {
+  display: grid;
+  gap: 2px;
+  font-size: 0.875rem;
+}
+
+.pago-em,
+.aguardando {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+}
+
+.pago-em {
+  color: #05603a;
+  font-weight: 600;
+}
+
+.pago-em .icone {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2.4;
+}
+
+.aguardando {
+  color: var(--texto-suave);
+}
+
+.botao-pagar {
+  min-height: 32px;
+  margin-left: auto;
+  padding: 0 12px;
+  font-size: 0.813rem;
+}
+
+.observacao {
+  color: var(--texto-suave);
+  font-size: 0.813rem;
+}
+
+.bloco .barra-progresso {
+  margin-bottom: 14px;
+}
+
+@media (max-width: 860px) {
+  .topo-perfil {
+    flex-wrap: wrap;
+  }
+
+  .acoes-perfil {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .valores-compra {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .botao-detalhe {
+    width: 100%;
+  }
+}

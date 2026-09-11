@@ -1,0 +1,139 @@
+<button class="botao-voltar" type="button" (click)="cancelar()">
+  <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="m14 7-5 5 5 5" />
+  </svg>
+  Voltar
+</button>
+
+<div class="cabecalho-pagina">
+  <h1 class="titulo-pagina">
+    {{ clienteId() ? 'Editar cliente' : 'Cadastrar novo cliente' }}
+  </h1>
+  <p class="subtitulo-pagina">
+    {{
+      clienteId()
+        ? 'Altere as informações abaixo para atualizar o cadastro do cliente.'
+        : 'Preencha as informações abaixo para cadastrar um novo cliente.'
+    }}
+  </p>
+</div>
+
+@if (carregando()) {
+  <p class="mensagem-estado">Carregando dados do cliente...</p>
+} @else {
+  <form class="painel formulario" [formGroup]="formulario" (ngSubmit)="salvar()">
+    <h2 class="titulo-secao">Dados Pessoais</h2>
+
+    <div class="grade-campos">
+      <div class="campo">
+        <label for="nome">Nome Completo <span class="obrigatorio">*</span></label>
+        <input
+          id="nome"
+          type="text"
+          placeholder="Digite o nome completo"
+          formControlName="nome"
+          [attr.aria-invalid]="invalido('nome')"
+        />
+        @if (invalido('nome')) {
+          <span class="erro-campo">Informe o nome do cliente.</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label for="telefone">Telefone <span class="obrigatorio">*</span></label>
+        <input
+          id="telefone"
+          type="tel"
+          placeholder="(00) 00000-0000"
+          formControlName="telefone"
+          appMascara="telefone"
+          [attr.aria-invalid]="invalido('telefone')"
+        />
+        @if (invalido('telefone')) {
+          <span class="erro-campo">Informe o telefone do cliente.</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label for="cpf">CPF <span class="obrigatorio">*</span></label>
+        <input
+          id="cpf"
+          type="text"
+          placeholder="000.000.000-00"
+          formControlName="cpf"
+          appMascara="cpf"
+          [attr.aria-invalid]="invalido('cpf')"
+        />
+        @if (invalido('cpf')) {
+          <span class="erro-campo">Informe o CPF do cliente.</span>
+        }
+      </div>
+    </div>
+
+    <h2 class="titulo-secao">Endereço</h2>
+
+    <div class="grade-endereco">
+      <div class="campo">
+        <label for="cep">CEP</label>
+        <input id="cep" type="text" placeholder="00000-000" formControlName="cep" appMascara="cep" />
+      </div>
+
+      <div class="campo coluna-dupla">
+        <label for="logradouro">Logradouro / Rua</label>
+        <input
+          id="logradouro"
+          type="text"
+          placeholder="Digite o logradouro"
+          formControlName="logradouro"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="numero">Número</label>
+        <input id="numero" type="text" placeholder="Digite o número" formControlName="numero" />
+      </div>
+
+      <div class="campo">
+        <label for="complemento">Complemento</label>
+        <input
+          id="complemento"
+          type="text"
+          placeholder="Digite um complemento (opcional)"
+          formControlName="complemento"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="bairro">Bairro</label>
+        <input id="bairro" type="text" placeholder="Digite o bairro" formControlName="bairro" />
+      </div>
+
+      <div class="campo coluna-dupla">
+        <label for="cidade">Cidade</label>
+        <input id="cidade" type="text" placeholder="Digite a cidade" formControlName="cidade" />
+      </div>
+
+      <div class="campo">
+        <label for="estado">Estado</label>
+        <input id="estado" type="text" placeholder="Digite o estado" formControlName="estado" />
+      </div>
+    </div>
+
+    @if (mensagemErro()) {
+      <div class="alerta-erro" role="alert" aria-live="polite">
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7.5v5M12 15.8v.2" />
+        </svg>
+        <span>{{ mensagemErro() }}</span>
+      </div>
+    }
+
+    <div class="acoes-formulario">
+      <button class="botao-perigo" type="button" (click)="cancelar()">Cancelar</button>
+      <button class="botao-primario" type="submit" [disabled]="salvando()">
+        {{ salvando() ? 'Salvando...' : 'Salvar' }}
+      </button>
+    </div>
+  </form>
+}

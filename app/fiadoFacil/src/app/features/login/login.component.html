@@ -1,19 +1,22 @@
 <main class="login-page">
   <section class="brand-panel" aria-label="SafeBook">
-    <span class="brand">
-      <span class="brand-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M5 4.5h11.5A2.5 2.5 0 0 1 19 7v12.5H7.5A2.5 2.5 0 0 1 5 17V4.5Z" />
-          <path d="M5 17a2.5 2.5 0 0 1 2.5-2.5H19M8 8h7" />
-        </svg>
+    <div class="brand-interno">
+      <span class="brand">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 4.5h11.5A2.5 2.5 0 0 1 19 7v12.5H7.5A2.5 2.5 0 0 1 5 17V4.5Z" />
+            <path d="M5 17a2.5 2.5 0 0 1 2.5-2.5H19M8 8h7" />
+          </svg>
+        </span>
+        <span>SafeBook</span>
       </span>
-      <span>SafeBook</span>
-    </span>
 
-    <div class="brand-content">
       <span class="eyebrow">Controle simples e seguro</span>
-      <h1>Organize suas vendas fiadas com tranquilidade.</h1>
-      <p>Cadastre clientes, acompanhe pagamentos e tenha suas contas sempre em ordem.</p>
+
+      <div class="brand-content">
+        <h1>Organize suas vendas fiadas com tranquilidade.</h1>
+        <p>Cadastre clientes, acompanhe pagamentos e tenha suas contas sempre em ordem.</p>
+      </div>
     </div>
 
     <p class="brand-footer">© 2026 SafeBook</p>
@@ -41,7 +44,9 @@
             autocomplete="email"
             placeholder="Digite seu e-mail"
             formControlName="email"
-            [attr.aria-invalid]="formularioLogin.controls.email.invalid && formularioLogin.controls.email.touched"
+            [attr.aria-invalid]="
+              formularioLogin.controls.email.invalid && formularioLogin.controls.email.touched
+            "
           />
         </div>
 
@@ -53,7 +58,9 @@
             autocomplete="current-password"
             placeholder="Digite sua senha"
             formControlName="senha"
-            [attr.aria-invalid]="formularioLogin.controls.senha.invalid && formularioLogin.controls.senha.touched"
+            [attr.aria-invalid]="
+              formularioLogin.controls.senha.invalid && formularioLogin.controls.senha.touched
+            "
           />
         </div>
 

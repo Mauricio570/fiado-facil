@@ -1,11 +1,14 @@
 package br.com.fiadoFacil.mapper;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Component;
 
 import br.com.fiadoFacil.domain.Cliente;
 import br.com.fiadoFacil.domain.Usuario;
 import br.com.fiadoFacil.dto.request.ClienteRequest;
 import br.com.fiadoFacil.dto.response.ClienteResponse;
+import br.com.fiadoFacil.dto.response.ClienteResumoFinanceiroResponse;
 
 @Component
 public class ClienteMapper {
@@ -28,6 +31,10 @@ public class ClienteMapper {
     }
 
     public ClienteResponse toResponse(Cliente cliente) {
+        return toResponse(cliente, null);
+    }
+
+    public ClienteResponse toResponse(Cliente cliente, ClienteResumoFinanceiroResponse resumo) {
         return ClienteResponse.builder()
                 .id(cliente.getId())
                 .nome(cliente.getNome())
@@ -35,6 +42,8 @@ public class ClienteMapper {
                 .cpf(cliente.getCpf())
                 .endereco(cliente.getEndereco())
                 .dataCriacao(cliente.getDataCriacao())
+                .totalEmAberto(resumo == null ? BigDecimal.ZERO : resumo.getTotalEmAberto())
+                .ultimaCompra(resumo == null ? null : resumo.getUltimaCompra())
                 .build();
     }
 }

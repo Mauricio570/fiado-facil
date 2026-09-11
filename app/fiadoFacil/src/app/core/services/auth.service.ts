@@ -4,6 +4,13 @@ import { map, Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { LoginRequest, LoginResponse } from '../models/auth.model';
+import { UsuarioLogado } from '../models/usuario.model';
+
+interface PayloadToken {
+  sub: string;
+  email: string;
+  nomeEmpresa: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -42,8 +49,48 @@ export class AuthService {
     return true;
   }
 
+  /** Lê os dados do usuário direto das claims do JWT — a API não expõe um endpoint /me. */
+  getUsuarioLogado(): UsuarioLogado | null {
+    const token = this.getToken();
+
+    if (!token) {
+      return null;
+    }
+
+    const payload = this.lerPayload(token);
+
+    if (!payload) {
+      return null;
+    }
+
+    return { id: Number(payload.sub), email: payload.email, nomeEmpresa: payload.nomeEmpresa };
+  }
+
   logout(): void {
     localStorage.removeItem(this.chaveToken);
     localStorage.removeItem(this.chaveExpiracao);
+  }
+
+  private lerPayload(token: string): PayloadToken | null {
+    const partes = token.split('.');
+
+    if (partes.length !== 3) {
+      return null;
+    }
+
+    try {
+      const base64 = partes[1].replace(/-/g, '+').replace(/_/g, '/');
+      const binario = atob(base64);
+      const json = decodeURIComponent(
+        Array.from(binario, (caractere) => {
+          const codigo = caractere.charCodeAt(0).toString(16).padStart(2, '0');
+          return `%${codigo}`;
+        }).join(''),
+      );
+
+      return JSON.parse(json) as PayloadToken;
+    } catch {
+      return null;
+    }
   }
 }
