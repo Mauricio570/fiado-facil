@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import br.com.fiadoFacil.domain.enums.FormaPagamento;
 import br.com.fiadoFacil.domain.enums.StatusParcela;
@@ -23,6 +26,7 @@ import br.com.fiadoFacil.dto.request.ItemVendaRequest;
 import br.com.fiadoFacil.dto.request.PagamentoRequest;
 import br.com.fiadoFacil.dto.request.VendaRequest;
 import br.com.fiadoFacil.dto.response.VendaResponse;
+import br.com.fiadoFacil.dto.response.VendaResumoFinanceiroResponse;
 import br.com.fiadoFacil.dto.response.VendaResumoResponse;
 import br.com.fiadoFacil.mapper.VendaMapper;
 import br.com.fiadoFacil.repository.ClienteRepository;
@@ -125,10 +129,28 @@ public class VendaService {
         clienteRepository.findByIdAndUsuarioId(clienteId, usuarioLogado.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
 
+        // Saldo devedor, parcelas pagas e entrada de cada venda, buscados de
+        // uma vez só para não repetir a consulta a cada linha do histórico.
+        Map<Long, VendaResumoFinanceiroResponse> resumoPorVenda = pagamentoRepository
+                .buscarResumoPorVendaDoCliente(clienteId, StatusParcela.EM_ABERTO, StatusParcela.PAGO)
+                .stream()
+                .collect(Collectors.toMap(VendaResumoFinanceiroResponse::getVendaId, Function.identity()));
+
         return vendaRepository
                 .findAllByCliente_IdAndCliente_Usuario_IdOrderByDataCriacaoDesc(clienteId, usuarioLogado.getId())
                 .stream()
-                .map(venda -> vendaMapper.toResumoResponse(venda, somarItens(itemVendaRepository.findAllByVendaId(venda.getId()))))
+                .map(venda -> {
+                    VendaResumoFinanceiroResponse resumo = resumoPorVenda.get(venda.getId());
+
+                    BigDecimal valorItens = somarItens(itemVendaRepository.findAllByVendaId(venda.getId()));
+
+                    return vendaMapper.toResumoResponse(
+                            venda,
+                            valorItens,
+                            resumo == null ? valorItens : resumo.getValorTotalComJuros(),
+                            resumo == null ? BigDecimal.ZERO : resumo.getTotalEmAberto(),
+                            podeAlterar(venda, resumo));
+                })
                 .toList();
     }
 
@@ -148,9 +170,11 @@ public class VendaService {
         return vendaMapper.toResponse(venda, itens, pagamento, parcelas);
     }
 
-    // Bloqueia edição/exclusão se a venda já está PAGO (cobre à
-    // vista, que já nasce paga) OU se qualquer parcela já foi paga
-    // (cobre parcelada com pagamento parcial).
+    // Uma venda só pode ser alterada ou excluída enquanto o cliente
+    // não pagou nada por ela. Bloqueia em três situações: venda já
+    // quitada (cobre a venda à vista, que nasce paga), qualquer
+    // parcela já paga, e entrada recebida — o dinheiro da entrada já
+    // está no caixa e editar a venda apagaria esse registro.
     private void validarEdicaoOuExclusaoPermitida(Venda venda) {
         if (venda.getStatus() == StatusVenda.PAGO) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
@@ -158,15 +182,37 @@ public class VendaService {
         }
 
         Pagamento pagamento = pagamentoRepository.findByVendaId(venda.getId()).orElse(null);
-        if (pagamento != null) {
-            boolean temParcelaPaga = parcelaRepository.findAllByPagamentoIdOrderByNumeroAsc(pagamento.getId())
-                    .stream()
-                    .anyMatch(p -> p.getStatus() == StatusParcela.PAGO);
-            if (temParcelaPaga) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT,
-                        "Não é possível alterar ou excluir uma venda que já teve parcela paga.");
-            }
+        if (pagamento == null) {
+            return;
         }
+
+        boolean temParcelaPaga = parcelaRepository.findAllByPagamentoIdOrderByNumeroAsc(pagamento.getId())
+                .stream()
+                .anyMatch(p -> p.getStatus() == StatusParcela.PAGO);
+        if (temParcelaPaga) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Não é possível alterar ou excluir uma venda que já teve parcela paga.");
+        }
+
+        if (temEntradaPaga(pagamento.getValorEntrada())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Não é possível alterar ou excluir uma venda que já teve entrada paga.");
+        }
+    }
+
+    private boolean temEntradaPaga(BigDecimal valorEntrada) {
+        return valorEntrada != null && valorEntrada.compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    // Mesma regra de validarEdicaoOuExclusaoPermitida, porém em forma
+    // de predicado, para a listagem informar à tela quais botões de
+    // editar/excluir devem ficar habilitados.
+    private boolean podeAlterar(Venda venda, VendaResumoFinanceiroResponse resumo) {
+        if (venda.getStatus() == StatusVenda.PAGO || resumo == null) {
+            return false;
+        }
+
+        return resumo.getParcelasPagas() == 0 && !temEntradaPaga(resumo.getValorEntrada());
     }
 
     // Apaga item_venda, parcela e pagamento EXPLICITAMENTE pelo

@@ -1,12 +1,19 @@
 package br.com.fiadoFacil.controller;
 
-import br.com.fiadoFacil.dto.request.UsuarioCadastroRequest;
-import br.com.fiadoFacil.dto.response.UsuarioResponse;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.com.fiadoFacil.dto.request.UsuarioAtualizacaoRequest;
+import br.com.fiadoFacil.dto.request.UsuarioCadastroRequest;
+import br.com.fiadoFacil.dto.response.UsuarioResponse;
 import br.com.fiadoFacil.service.UsuarioService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -18,14 +25,24 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<UsuarioResponse> cadastrar(@Valid @RequestBody UsuarioCadastroRequest request) {
         UsuarioResponse response = usuarioService.cadastrar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UsuarioResponse> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(usuarioService.buscarPorId(id));
+    /**
+     * Os dados da conta são sempre resolvidos pelo token, nunca por um id vindo
+     * da URL — assim um usuário não consegue ler nem alterar a conta de outro.
+     */
+    @GetMapping("/me")
+    public ResponseEntity<UsuarioResponse> buscarLogado() {
+        return ResponseEntity.ok(usuarioService.buscarLogado());
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<UsuarioResponse> atualizarLogado(
+            @Valid @RequestBody UsuarioAtualizacaoRequest request) {
+        return ResponseEntity.ok(usuarioService.atualizarLogado(request));
     }
 }

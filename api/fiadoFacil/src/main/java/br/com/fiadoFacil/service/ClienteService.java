@@ -1,6 +1,9 @@
 package br.com.fiadoFacil.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -10,22 +13,28 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiadoFacil.domain.Cliente;
 import br.com.fiadoFacil.domain.Usuario;
+import br.com.fiadoFacil.domain.enums.StatusParcela;
 import br.com.fiadoFacil.dto.request.ClienteRequest;
 import br.com.fiadoFacil.dto.response.ClienteResponse;
+import br.com.fiadoFacil.dto.response.ClienteResumoFinanceiroResponse;
 import br.com.fiadoFacil.mapper.ClienteMapper;
 import br.com.fiadoFacil.repository.ClienteRepository;
+import br.com.fiadoFacil.repository.VendaRepository;
 
 @Service
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final VendaRepository vendaRepository;
     private final ClienteMapper clienteMapper;
     private final UsuarioAutenticadoService usuarioAutenticadoService;
 
     public ClienteService(ClienteRepository clienteRepository,
+                          VendaRepository vendaRepository,
                           ClienteMapper clienteMapper,
                           UsuarioAutenticadoService usuarioAutenticadoService) {
         this.clienteRepository = clienteRepository;
+        this.vendaRepository = vendaRepository;
         this.clienteMapper = clienteMapper;
         this.usuarioAutenticadoService = usuarioAutenticadoService;
     }
@@ -47,15 +56,20 @@ public class ClienteService {
     public List<ClienteResponse> listar(String busca) {
         Usuario usuarioLogado = usuarioAutenticadoService.get();
 
+        Map<Long, ClienteResumoFinanceiroResponse> resumoPorCliente = vendaRepository
+                .buscarResumoFinanceiroPorUsuario(usuarioLogado.getId(), StatusParcela.EM_ABERTO)
+                .stream()
+                .collect(Collectors.toMap(ClienteResumoFinanceiroResponse::getClienteId, Function.identity()));
+
         return clienteRepository.buscarPorUsuario(usuarioLogado.getId(), busca)
                 .stream()
-                .map(clienteMapper::toResponse)
+                .map(cliente -> clienteMapper.toResponse(cliente, resumoPorCliente.get(cliente.getId())))
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public ClienteResponse buscarPorId(Long id) {
-        return clienteMapper.toResponse(buscarClienteDoUsuarioLogado(id));
+        return montarRespostaComResumo(buscarClienteDoUsuarioLogado(id));
     }
 
     @Transactional
@@ -68,7 +82,7 @@ public class ClienteService {
         clienteMapper.atualizarEntity(cliente, request);
         Cliente salvo = salvarComProtecaoDeCorrida(cliente);
 
-        return clienteMapper.toResponse(salvo);
+        return montarRespostaComResumo(salvo);
     }
 
     @Transactional
@@ -81,6 +95,19 @@ public class ClienteService {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Não é possível excluir um cliente que já possui vendas registradas.");
         }
+    }
+
+    // Um cliente recém-cadastrado ainda não tem vendas, então cadastrar()
+    // usa o mapper direto (total zerado). Nos demais casos o resumo
+    // financeiro precisa vir do banco para a resposta não mentir o saldo.
+    private ClienteResponse montarRespostaComResumo(Cliente cliente) {
+        Usuario usuarioLogado = usuarioAutenticadoService.get();
+
+        ClienteResumoFinanceiroResponse resumo = vendaRepository
+                .buscarResumoFinanceiroPorCliente(cliente.getId(), usuarioLogado.getId(), StatusParcela.EM_ABERTO)
+                .orElse(null);
+
+        return clienteMapper.toResponse(cliente, resumo);
     }
 
     private Cliente buscarClienteDoUsuarioLogado(Long id) {
@@ -98,7 +125,9 @@ public class ClienteService {
                     ? clienteRepository.existsByUsuarioIdAndCpf(usuarioId, cpf)
                     : clienteRepository.existsByUsuarioIdAndCpfAndIdNot(usuarioId, cpf, idAtual);
             if (duplicado) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um cliente com este CPF cadastrado.");
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Já existe um cliente cadastrado com este CPF. " +
+                                "Confira o número digitado ou procure o cliente na sua lista.");
             }
         }
 
@@ -107,7 +136,9 @@ public class ClienteService {
                     ? clienteRepository.existsByUsuarioIdAndTelefone(usuarioId, telefone)
                     : clienteRepository.existsByUsuarioIdAndTelefoneAndIdNot(usuarioId, telefone, idAtual);
             if (duplicado) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um cliente com este telefone cadastrado.");
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Já existe um cliente cadastrado com este telefone. " +
+                                "Confira o número digitado ou procure o cliente na sua lista.");
             }
         }
     }
@@ -128,7 +159,8 @@ public class ClienteService {
             return salvo;
         } catch (DataIntegrityViolationException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Já existe um cliente com este CPF ou telefone cadastrado.");
+                    "Já existe um cliente cadastrado com este CPF ou telefone. " +
+                            "Confira os dados digitados ou procure o cliente na sua lista.");
         }
     }
 }

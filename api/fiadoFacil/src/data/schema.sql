@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS pagamento CASCADE;
 DROP TABLE IF EXISTS item_venda CASCADE;
 DROP TABLE IF EXISTS venda CASCADE;
 DROP TABLE IF EXISTS cliente CASCADE;
+DROP TABLE IF EXISTS preferencia CASCADE;
 DROP TABLE IF EXISTS usuario CASCADE;
 
 CREATE TABLE usuario (
@@ -17,6 +18,17 @@ CREATE TABLE usuario (
     email           VARCHAR(150) NOT NULL UNIQUE,
     senha           VARCHAR(255) NOT NULL,
     data_criacao    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Preferências de interface do usuário. Uma linha por usuário (1:1),
+-- separada da tabela usuario para que a conta continue guardando só
+-- identidade e credencial, e novas preferências possam ser adicionadas
+-- aqui sem mexer no cadastro de acesso.
+CREATE TABLE preferencia (
+    id              BIGSERIAL PRIMARY KEY,
+    fk_usuario      BIGINT      NOT NULL UNIQUE REFERENCES usuario(id) ON DELETE CASCADE,
+    tamanho_texto   VARCHAR(20) NOT NULL DEFAULT 'PADRAO',
+    data_criacao    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE cliente (
@@ -91,6 +103,10 @@ INSERT INTO usuario (nome_empresa, cnpj, email, senha) VALUES
 INSERT INTO usuario (nome_empresa, cnpj, email, senha) VALUES
 ('Padaria Pão Dourado', '98.765.432/0001-10', 'teste2@gmail.com',
  '$2b$12$2CjpByidNAmQCsBpaOFToOJhujwbu01uQyV/3/Win331Yt/cQfcGu');
+
+-- PREFERENCIA (uma por usuário, criada junto da conta)
+INSERT INTO preferencia (fk_usuario, tamanho_texto) VALUES (1, 'PADRAO');
+INSERT INTO preferencia (fk_usuario, tamanho_texto) VALUES (2, 'PADRAO');
 
 -- CLIENTE (ambos cadastrados pelo usuário 1 — mesma mercearia)
 INSERT INTO cliente (fk_usuario, nome, telefone, cpf, endereco) VALUES

@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/fiado_facil
+    url: jdbc:postgresql://localhost:5433/fiado_facil
     username: postgres
-    password: postgres
+    password: 369147
 
   jpa:
     hibernate:
