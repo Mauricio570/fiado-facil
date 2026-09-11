@@ -1,480 +1,93 @@
-:host {
-    display: block;
-    min-height: 100dvh;
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    color: #111;
+.cabecalho-pagina {
+  margin-bottom: 20px;
 }
 
-* {
-    box-sizing: border-box;
+.cartoes-resumo {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  margin-bottom: 22px;
 }
 
-.home-shell {
-    display: grid;
-    min-height: 100dvh;
-    grid-template-columns: 200px minmax(0, 1fr);
-    background: #f5f7f8;
+.cartao-resumo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+  box-shadow: var(--sombra);
 }
 
-.sidebar {
-    display: flex;
-    position: sticky;
-    top: 0;
-    height: 100dvh;
-    flex-direction: column;
-    padding: 20px 14px 26px;
-    color: #fff;
-    background: #008562;
+.icone-cartao {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  place-items: center;
 }
 
-.sidebar-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 0 5px;
-    font-size: 20px;
-    font-weight: 700;
+.icone-cartao .icone {
+  width: 22px;
+  height: 22px;
 }
 
-.brand-mark {
-    width: 17px;
-    height: 20px;
-    border: 1.75px solid currentcolor;
-    border-radius: 2px;
+.icone-cartao.azul {
+  color: #3b6fd4;
+  background: #e5edfb;
 }
 
-.navigation {
-    display: grid;
-    gap: 8px;
-    margin-top: 38px;
+.icone-cartao.verde {
+  color: #0a8a5f;
+  background: #dff4ea;
 }
 
-.navigation-item,
-.logout-button {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-height: 44px;
-    padding: 0 10px;
-    border-radius: 6px;
-    color: inherit;
-    font-size: 16px;
-    font-weight: 650;
-    text-decoration: none;
+.icone-cartao.roxo {
+  color: #7c4dc4;
+  background: #efe6fb;
 }
 
-.navigation-item.active {
-    background: #00a777;
+.icone-cartao.laranja {
+  color: #d08316;
+  background: #fdf0da;
 }
 
-.navigation-item svg,
-.logout-button svg {
-    width: 20px;
-    height: 20px;
-    fill: none;
-    stroke: currentcolor;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: 1.8;
+.cartao-resumo div {
+  display: grid;
+  gap: 2px;
 }
 
-.logout-button {
-    margin-top: auto;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-    font: inherit;
+.rotulo-cartao {
+  color: var(--texto-suave);
+  font-size: 0.875rem;
 }
 
-.content-area {
-    min-width: 0;
+.cartao-resumo strong {
+  font-size: 1.313rem;
 }
 
-.topbar {
-    display: flex;
-    min-height: 62px;
-    align-items: center;
-    justify-content: space-between;
-    padding: 9px 28px;
-    border-bottom: 1px solid #cfd3d4;
-    background: #fff;
+.cartao-resumo small {
+  color: var(--texto-suave);
+  font-size: 0.75rem;
 }
 
-.search-field {
-    display: flex;
-    width: min(360px, 42vw);
-    align-items: center;
-    gap: 8px;
-    padding: 0 15px;
-    border-radius: 20px;
-    background: #ededed;
+.contas-em-aberto .titulo-secao {
+  margin-bottom: 14px;
 }
 
-.search-field svg {
-    width: 17px;
-    height: 17px;
-    fill: none;
-    stroke: #9da3a4;
-    stroke-width: 2;
+.celula-cliente {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  /* A tabela já rola na horizontal, então o nome não precisa quebrar —
+     em telas estreitas ele virava três linhas dentro da célula. */
+  white-space: nowrap;
 }
 
-.search-field input {
-    width: 100%;
-    height: 38px;
-    border: 0;
-    outline: 0;
-    color: #333;
-    background: transparent;
-    font-size: 14px;
-}
-
-.search-field input::placeholder {
-    color: #9da3a4;
-}
-
-.account-summary {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    font-size: 14px;
-    font-weight: 650;
-}
-
-.account-avatar {
-    display: grid;
-    width: 40px;
-    height: 40px;
-    place-items: center;
-    border-radius: 50%;
-    background: #e4e4e4;
-}
-
-.account-avatar svg {
-    width: 24px;
-    height: 24px;
-    fill: none;
-    stroke: #111;
-    stroke-width: 1.6;
-}
-
-.chevron {
-    width: 14px;
-    fill: none;
-    stroke: #111;
-    stroke-width: 2;
-}
-
-.home-content {
-    max-width: 1320px;
-    margin: 0 auto;
-    padding: 32px 40px 42px;
-}
-
-.page-heading {
-    width: min(100%, 1040px);
-    margin: 0 auto;
-}
-
-.page-heading h1 {
-    margin: 0;
-    font-size: 32px;
-    line-height: 1.25;
-    letter-spacing: -0.02em;
-}
-
-.page-heading p {
-    margin: 6px 0 32px;
-    font-size: 20px;
-    line-height: 1.5;
-}
-
-.summary-cards {
-    display: grid;
-    width: min(100%, 1040px);
-    max-width: none;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 26px 22px;
-    margin: 0 auto 30px;
-}
-
-.summary-card {
-    display: flex;
-    min-height: 110px;
-    align-items: center;
-    gap: 15px;
-    padding: 14px;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 28%);
-}
-
-.card-icon {
-    display: grid;
-    width: 60px;
-    height: 60px;
-    flex: 0 0 60px;
-    place-items: center;
-    border-radius: 50%;
-    font-size: 34px;
-}
-
-.card-icon svg {
-    width: 27px;
-    fill: none;
-    stroke: currentcolor;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: 1.5;
-}
-
-.blue-card .card-icon {
-    color: #295ccf;
-    background: #d5ddf7;
-}
-
-.green-card .card-icon {
-    color: #009b70;
-    background: #cae8df;
-}
-
-.purple-card .card-icon {
-    color: #7700d8;
-    background: #e6d2f9;
-}
-
-.orange-card .card-icon {
-    color: #ff9700;
-    background: #ffebcc;
-}
-
-.card-label,
-.summary-card small {
-    display: block;
-    font-size: 16px;
-}
-
-.summary-card strong {
-    display: block;
-    margin: 6px 0 5px;
-    font-size: 26px;
-}
-
-.green-card strong {
-    color: #009b70;
-}
-
-.purple-card strong {
-    color: #6700d3;
-}
-
-.orange-card strong {
-    color: #e78a00;
-}
-
-.summary-card small {
-    color: #555;
-}
-
-.open-accounts {
-    width: min(100%, 1040px);
-    min-height: 350px;
-    margin: 0 auto;
-    overflow: hidden;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 28%);
-}
-
-.open-accounts h2 {
-    margin: 0;
-    padding: 15px 20px 11px;
-    font-size: 26px;
-}
-
-.table-wrapper {
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 16px;
-}
-
-th {
-    padding: 13px 20px;
-    background: #eee;
-    text-align: left;
-    font-weight: 600;
-    font-size: 20px;
-}
-
-td {
-    padding: 11px 20px;
-    border-bottom: 1px solid #eee;
-}
-
-td:first-child {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 16px;
-}
-
-.client-initials {
-    display: grid;
-    width: 28px;
-    height: 28px;
-    place-items: center;
-    border-radius: 50%;
-    color: #008562;
-    background: #d8eee8;
-    font-size: 11px;
-}
-
-.status-badge {
-    display: inline-block;
-    padding: 6px 13px;
-    border-radius: 13px;
-    color: #ff2828;
-    background: #ffd1d1;
-    font-size: 14px;
-}
-
-.details-button {
-    display: inline-block;
-    padding: 6px 14px;
-    border: 1px solid #00a17a;
-    border-radius: 4px;
-    color: #008562;
-    font-size: 14px;
-}
-
-.empty-table {
-    display: table-cell;
-    padding: 34px 20px;
-    color: #5b6462;
-    text-align: center;
-}
-
-.state-message {
-    width: min(100%, 1040px);
-    margin: 0 auto;
-    padding: 30px 0;
-    color: #56615f;
-    font-size: 16px;
-}
-
-.error-state {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-}
-
-.error-state button {
-    padding: 8px 14px;
-    border: 0;
-    border-radius: 4px;
-    color: #fff;
-    background: #008562;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-@media (max-width: 900px) {
-    .home-shell {
-        grid-template-columns: 110px minmax(0, 1fr);
-    }
-
-    .sidebar-brand {
-        font-size: 14px;
-    }
-
-    .summary-cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 640px) {
-    .home-shell {
-        display: block;
-    }
-
-    .sidebar {
-        position: static;
-        height: auto;
-        min-height: 58px;
-        flex-direction: row;
-        align-items: center;
-        padding: 8px 12px;
-    }
-
-    .sidebar-brand {
-        margin-right: auto;
-    }
-
-    .navigation {
-        display: flex;
-        gap: 4px;
-        margin: 0;
-    }
-
-    .navigation-item,
-    .logout-button {
-        min-height: 36px;
-        padding: 0 7px;
-    }
-
-    .navigation-item span,
-    .logout-button span {
-        display: none;
-    }
-
-    .logout-button {
-        margin: 0 0 0 5px;
-    }
-
-    .topbar {
-        padding: 6px 12px;
-    }
-
-    .search-field {
-        width: min(220px, 54vw);
-    }
-
-    .account-summary>span:not(.account-avatar),
-    .chevron {
-        display: none;
-    }
-
-    .home-content {
-        padding: 18px 14px 24px;
-    }
-
-    .page-heading h1 {
-        font-size: 24px;
-    }
-
-    .page-heading p {
-        font-size: 14px;
-        line-height: 1.4;
-    }
-
-    .summary-cards {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-
-    .open-accounts h2 {
-        font-size: 18px;
-    }
-
-    th,
-    td {
-        white-space: nowrap;
-    }
-
-    .open-accounts {
-        min-height: 0;
-    }
+.botao-tabela {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 0.813rem;
 }

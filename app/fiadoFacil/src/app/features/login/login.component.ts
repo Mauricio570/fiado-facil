@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { AuthService } from '../../core/services/auth.service';
+import { mensagemDoErro } from '../../shared/utils/erro.util';
 
 @Component({
   selector: 'app-login',
@@ -41,8 +42,10 @@ export class LoginComponent {
         next: () => {
           void this.router.navigate(['/home']);
         },
-        error: () => {
-          this.mensagemErro.set('Não foi possível entrar. Confira seu e-mail e senha.');
+        error: (erro) => {
+          this.mensagemErro.set(
+            mensagemDoErro(erro, 'Não foi possível entrar. Confira seu e-mail e senha.'),
+          );
         },
       });
   }

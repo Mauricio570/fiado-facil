@@ -1,0 +1,45 @@
+.cabecalho-pagina {
+  margin-bottom: 18px;
+}
+
+.formulario {
+  display: grid;
+  gap: 18px;
+  max-width: 980px;
+  padding: 24px 26px 26px;
+}
+
+.grade-endereco {
+  display: grid;
+  gap: 16px 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.coluna-dupla {
+  grid-column: span 2;
+}
+
+.acoes-formulario {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.acoes-formulario button {
+  min-width: 140px;
+}
+
+@media (max-width: 900px) {
+  .grade-endereco {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .coluna-dupla {
+    grid-column: span 1;
+  }
+
+  .acoes-formulario button {
+    min-width: 0;
+    flex: 1;
+  }
+}

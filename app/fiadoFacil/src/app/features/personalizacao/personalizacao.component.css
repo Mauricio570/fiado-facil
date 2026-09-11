@@ -1,0 +1,175 @@
+.cabecalho-pagina {
+  margin-bottom: 18px;
+}
+
+.secao {
+  display: grid;
+  gap: 18px;
+  max-width: 980px;
+  margin-bottom: 18px;
+  padding: 22px 24px 24px;
+}
+
+.cabecalho-secao {
+  display: grid;
+  gap: 4px;
+}
+
+.cabecalho-secao p {
+  color: var(--texto-suave);
+  font-size: 0.875rem;
+}
+
+.subtitulo-secao {
+  font-size: 1.063rem;
+}
+
+/* Escolha do tamanho do texto ------------------------------------------- */
+
+.opcoes-tamanho {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+}
+
+.opcao-tamanho {
+  display: grid;
+  position: relative;
+  gap: 4px;
+  padding: 18px 16px;
+  border: 1px solid var(--borda-forte);
+  border-radius: var(--raio);
+  background: var(--superficie);
+  cursor: pointer;
+  font: inherit;
+  justify-items: center;
+  text-align: center;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.opcao-tamanho:hover:not(:disabled) {
+  border-color: var(--verde);
+  background: var(--verde-suave);
+}
+
+.opcao-tamanho.selecionada {
+  border-color: var(--verde);
+  background: var(--verde-suave);
+  box-shadow: 0 0 0 1px var(--verde);
+}
+
+.opcao-tamanho:disabled {
+  cursor: wait;
+  opacity: 70%;
+}
+
+/* A amostra usa px de propósito: ela precisa mostrar a diferença entre os
+   tamanhos mesmo antes de o usuário escolher, então não acompanha a escala. */
+.amostra {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 6px;
+  border-radius: 50%;
+  color: var(--verde-escuro);
+  background: #d7e8e1;
+  font-weight: 700;
+  place-items: center;
+}
+
+.amostra-pequeno {
+  font-size: 13px;
+}
+
+.amostra-padrao {
+  font-size: 17px;
+}
+
+.amostra-grande {
+  font-size: 22px;
+}
+
+.titulo-opcao {
+  font-size: 0.938rem;
+  font-weight: 700;
+}
+
+.descricao-opcao {
+  color: var(--texto-suave);
+  font-size: 0.813rem;
+}
+
+.marca-selecionada {
+  display: grid;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--verde);
+  place-items: center;
+}
+
+.marca-selecionada .icone {
+  width: 13px;
+  height: 13px;
+  stroke-width: 3;
+}
+
+/* Meus dados ------------------------------------------------------------- */
+
+.coluna-inteira {
+  grid-column: 1 / -1;
+}
+
+.grade-senha {
+  display: grid;
+  gap: 16px 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.dica {
+  color: var(--texto-suave);
+  font-size: 0.75rem;
+}
+
+.alerta-sucesso {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #b7e3cd;
+  border-radius: 8px;
+  color: #05603a;
+  background: #d3f2e2;
+  font-size: 0.938rem;
+  font-weight: 600;
+}
+
+.alerta-sucesso .icone {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  stroke-width: 2.4;
+}
+
+.acoes-formulario {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.acoes-formulario button {
+  min-width: 180px;
+}
+
+@media (max-width: 900px) {
+  .grade-senha {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .acoes-formulario button {
+    width: 100%;
+  }
+}

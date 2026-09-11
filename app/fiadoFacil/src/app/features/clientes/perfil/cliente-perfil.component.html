@@ -1,0 +1,508 @@
+<a class="botao-voltar" routerLink="/clientes">
+  <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="m14 7-5 5 5 5" />
+  </svg>
+  Voltar
+</a>
+
+<div class="cabecalho-pagina">
+  <h1 class="titulo-pagina">Perfil do cliente</h1>
+  <p class="subtitulo-pagina">
+    Você está no perfil do cliente, aqui exibe os dados do cliente selecionado.
+  </p>
+</div>
+
+@if (carregando()) {
+  <p class="mensagem-estado">Carregando perfil do cliente...</p>
+} @else if (!cliente()) {
+  <div class="mensagem-estado">
+    <p class="mensagem-erro">{{ mensagemErro() || 'Cliente não encontrado.' }}</p>
+    <button class="botao-secundario" type="button" (click)="carregar()">Tentar novamente</button>
+  </div>
+} @else if (cliente(); as dados) {
+  <section class="painel cartao-perfil">
+    <div class="topo-perfil">
+      <span class="iniciais avatar-grande">{{ iniciais(dados.nome) }}</span>
+
+      <div class="identificacao">
+        <h2 class="titulo-secao">{{ dados.nome }}</h2>
+        <span>{{ dados.telefone || 'Telefone não informado' }}</span>
+        <span>Cliente desde: {{ dados.dataCriacao | date: 'dd/MM/yyyy' }}</span>
+        @if (dados.endereco) {
+          <span class="endereco">{{ dados.endereco }}</span>
+        }
+      </div>
+
+      <div class="acoes-perfil">
+        <a class="botao-secundario" [routerLink]="['/clientes', dados.id, 'editar']">
+          Editar Cliente
+        </a>
+
+        <div class="menu-mais">
+          <button
+            class="botao-icone borda"
+            type="button"
+            aria-label="Mais ações"
+            [attr.aria-expanded]="menuAberto()"
+            (click)="menuAberto.set(!menuAberto())"
+          >
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="6" cy="12" r="1.3" />
+              <circle cx="12" cy="12" r="1.3" />
+              <circle cx="18" cy="12" r="1.3" />
+            </svg>
+          </button>
+
+          @if (menuAberto()) {
+            <div class="opcoes-menu">
+              <button type="button" (click)="pedirConfirmacaoDeExclusao()">Excluir cliente</button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="rodape-perfil">
+      <div class="destaque-aberto">
+        <span>Total em aberto</span>
+        <strong>{{ dados.totalEmAberto | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+      </div>
+
+      <a class="botao-primario" [routerLink]="['/clientes', dados.id, 'vendas', 'nova']">
+        Nova Venda
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 5h2l2.4 10.2a1 1 0 0 0 1 .8h7.6a1 1 0 0 0 1-.8L19 8H6" />
+          <circle cx="10" cy="19" r="1.4" />
+          <circle cx="16" cy="19" r="1.4" />
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <section class="painel historico">
+    <div class="topo-historico">
+      <div class="titulo-historico">
+        <h2 class="titulo-secao">Histórico de compras</h2>
+        <div class="indicadores">
+          <span class="indicador">
+            <strong>{{ resumoHistorico().total }}</strong>
+            {{ resumoHistorico().total === 1 ? 'compra' : 'compras' }}
+          </span>
+          <span class="indicador aberto">
+            <strong>{{ resumoHistorico().emAberto }}</strong> em aberto
+          </span>
+          <span class="indicador paga">
+            <strong>{{ resumoHistorico().pagas }}</strong> quitadas
+          </span>
+        </div>
+      </div>
+
+      <select
+        aria-label="Filtrar compras por status"
+        [ngModel]="filtroStatus()"
+        (ngModelChange)="filtroStatus.set($event); pagina.set(1)"
+      >
+        <option value="TODOS">Todos status</option>
+        <option value="EM_ABERTO">Em aberto</option>
+        <option value="PAGO">Pago</option>
+      </select>
+    </div>
+
+    @if (mensagemErro()) {
+      <p class="mensagem-erro" aria-live="polite">{{ mensagemErro() }}</p>
+    }
+
+    <div class="lista-compras">
+      @for (venda of vendasDaPagina(); track venda.id) {
+        <article class="compra" [class.expandida]="vendaExpandida() === venda.id">
+          <header class="linha-compra">
+            <span class="marcador" [class.pago]="venda.status === 'PAGO'" aria-hidden="true">
+              <svg class="icone" viewBox="0 0 24 24">
+                <path d="M3 5h2l2.4 10.2a1 1 0 0 0 1 .8h7.6a1 1 0 0 0 1-.8L19 8H6" />
+                <circle cx="10" cy="19" r="1.4" />
+                <circle cx="16" cy="19" r="1.4" />
+              </svg>
+            </span>
+
+            <div class="dados-compra">
+              <span class="titulo-compra">Compra #{{ venda.id }}</span>
+              <span class="data-compra">{{ venda.dataCriacao | date: 'dd/MM/yyyy' }}</span>
+            </div>
+
+            <div class="valores-compra">
+              <div class="valor">
+                <span>Valor total</span>
+                <strong>
+                  {{ venda.valorTotalComJuros | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                </strong>
+              </div>
+              <div class="valor">
+                <span>Falta pagar</span>
+                <strong [class.destaque-vermelho]="venda.totalEmAberto > 0">
+                  {{ venda.totalEmAberto | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                </strong>
+              </div>
+            </div>
+
+            <span
+              class="selo com-ponto"
+              [class.selo-aberto]="venda.status === 'EM_ABERTO'"
+              [class.selo-em-dia]="venda.status === 'PAGO'"
+            >
+              {{ venda.status === 'EM_ABERTO' ? 'Em aberto' : 'Pago' }}
+            </span>
+
+            <div class="acoes-compra">
+              <button
+                class="botao-icone acao"
+                type="button"
+                [disabled]="!venda.podeAlterar"
+                [attr.title]="venda.podeAlterar ? 'Editar compra' : motivoBloqueio(venda)"
+                [attr.aria-label]="'Editar compra número ' + venda.id"
+                (click)="editarVenda(venda)"
+              >
+                <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 20h4L19 9a2 2 0 0 0-3-3L5 17v3Z" />
+                  <path d="m14.5 6.5 3 3" />
+                </svg>
+              </button>
+
+              <button
+                class="botao-icone acao excluir"
+                type="button"
+                [disabled]="!venda.podeAlterar"
+                [attr.title]="venda.podeAlterar ? 'Excluir compra' : motivoBloqueio(venda)"
+                [attr.aria-label]="'Excluir compra número ' + venda.id"
+                (click)="pedirConfirmacaoDeExclusaoDeVenda(venda)"
+              >
+                <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6" />
+                </svg>
+              </button>
+
+              <button
+                class="botao-secundario botao-detalhe"
+                type="button"
+                [attr.aria-expanded]="vendaExpandida() === venda.id"
+                (click)="alternarDetalhe(venda)"
+              >
+                {{ vendaExpandida() === venda.id ? 'Ocultar' : 'Ver detalhes' }}
+                <svg class="icone seta" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m7 10 5 5 5-5" />
+                </svg>
+              </button>
+            </div>
+          </header>
+
+          @if (!venda.podeAlterar) {
+            <p class="aviso-bloqueio">
+              <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="5" y="10" width="14" height="10" rx="2" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+              </svg>
+              {{ motivoBloqueio(venda) }}
+            </p>
+          }
+
+          @if (vendaExpandida() === venda.id) {
+            <div class="detalhe">
+              @if (carregandoDetalhe()) {
+                <p class="carregando-detalhe">Carregando detalhes da venda...</p>
+              } @else if (detalheVenda(); as detalhe) {
+                <div class="resumo-pagamento">
+                  <div class="dado">
+                    <span>Forma de pagamento</span>
+                    <strong>
+                      {{ detalhe.pagamento.formaPagamento === 'A_VISTA' ? 'À vista' : 'Crédito' }}
+                    </strong>
+                  </div>
+                  <div class="dado">
+                    <span>Parcelas</span>
+                    <strong>{{ detalhe.pagamento.quantidadeParcelas }}x</strong>
+                  </div>
+                  <div class="dado">
+                    <span>Juros por mês</span>
+                    <strong>{{ detalhe.pagamento.jurosMes }}%</strong>
+                  </div>
+                  <div class="dado">
+                    <span>Entrada</span>
+                    <strong>
+                      {{
+                        detalhe.pagamento.valorEntrada
+                          | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'
+                      }}
+                    </strong>
+                  </div>
+                </div>
+
+                <div class="colunas-detalhe">
+                  <div class="bloco">
+                    <h3>Produtos</h3>
+                    <table class="tabela-produtos">
+                      <tbody>
+                        @for (item of detalhe.itens; track item.id) {
+                          <tr>
+                            <td>
+                              <span class="quantidade">{{ item.quantidade }}x</span>
+                              {{ item.nome }}
+                            </td>
+                            <td class="unitario">
+                              {{ item.valorUnitario | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                            </td>
+                            <td class="total-item">
+                              {{ item.valorTotal | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colspan="2">Total dos produtos</td>
+                          <td class="total-item">
+                            {{ detalhe.valorTotal | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                          </td>
+                        </tr>
+                        @if (venda.valorTotalComJuros > venda.valorTotal) {
+                          <tr>
+                            <td colspan="2">
+                              Juros ({{ detalhe.pagamento.jurosMes }}% x
+                              {{ detalhe.pagamento.quantidadeParcelas }} meses)
+                            </td>
+                            <td class="total-item">
+                              +
+                              {{
+                                venda.valorTotalComJuros - venda.valorTotal
+                                  | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'
+                              }}
+                            </td>
+                          </tr>
+                          <tr class="linha-total-final">
+                            <td colspan="2">Total a pagar</td>
+                            <td class="total-item">
+                              {{
+                                venda.valorTotalComJuros
+                                  | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'
+                              }}
+                            </td>
+                          </tr>
+                        }
+                      </tfoot>
+                    </table>
+                  </div>
+
+                  <div class="bloco">
+                    <div class="topo-parcelas">
+                      <h3>Parcelas</h3>
+                      @if (progressoParcelas().total > 0) {
+                        <span class="contagem-parcelas">
+                          {{ progressoParcelas().pagas }} de {{ progressoParcelas().total }} pagas
+                        </span>
+                      }
+                    </div>
+
+                    @if (progressoParcelas().total > 0) {
+                      <div
+                        class="barra-progresso"
+                        role="progressbar"
+                        aria-label="Parcelas pagas"
+                        [attr.aria-valuenow]="progressoParcelas().percentual"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      >
+                        <span [style.width.%]="progressoParcelas().percentual"></span>
+                      </div>
+
+                      <ul class="lista-parcelas">
+                        @for (parcela of detalhe.pagamento.parcelas; track parcela.id) {
+                          <li class="parcela" [class.paga]="parcela.status === 'PAGO'">
+                            <span class="numero-parcela">{{ parcela.numero }}</span>
+
+                            <div class="info-parcela">
+                              <strong>
+                                {{ parcela.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                              </strong>
+                              @if (parcela.status === 'PAGO') {
+                                <span class="pago-em">
+                                  <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M5 12.5 10 17l9-10" />
+                                  </svg>
+                                  Pago em
+                                  {{ parcela.dataPagamento | date: 'dd/MM/yyyy' : 'UTC' }}
+                                </span>
+                              } @else {
+                                <span class="aguardando">Aguardando pagamento</span>
+                              }
+                            </div>
+
+                            @if (parcela.status !== 'PAGO') {
+                              <button
+                                class="botao-secundario botao-pagar"
+                                type="button"
+                                (click)="pedirConfirmacaoDePagamento(parcela)"
+                              >
+                                Marcar como paga
+                              </button>
+                            }
+                          </li>
+                        }
+                      </ul>
+                    } @else {
+                      <p class="observacao">
+                        Venda à vista — quitada no ato, sem parcelas em aberto.
+                      </p>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </article>
+      } @empty {
+        <div class="estado-vazio">
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="4" y="4" width="16" height="16" rx="2" />
+            <path d="M8 10h8M8 14h5" />
+          </svg>
+          <p>Este cliente ainda não possui compras registradas.</p>
+        </div>
+      }
+    </div>
+
+    <div class="paginacao">
+      <span>Página atual {{ pagina() }} de {{ totalPaginas() }}</span>
+      <div class="controles">
+        <button
+          class="botao-secundario"
+          type="button"
+          [disabled]="pagina() <= 1"
+          (click)="irParaPagina(pagina() - 1)"
+        >
+          Anterior
+        </button>
+        <button
+          class="botao-primario"
+          type="button"
+          [disabled]="pagina() >= totalPaginas()"
+          (click)="irParaPagina(pagina() + 1)"
+        >
+          Próximo
+        </button>
+      </div>
+    </div>
+  </section>
+}
+
+@if (vendaParaExcluir(); as venda) {
+  <div class="fundo-modal" role="dialog" aria-modal="true" aria-labelledby="titulo-exclusao-venda">
+    <div class="modal-confirmacao">
+      <span class="icone-alerta perigo" aria-hidden="true">
+        <svg class="icone" viewBox="0 0 24 24">
+          <path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6" />
+        </svg>
+      </span>
+
+      <h2 id="titulo-exclusao-venda" class="titulo-secao">Excluir compra</h2>
+      <p>
+        Tem certeza que deseja excluir a <strong>Compra #{{ venda.id }}</strong> no valor de
+        <strong>{{ venda.valorTotal | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>?
+        Os produtos e as parcelas dessa compra serão removidos e essa ação não pode ser desfeita.
+      </p>
+
+      <div class="acoes-modal">
+        <button
+          class="botao-secundario"
+          type="button"
+          [disabled]="excluindoVenda()"
+          (click)="cancelarExclusaoDeVenda()"
+        >
+          Cancelar
+        </button>
+        <button
+          class="botao-perigo preenchido"
+          type="button"
+          [disabled]="excluindoVenda()"
+          (click)="confirmarExclusaoDeVenda()"
+        >
+          {{ excluindoVenda() ? 'Excluindo...' : 'Sim, excluir compra' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (confirmandoExclusao()) {
+  <div class="fundo-modal" role="dialog" aria-modal="true" aria-labelledby="titulo-exclusao">
+    <div class="modal-confirmacao">
+      <span class="icone-alerta perigo" aria-hidden="true">
+        <svg class="icone" viewBox="0 0 24 24">
+          <path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6" />
+        </svg>
+      </span>
+
+      <h2 id="titulo-exclusao" class="titulo-secao">Excluir cliente</h2>
+      <p>
+        Tem certeza que deseja excluir
+        <strong>{{ cliente()?.nome }}</strong>? Todos os dados do cadastro serão removidos e essa
+        ação não pode ser desfeita.
+      </p>
+
+      <div class="acoes-modal">
+        <button
+          class="botao-secundario"
+          type="button"
+          [disabled]="excluindo()"
+          (click)="cancelarExclusao()"
+        >
+          Cancelar
+        </button>
+        <button
+          class="botao-perigo preenchido"
+          type="button"
+          [disabled]="excluindo()"
+          (click)="confirmarExclusao()"
+        >
+          {{ excluindo() ? 'Excluindo...' : 'Sim, excluir cliente' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (parcelaParaConfirmar(); as parcela) {
+  <div class="fundo-modal" role="dialog" aria-modal="true" aria-labelledby="titulo-confirmacao">
+    <div class="modal-confirmacao">
+      <span class="icone-alerta" aria-hidden="true">
+        <svg class="icone" viewBox="0 0 24 24">
+          <path d="M12 4.5 21 19.5H3L12 4.5Z" />
+          <path d="M12 10v4M12 16.8v.2" />
+        </svg>
+      </span>
+
+      <h2 id="titulo-confirmacao" class="titulo-secao">Confirmar pagamento</h2>
+      <p>
+        Você está marcando a <strong>parcela {{ parcela.numero }}</strong> no valor de
+        <strong>{{ parcela.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+        como paga. Essa ação não pode ser desfeita pelo sistema.
+      </p>
+
+      <div class="acoes-modal">
+        <button
+          class="botao-secundario"
+          type="button"
+          [disabled]="confirmandoPagamento()"
+          (click)="cancelarPagamento()"
+        >
+          Cancelar
+        </button>
+        <button
+          class="botao-primario"
+          type="button"
+          [disabled]="confirmandoPagamento()"
+          (click)="confirmarPagamento()"
+        >
+          {{ confirmandoPagamento() ? 'Registrando...' : 'Sim, confirmar pagamento' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

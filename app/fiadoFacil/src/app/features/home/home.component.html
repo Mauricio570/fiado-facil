@@ -1,141 +1,116 @@
-<div class="home-shell">
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <span class="brand-mark" aria-hidden="true"></span>
-      <span class="brand-name">SafeBook</span>
-    </div>
-
-    <nav class="navigation" aria-label="Menu principal">
-      <a class="navigation-item active" aria-current="page">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10Z" />
-          <path d="M9 21v-7h6v7" />
-        </svg>
-        <span>Home</span>
-      </a>
-      <span class="navigation-item">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="9" cy="8" r="3" />
-          <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 5.5a3 3 0 0 1 0 5M18 14c1.8.6 3 2.3 3 4.3" />
-        </svg>
-        <span>Clientes</span>
-      </span>
-      <span class="navigation-item">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="5" y="4" width="14" height="17" rx="1" />
-          <path d="M9 4.5h6M9 10h6M9 14h6M9 18h3" />
-        </svg>
-        <span>Relatórios</span>
-      </span>
-    </nav>
-
-    <button class="logout-button" type="button" (click)="sair()">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M10 17l5-5-5-5M15 12H3M13 4h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-5" />
-      </svg>
-      <span>Sair</span>
-    </button>
-  </aside>
-
-  <div class="content-area">
-    <header class="topbar">
-      <label class="search-field">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="10.5" cy="10.5" r="6.5" />
-          <path d="m16 16 4.5 4.5" />
-        </svg>
-        <input type="search" placeholder="Buscar cliente" aria-label="Buscar cliente" />
-      </label>
-
-      <div class="account-summary">
-        <span class="account-avatar" aria-hidden="true"><svg viewBox="0 0 24 24">
-            <circle cx="12" cy="8" r="4" />
-            <path d="M4 21c.7-4 3.3-6 8-6s7.3 2 8 6" />
-          </svg></span>
-        <span>Conta</span>
-        <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m7 10 5 5 5-5" />
-        </svg>
-      </div>
-    </header>
-
-    <main class="home-content">
-      <div class="page-heading">
-        <h1>Olá!</h1>
-        <p>Esta é a página Home, aqui você acompanha as estatísticas e os dados gerais.</p>
-      </div>
-
-      @if (carregando()) {
-      <p class="state-message">Carregando dados do painel...</p>
-      } @else if (mensagemErro()) {
-      <div class="state-message error-state">
-        <p>{{ mensagemErro() }}</p>
-        <button type="button" (click)="carregarResumo()">Tentar novamente</button>
-      </div>
-      } @else if (painel(); as resumo) {
-      <section class="summary-cards" aria-label="Resumo financeiro">
-        <article class="summary-card blue-card">
-          <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24">
-              <circle cx="9" cy="8" r="3" />
-              <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 5.5a3 3 0 0 1 0 5M18 14c1.8.6 3 2.3 3 4.3" />
-            </svg></span>
-          <div><span class="card-label">Total de clientes</span><strong>{{ resumo.totalClientes
-              }}</strong><small>Clientes cadastrados</small></div>
-        </article>
-        <article class="summary-card green-card">
-          <span class="card-icon" aria-hidden="true">$</span>
-          <div><span class="card-label">Total a receber</span><strong>{{ resumo.totalAReceber | currency: 'BRL' :
-              'symbol' : '1.2-2' : 'pt-BR' }}</strong><small>Valor total pendente</small></div>
-        </article>
-        <article class="summary-card purple-card">
-          <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24">
-              <rect x="3" y="6" width="18" height="12" rx="2" />
-              <path d="M7 14h4" />
-            </svg></span>
-          <div><span class="card-label">Recebido esse mês</span><strong>{{ resumo.recebidoEsteMes | currency: 'BRL' :
-              'symbol' : '1.2-2' : 'pt-BR' }}</strong><small>Valor total recebido</small></div>
-        </article>
-        <article class="summary-card orange-card">
-          <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24">
-              <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
-              <circle cx="12" cy="12" r="2.5" />
-            </svg></span>
-          <div><span class="card-label">Clientes em débito</span><strong>{{ resumo.clientesEmDebito
-              }}</strong><small>Clientes com pendências</small></div>
-        </article>
-      </section>
-
-      <section class="open-accounts">
-        <h2>Clientes com contas em aberto</h2>
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>Clientes</th>
-                <th>Total em aberto</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (cliente of resumo.clientesComContasEmAberto; track cliente.clienteId) {
-              <tr>
-                <td><span class="client-initials">{{ cliente.nome.slice(0, 2).toUpperCase() }}</span>{{ cliente.nome }}
-                </td>
-                <td>{{ cliente.totalEmAberto | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</td>
-                <td><span class="status-badge">Em aberto</span></td>
-                <td><span class="details-button">Ver detalhes</span></td>
-              </tr>
-              } @empty {
-              <tr>
-                <td class="empty-table" colspan="4">Não há clientes com contas em aberto.</td>
-              </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </section>
-      }
-    </main>
-  </div>
+<div class="cabecalho-pagina">
+  <h1 class="titulo-pagina">Olá{{ primeiroNome ? ', ' + primeiroNome : '' }}!</h1>
+  <p class="subtitulo-pagina">
+    Está é a página Home, aqui exibe algumas estatísticas de todos os clientes cadastrados e exibe
+    dados gerais.
+  </p>
 </div>
+
+@if (carregando()) {
+<p class="mensagem-estado">Carregando dados do painel...</p>
+} @else if (mensagemErro()) {
+<div class="mensagem-estado">
+  <p class="mensagem-erro">{{ mensagemErro() }}</p>
+  <button class="botao-secundario" type="button" (click)="carregarResumo()">
+    Tentar novamente
+  </button>
+</div>
+} @else if (painel(); as resumo) {
+<section class="cartoes-resumo" aria-label="Resumo financeiro">
+  <article class="cartao-resumo">
+    <span class="icone-cartao azul" aria-hidden="true">
+      <svg class="icone" viewBox="0 0 24 24">
+        <circle cx="9" cy="8" r="3" />
+        <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 5.5a3 3 0 0 1 0 5M18 14c1.8.6 3 2.3 3 4.3" />
+      </svg>
+    </span>
+    <div>
+      <span class="rotulo-cartao">Total de clientes</span>
+      <strong>{{ resumo.totalClientes }}</strong>
+      <small>Clientes cadastrados</small>
+    </div>
+  </article>
+
+  <article class="cartao-resumo">
+    <span class="icone-cartao verde" aria-hidden="true">
+      <svg class="icone" viewBox="0 0 24 24">
+        <path
+          d="M12 4v16M15.5 8.2C15 7 13.7 6.3 12 6.3c-2 0-3.3 1-3.3 2.4 0 3.6 7 1.8 7 5.4 0 1.6-1.5 2.6-3.7 2.6-1.9 0-3.3-.8-3.8-2.1" />
+      </svg>
+    </span>
+    <div>
+      <span class="rotulo-cartao">Total a receber</span>
+      <strong>{{ resumo.totalAReceber | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+      <small>Valor total pendente</small>
+    </div>
+  </article>
+
+  <article class="cartao-resumo">
+    <span class="icone-cartao roxo" aria-hidden="true">
+      <svg class="icone" viewBox="0 0 24 24">
+        <rect x="3" y="6" width="18" height="12" rx="2" />
+        <path d="M3 10h18M7 14h4" />
+      </svg>
+    </span>
+    <div>
+      <span class="rotulo-cartao">Recebido esse mês</span>
+      <strong>{{ resumo.recebidoEsteMes | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+      <small>Valor total recebido</small>
+    </div>
+  </article>
+
+  <article class="cartao-resumo">
+    <span class="icone-cartao laranja" aria-hidden="true">
+      <svg class="icone" viewBox="0 0 24 24">
+        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
+        <circle cx="12" cy="12" r="2.5" />
+      </svg>
+    </span>
+    <div>
+      <span class="rotulo-cartao">Clientes em débito</span>
+      <strong>{{ resumo.clientesEmDebito }}</strong>
+      <small>Clientes com pendências</small>
+    </div>
+  </article>
+</section>
+
+<section class="painel contas-em-aberto">
+  <h2 class="titulo-secao">Clientes com contas em aberto</h2>
+
+  <div class="envolucro-tabela">
+    <table class="tabela">
+      <thead>
+        <tr>
+          <th>Clientes</th>
+          <th>Total em aberto</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cliente of resumo.clientesComContasEmAberto; track cliente.clienteId) {
+        <tr>
+          <td>
+            <span class="celula-cliente">
+              <span class="iniciais">{{ iniciais(cliente.nome) }}</span>
+              {{ cliente.nome }}
+            </span>
+          </td>
+          <td>{{ cliente.totalEmAberto | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</td>
+          <td><span class="selo selo-aberto">Em aberto</span></td>
+          <td>
+            <a class="botao-secundario botao-tabela" [routerLink]="['/clientes', cliente.clienteId]">
+              Ver detalhes
+            </a>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td class="celula-vazia" colspan="4">Não há clientes com contas em aberto.</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+}

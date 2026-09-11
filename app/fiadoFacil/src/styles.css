@@ -1,4 +1,607 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==========================================================================
+   Estilos globais do SafeBook — tokens de design e componentes reutilizados
+   pelas telas (cards, tabelas, botões, formulários, badges e paginação).
+   ========================================================================== */
+
+:root {
+  --verde: #008562;
+  --verde-escuro: #006e51;
+  --verde-claro: #00a777;
+  --verde-suave: #e6f4ef;
+  --fundo: #f5f7f8;
+  --superficie: #fff;
+  --borda: #e2e6e7;
+  --borda-forte: #cfd3d4;
+  --texto: #111;
+  --texto-suave: #5d6564;
+  --vermelho: #cf1e1e;
+  --vermelho-suave: #fde3e3;
+  --raio: 10px;
+  --sombra: 0 1px 2px rgb(16 24 40 / 6%);
+}
+
 * {
-    margin: 0;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+/* Escala de texto escolhida em Personalização. Como todos os tamanhos de
+   fonte do sistema estão em rem, mudar a base aqui redimensiona o texto
+   inteiro sem alterar espaçamentos, ícones ou alturas de campo. */
+html {
+  font-size: 16px;
+}
+
+html[data-tamanho-texto='PEQUENO'] {
+  font-size: 14px;
+}
+
+html[data-tamanho-texto='GRANDE'] {
+  font-size: 18px;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: var(--texto);
+  background: var(--fundo);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* Cabeçalho de página ---------------------------------------------------- */
+
+.titulo-pagina {
+  font-size: 1.625rem;
+  line-height: 1.2;
+}
+
+.subtitulo-pagina {
+  margin-top: 6px;
+  color: var(--texto-suave);
+  font-size: 0.938rem;
+}
+
+.botao-voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 5px 12px 5px 8px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--verde);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.813rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.botao-voltar:hover {
+  background: var(--verde-escuro);
+}
+
+/* Superfícies ------------------------------------------------------------ */
+
+.painel {
+  padding: 20px 22px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+}
+
+.titulo-secao {
+  font-size: 1.313rem;
+}
+
+/* Botões ----------------------------------------------------------------- */
+
+.botao-primario,
+.botao-secundario,
+.botao-perigo {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.botao-primario {
+  border: 1px solid var(--verde);
+  color: #fff;
+  background: var(--verde);
+}
+
+.botao-primario:hover:not(:disabled) {
+  background: var(--verde-escuro);
+}
+
+.botao-secundario {
+  border: 1px solid var(--verde);
+  color: var(--verde);
+  background: var(--superficie);
+}
+
+.botao-secundario:hover:not(:disabled) {
+  background: var(--verde-suave);
+}
+
+.botao-perigo {
+  border: 1px solid var(--vermelho);
+  color: var(--vermelho);
+  background: var(--superficie);
+}
+
+.botao-perigo:hover:not(:disabled) {
+  color: #fff;
+  background: var(--vermelho);
+}
+
+.botao-primario:disabled,
+.botao-secundario:disabled,
+.botao-perigo:disabled {
+  cursor: not-allowed;
+  opacity: 55%;
+}
+
+.botao-icone {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  place-items: center;
+}
+
+.botao-icone:hover {
+  background: var(--fundo);
+}
+
+.icone {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+/* Formulários ------------------------------------------------------------ */
+
+.grade-campos {
+  display: grid;
+  gap: 16px 24px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.campo {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+
+.campo label {
+  font-size: 0.938rem;
+  font-weight: 600;
+}
+
+.campo .obrigatorio {
+  color: var(--vermelho);
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid var(--borda-forte);
+  border-radius: 6px;
+  outline: 0;
+  color: var(--texto);
+  background: var(--superficie);
+  font: inherit;
+  font-size: 0.875rem;
+}
+
+.campo input::placeholder {
+  color: #98a1a0;
+}
+
+.campo input:focus,
+.campo select:focus {
+  border-color: var(--verde);
+  box-shadow: 0 0 0 3px rgb(0 133 98 / 12%);
+}
+
+.campo input[aria-invalid='true'] {
+  border-color: var(--vermelho);
+}
+
+.campo .erro-campo {
+  color: var(--vermelho);
+  font-size: 0.813rem;
+}
+
+.campo-com-prefixo {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--borda-forte);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.campo-com-prefixo:focus-within {
+  border-color: var(--verde);
+  box-shadow: 0 0 0 3px rgb(0 133 98 / 12%);
+}
+
+.campo-com-prefixo .prefixo,
+.campo-com-prefixo .sufixo {
+  display: grid;
+  min-width: 44px;
+  padding: 0 10px;
+  color: var(--texto-suave);
+  background: var(--superficie);
+  font-size: 0.875rem;
+  place-items: center;
+}
+
+.campo-com-prefixo .prefixo {
+  border-right: 1px solid var(--borda-forte);
+}
+
+.campo-com-prefixo .sufixo {
+  border-left: 1px solid var(--borda-forte);
+}
+
+.campo-com-prefixo input {
+  min-height: 40px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.campo-com-prefixo input:focus {
+  box-shadow: none;
+}
+
+/* Tabelas ---------------------------------------------------------------- */
+
+.envolucro-tabela {
+  overflow-x: auto;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.tabela th {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--borda);
+  color: var(--texto-suave);
+  background: #f2f4f5;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tabela td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--borda);
+  vertical-align: middle;
+}
+
+.tabela tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.tabela .celula-vazia {
+  padding: 26px 16px;
+  color: var(--texto-suave);
+  text-align: center;
+}
+
+/* Indicadores ------------------------------------------------------------ */
+
+.selo {
+  display: inline-flex;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 0.813rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.selo-aberto {
+  color: #b42318;
+  background: var(--vermelho-suave);
+}
+
+.selo-em-dia {
+  color: #05603a;
+  background: #d3f2e2;
+}
+
+.iniciais {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: var(--verde-escuro);
+  background: #cfe9df;
+  font-size: 0.813rem;
+  font-weight: 700;
+  place-items: center;
+}
+
+/* Estados ---------------------------------------------------------------- */
+
+.mensagem-estado {
+  padding: 22px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  color: var(--texto-suave);
+  background: var(--superficie);
+  font-size: 0.938rem;
+}
+
+.mensagem-erro {
+  color: var(--vermelho);
+  font-size: 0.875rem;
+}
+
+.alerta-erro {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #f2c1bc;
+  border-radius: 8px;
+  color: #97231b;
+  background: var(--vermelho-suave);
+  font-size: 0.938rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.alerta-erro .icone {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  stroke-width: 2;
+}
+
+/* Paginação -------------------------------------------------------------- */
+
+.paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  color: var(--texto-suave);
+  font-size: 0.813rem;
+}
+
+.paginacao .controles {
+  display: flex;
+  gap: 8px;
+}
+
+.paginacao button {
+  min-height: 32px;
+  padding: 0 12px;
+}
+
+@media (max-width: 760px) {
+  .grade-campos {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .painel {
+    padding: 16px 14px;
+  }
+
+  .titulo-pagina {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 560px) {
+  /* Em telas estreitas os controles de paginação ocupam a linha inteira:
+     lado a lado com o texto, os rótulos quebravam em três linhas. */
+  .paginacao {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .paginacao > span {
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .paginacao .controles {
+    width: 100%;
+  }
+
+  .paginacao .controles button {
+    flex: 1;
+  }
+
+  .botao-primario,
+  .botao-secundario,
+  .botao-perigo {
+    white-space: nowrap;
+  }
+}
+
+/* Modais ----------------------------------------------------------------- */
+
+.fundo-modal {
+  display: grid;
+  position: fixed;
+  z-index: 10;
+  inset: 0;
+  padding: 20px;
+  background: rgb(16 24 40 / 45%);
+  place-items: center;
+}
+
+.modal-confirmacao {
+  display: grid;
+  width: min(100%, 460px);
+  gap: 14px;
+  padding: 26px;
+  border-radius: var(--raio);
+  background: var(--superficie);
+  box-shadow: 0 18px 44px rgb(16 24 40 / 22%);
+  justify-items: center;
+  text-align: center;
+}
+
+.modal-confirmacao p {
+  color: var(--texto-suave);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.icone-alerta {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  color: #d08316;
+  background: #fdf0da;
+  place-items: center;
+}
+
+.icone-alerta .icone {
+  width: 26px;
+  height: 26px;
+}
+
+.acoes-modal {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Menu suspenso ---------------------------------------------------------- */
+
+.menu-mais {
+  position: relative;
+}
+
+.opcoes-menu {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 180px;
+  padding: 6px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--superficie);
+  box-shadow: 0 8px 20px rgb(16 24 40 / 12%);
+}
+
+.opcoes-menu button {
+  width: 100%;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--vermelho);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.opcoes-menu button:hover {
+  background: var(--vermelho-suave);
+}
+
+/* Barra de progresso ----------------------------------------------------- */
+
+.barra-progresso {
+  height: 6px;
+  border-radius: 999px;
+  background: #e4e8e9;
+  overflow: hidden;
+}
+
+.barra-progresso span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--verde);
+  transition: width 220ms ease;
+}
+
+/* Selo com marcador e estado vazio --------------------------------------- */
+
+.selo.com-ponto::before {
+  width: 6px;
+  height: 6px;
+  align-self: center;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: currentcolor;
+  content: '';
+}
+
+.estado-vazio {
+  display: grid;
+  gap: 10px;
+  padding: 34px 20px;
+  border: 1px dashed var(--borda-forte);
+  border-radius: var(--raio);
+  color: var(--texto-suave);
+  justify-items: center;
+  text-align: center;
+}
+
+.estado-vazio .icone {
+  width: 32px;
+  height: 32px;
+  stroke: #b3bcba;
+}
+
+.icone-alerta.perigo {
+  color: var(--vermelho);
+  background: var(--vermelho-suave);
+}
+
+.botao-perigo.preenchido {
+  color: #fff;
+  background: var(--vermelho);
+}
+
+.botao-perigo.preenchido:hover:not(:disabled) {
+  background: #a81919;
 }

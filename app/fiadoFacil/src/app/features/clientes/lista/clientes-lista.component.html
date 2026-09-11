@@ -1,0 +1,147 @@
+<div class="cabecalho-pagina">
+  <h1 class="titulo-pagina">Clientes</h1>
+  <p class="subtitulo-pagina">
+    Aqui exibe todos os clientes registrados, podendo ver as vendas, criar uma nova ou adicionar um
+    novo cliente.
+  </p>
+</div>
+
+<div class="filtros">
+  <label class="campo-busca">
+    <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="10.5" cy="10.5" r="6.5" />
+      <path d="m16 16 4.5 4.5" />
+    </svg>
+    <input
+      type="search"
+      placeholder="Buscar cliente por nome ou telefone"
+      aria-label="Buscar cliente por nome ou telefone"
+      [ngModel]="busca()"
+      (ngModelChange)="busca.set($event)"
+    />
+  </label>
+
+  <select
+    aria-label="Filtrar por status"
+    [ngModel]="filtroStatus()"
+    (ngModelChange)="filtroStatus.set($event)"
+  >
+    <option value="TODOS">Todos status</option>
+    <option value="EM_ABERTO">Em aberto</option>
+    <option value="EM_DIA">Em dia</option>
+  </select>
+
+  <select aria-label="Ordenar por" [ngModel]="ordenacao()" (ngModelChange)="ordenacao.set($event)">
+    <option value="NOME_ASC">Nome A-Z</option>
+    <option value="NOME_DESC">Nome Z-A</option>
+    <option value="MAIOR_ABERTO">Maior valor em aberto</option>
+    <option value="ULTIMA_COMPRA">Última compra</option>
+  </select>
+</div>
+
+@if (carregando()) {
+  <p class="mensagem-estado">Carregando clientes...</p>
+} @else if (mensagemErro()) {
+  <div class="mensagem-estado">
+    <p class="mensagem-erro">{{ mensagemErro() }}</p>
+    <button class="botao-secundario" type="button" (click)="carregar()">Tentar novamente</button>
+  </div>
+} @else {
+  <section class="painel">
+    <div class="grade-clientes">
+      <a class="cartao-cliente cartao-novo" routerLink="/clientes/novo">
+        <span class="topo-cartao">
+          <span class="iniciais" aria-hidden="true">
+            <svg class="icone" viewBox="0 0 24 24">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 21c.7-4 3.3-6 8-6s7.3 2 8 6" />
+            </svg>
+          </span>
+          <span class="nome-cliente">Novo Cliente</span>
+        </span>
+
+        <span class="botao-secundario acao-novo">
+          Criar um novo
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8v8M8 12h8" />
+          </svg>
+        </span>
+      </a>
+
+      @for (cliente of clientesDaPagina(); track cliente.id) {
+        <article class="cartao-cliente">
+          <div class="topo-cartao">
+            <span class="iniciais">{{ iniciais(cliente.nome) }}</span>
+            <div class="identificacao">
+              <span class="nome-cliente">{{ cliente.nome }}</span>
+              <span class="telefone">{{ cliente.telefone || 'Telefone não informado' }}</span>
+            </div>
+            <span
+              class="selo"
+              [class.selo-aberto]="cliente.totalEmAberto > 0"
+              [class.selo-em-dia]="cliente.totalEmAberto <= 0"
+            >
+              {{ cliente.totalEmAberto > 0 ? 'Em aberto' : 'Em dia' }}
+            </span>
+          </div>
+
+          <dl class="dados-cartao">
+            <div>
+              <dt>Total em aberto</dt>
+              <dd>{{ cliente.totalEmAberto | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</dd>
+            </div>
+            <div>
+              <dt>Última compra</dt>
+              <dd>
+                {{ cliente.ultimaCompra ? (cliente.ultimaCompra | date: 'dd/MM/yyyy') : 'Sem compras' }}
+              </dd>
+            </div>
+          </dl>
+
+          <div class="acoes-cartao">
+            <a class="botao-secundario" [routerLink]="['/clientes', cliente.id]">
+              Ver Contas
+              <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="4" y="4" width="16" height="16" rx="2" />
+                <path d="M8 9h8M8 13h5" />
+              </svg>
+            </a>
+            <a class="botao-primario" [routerLink]="['/clientes', cliente.id, 'vendas', 'nova']">
+              Nova Venda
+              <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 5h2l2.4 10.2a1 1 0 0 0 1 .8h7.6a1 1 0 0 0 1-.8L19 8H6" />
+                <circle cx="10" cy="19" r="1.4" />
+                <circle cx="16" cy="19" r="1.4" />
+              </svg>
+            </a>
+          </div>
+        </article>
+      } @empty {
+        <p class="lista-vazia">Nenhum cliente encontrado para os filtros selecionados.</p>
+      }
+    </div>
+
+    <div class="paginacao">
+      <span>Página atual {{ pagina() }} de {{ totalPaginas() }}</span>
+      <div class="controles">
+        <button
+          class="botao-secundario"
+          type="button"
+          [disabled]="pagina() <= 1"
+          (click)="irParaPagina(pagina() - 1)"
+        >
+          Anterior
+        </button>
+        <button
+          class="botao-primario"
+          type="button"
+          [disabled]="pagina() >= totalPaginas()"
+          (click)="irParaPagina(pagina() + 1)"
+        >
+          Próximo
+        </button>
+      </div>
+    </div>
+  </section>
+}

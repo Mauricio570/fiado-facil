@@ -1,6 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 import { Painel } from '../../core/models/painel.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -8,18 +8,19 @@ import { PainelService } from '../../core/services/painel.service';
 
 @Component({
   selector: 'app-home',
-  imports: [CurrencyPipe],
+  imports: [CurrencyPipe, RouterLink],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly painelService = inject(PainelService);
-  private readonly router = inject(Router);
 
   protected readonly painel = signal<Painel | null>(null);
   protected readonly carregando = signal(true);
   protected readonly mensagemErro = signal('');
+
+  protected readonly primeiroNome = this.authService.getUsuarioLogado()?.nomeEmpresa.split(' ')[0] ?? '';
 
   ngOnInit(): void {
     this.carregarResumo();
@@ -41,8 +42,12 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  protected sair(): void {
-    this.authService.logout();
-    void this.router.navigate(['/login']);
+  protected iniciais(nome: string): string {
+    return nome
+      .split(' ')
+      .filter((parte) => parte.length > 0)
+      .slice(0, 2)
+      .map((parte) => parte[0].toUpperCase())
+      .join('');
   }
 }
