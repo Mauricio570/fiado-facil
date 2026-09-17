@@ -76,6 +76,10 @@ CREATE TABLE parcela (
     fk_pagamento    BIGINT        NOT NULL REFERENCES pagamento(id) ON DELETE CASCADE,
     numero          INTEGER       NOT NULL,
     valor           NUMERIC(10,2) NOT NULL,
+    -- Data prevista de pagamento: data da venda + N meses, sendo N o número
+    -- da parcela. É só previsão — o cliente pode quitar antes. Serve para os
+    -- relatórios de previsão de recebimento e de parcelas em atraso.
+    data_vencimento DATE          NOT NULL,
     data_pagamento  DATE,
     status          VARCHAR(20)   NOT NULL DEFAULT 'EM_ABERTO'
 );
@@ -88,6 +92,8 @@ CREATE INDEX idx_cliente_fk_usuario ON cliente(fk_usuario);
 CREATE INDEX idx_venda_fk_cliente ON venda(fk_cliente);
 CREATE INDEX idx_item_venda_fk_venda ON item_venda(fk_venda);
 CREATE INDEX idx_parcela_fk_pagamento ON parcela(fk_pagamento);
+-- Relatórios filtram parcelas em aberto por mês de vencimento.
+CREATE INDEX idx_parcela_data_vencimento ON parcela(data_vencimento);
 
 -- ============================================================
 -- INSERTS (dados de exemplo)
@@ -137,8 +143,8 @@ INSERT INTO pagamento (fk_venda, forma_pagamento, quantidade_parcelas, juros_mes
 (2, 'A_VISTA', 1, 0.00, 67.00);
 
 -- PARCELA (só o pagamento parcelado, id 1, tem parcelas — o à vista já foi quitado)
-INSERT INTO parcela (fk_pagamento, numero, valor, data_pagamento, status) VALUES
-(1, 1, 33.00, NULL, 'EM_ABERTO');
+INSERT INTO parcela (fk_pagamento, numero, valor, data_vencimento, data_pagamento, status) VALUES
+(1, 1, 33.00, CURRENT_DATE + INTERVAL '1 month', NULL, 'EM_ABERTO');
 
-INSERT INTO parcela (fk_pagamento, numero, valor, data_pagamento, status) VALUES
-(1, 2, 33.00, NULL, 'EM_ABERTO');
+INSERT INTO parcela (fk_pagamento, numero, valor, data_vencimento, data_pagamento, status) VALUES
+(1, 2, 33.00, CURRENT_DATE + INTERVAL '2 month', NULL, 'EM_ABERTO');

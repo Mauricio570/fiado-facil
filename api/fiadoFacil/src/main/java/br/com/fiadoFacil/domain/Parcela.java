@@ -52,6 +52,11 @@ public class Parcela {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal valor;
 
+    /** Data prevista de pagamento. É só previsão: o cliente pode quitar antes. */
+    @NotNull
+    @Column(name = "data_vencimento", nullable = false)
+    private LocalDate dataVencimento;
+
     @Column(name = "data_pagamento")
     private LocalDate dataPagamento;
 

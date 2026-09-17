@@ -50,12 +50,6 @@ export class LayoutComponent implements OnInit {
     }
   }
 
-  protected buscarCliente(termo: string): void {
-    void this.router.navigate(['/clientes'], {
-      queryParams: { busca: termo.trim() || null },
-    });
-  }
-
   protected sair(): void {
     this.authService.logout();
     this.preferenciaService.limpar();

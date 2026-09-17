@@ -16,6 +16,7 @@ public class ParcelaResponse {
     private Long id;
     private Integer numero;
     private BigDecimal valor;
+    private LocalDate dataVencimento;
     private LocalDate dataPagamento;
     private StatusParcela status;
 }

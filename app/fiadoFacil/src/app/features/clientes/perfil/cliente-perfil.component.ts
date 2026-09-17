@@ -262,6 +262,31 @@ export class ClientePerfilComponent implements OnInit {
     this.pagina.set(Math.min(Math.max(1, destino), this.totalPaginas()));
   }
 
+  /**
+   * Dias entre o vencimento previsto e hoje (positivo = atrasada). A conta é
+   * feita sobre a data em si, sem hora e sem fuso: `dataVencimento` chega como
+   * LocalDate ('aaaa-mm-dd'), e converter para Date local deslocaria um dia.
+   */
+  protected diasDeAtraso(parcela: Parcela): number {
+    const [ano, mes, dia] = parcela.dataVencimento.split('-').map(Number);
+    const vencimento = Date.UTC(ano, mes - 1, dia);
+
+    const agora = new Date();
+    const hoje = Date.UTC(agora.getFullYear(), agora.getMonth(), agora.getDate());
+
+    return Math.round((hoje - vencimento) / 86400000);
+  }
+
+  protected estaVencida(parcela: Parcela): boolean {
+    return parcela.status !== 'PAGO' && this.diasDeAtraso(parcela) > 0;
+  }
+
+  protected textoDoAtraso(parcela: Parcela): string {
+    const dias = this.diasDeAtraso(parcela);
+
+    return dias === 1 ? 'Venceu ontem' : `Venceu há ${dias} dias`;
+  }
+
   protected iniciais(nome: string): string {
     return nome
       .split(' ')

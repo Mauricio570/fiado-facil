@@ -314,7 +314,11 @@
 
                       <ul class="lista-parcelas">
                         @for (parcela of detalhe.pagamento.parcelas; track parcela.id) {
-                          <li class="parcela" [class.paga]="parcela.status === 'PAGO'">
+                          <li
+                            class="parcela"
+                            [class.paga]="parcela.status === 'PAGO'"
+                            [class.vencida]="estaVencida(parcela)"
+                          >
                             <span class="numero-parcela">{{ parcela.numero }}</span>
 
                             <div class="info-parcela">
@@ -329,8 +333,19 @@
                                   Pago em
                                   {{ parcela.dataPagamento | date: 'dd/MM/yyyy' : 'UTC' }}
                                 </span>
+                              } @else if (estaVencida(parcela)) {
+                                <span class="em-atraso">
+                                  <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M12 7.5v5M12 15.8v.2" />
+                                  </svg>
+                                  {{ textoDoAtraso(parcela) }} ·
+                                  {{ parcela.dataVencimento | date: 'dd/MM/yyyy' : 'UTC' }}
+                                </span>
                               } @else {
-                                <span class="aguardando">Aguardando pagamento</span>
+                                <span class="aguardando">
+                                  Vence em {{ parcela.dataVencimento | date: 'dd/MM/yyyy' : 'UTC' }}
+                                </span>
                               }
                             </div>
 
