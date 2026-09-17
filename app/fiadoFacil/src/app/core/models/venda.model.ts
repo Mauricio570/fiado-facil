@@ -35,6 +35,8 @@ export interface Parcela {
   id: number;
   numero: number;
   valor: number;
+  /** Data prevista de pagamento (LocalDate 'aaaa-mm-dd'). É só previsão. */
+  dataVencimento: string;
   dataPagamento: string | null;
   status: StatusParcela;
 }

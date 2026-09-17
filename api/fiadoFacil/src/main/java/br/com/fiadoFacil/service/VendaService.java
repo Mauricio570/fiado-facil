@@ -2,6 +2,7 @@ package br.com.fiadoFacil.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -295,7 +296,7 @@ public class VendaService {
                 .valorEntrada(valorEntrada)
                 .build();
 
-        List<Parcela> parcelas = gerarParcelas(valorFinal, quantidadeParcelas);
+        List<Parcela> parcelas = gerarParcelas(valorFinal, quantidadeParcelas, dataDaVenda(venda));
 
         return new PagamentoCalculado(pagamento, parcelas);
     }
@@ -311,10 +312,20 @@ public class VendaService {
         return parcelasSalvas;
     }
 
+    // Data base do parcelamento. A venda já foi salva quando chegamos aqui,
+    // então o @CreationTimestamp já preencheu dataCriacao; o fallback cobre
+    // só o caso de a venda ainda não ter sido persistida.
+    private LocalDate dataDaVenda(Venda venda) {
+        return venda.getDataCriacao() != null ? venda.getDataCriacao().toLocalDate() : LocalDate.now();
+    }
+
     // Divide valorFinal em N parcelas iguais; a última absorve a
     // diferença de arredondamento, pra soma das parcelas bater
-    // exatamente com valorFinal.
-    private List<Parcela> gerarParcelas(BigDecimal valorFinal, int quantidade) {
+    // exatamente com valorFinal. Cada parcela vence N meses após a venda —
+    // compra em 15/07 parcelada em 3x vence em 15/08, 15/09 e 15/10.
+    // O plusMonths já ajusta o dia quando o mês de destino é mais curto
+    // (31/01 + 1 mês = 28/02), então não existe data inválida.
+    private List<Parcela> gerarParcelas(BigDecimal valorFinal, int quantidade, LocalDate dataDaVenda) {
         List<Parcela> parcelas = new ArrayList<>();
         BigDecimal valorParcela = valorFinal.divide(BigDecimal.valueOf(quantidade), 2, RoundingMode.DOWN);
         BigDecimal somaParcial = BigDecimal.ZERO;
@@ -331,6 +342,7 @@ public class VendaService {
             parcelas.add(Parcela.builder()
                     .numero(numero)
                     .valor(valor)
+                    .dataVencimento(dataDaVenda.plusMonths(numero))
                     .status(StatusParcela.EM_ABERTO)
                     .build());
         }

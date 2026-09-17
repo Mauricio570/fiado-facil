@@ -37,7 +37,7 @@ html[data-tamanho-texto='PEQUENO'] {
 }
 
 html[data-tamanho-texto='GRANDE'] {
-  font-size: 18px;
+  font-size: 20px;
 }
 
 html,
@@ -429,6 +429,7 @@ body {
 }
 
 @media (max-width: 560px) {
+
   /* Em telas estreitas os controles de paginação ocupam a linha inteira:
      lado a lado com o texto, os rótulos quebravam em três linhas. */
   .paginacao {
@@ -436,7 +437,7 @@ body {
     justify-content: center;
   }
 
-  .paginacao > span {
+  .paginacao>span {
     width: 100%;
     text-align: center;
     white-space: nowrap;

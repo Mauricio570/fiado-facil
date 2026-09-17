@@ -456,7 +456,8 @@
 }
 
 .pago-em,
-.aguardando {
+.aguardando,
+.em-atraso {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -476,6 +477,28 @@
 
 .aguardando {
   color: var(--texto-suave);
+}
+
+.parcela.vencida {
+  border-color: #f2c1bc;
+  background: #fff7f6;
+}
+
+.parcela.vencida .numero-parcela {
+  color: #fff;
+  background: var(--vermelho);
+}
+
+.em-atraso {
+  color: #b42318;
+  font-weight: 600;
+}
+
+.em-atraso .icone {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  stroke-width: 2.2;
 }
 
 .botao-pagar {

@@ -92,6 +92,7 @@ public class VendaMapper {
                 .id(parcela.getId())
                 .numero(parcela.getNumero())
                 .valor(parcela.getValor())
+                .dataVencimento(parcela.getDataVencimento())
                 .dataPagamento(parcela.getDataPagamento())
                 .status(parcela.getStatus())
                 .build();
