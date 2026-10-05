@@ -1,0 +1,239 @@
+.topo-historico {
+  margin-bottom: 16px;
+}
+
+.titulo-historico {
+  display: grid;
+  gap: 8px;
+}
+
+.indicadores {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.indicador {
+  padding: 3px 11px;
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  color: var(--texto-suave);
+  background: #f7f9f9;
+  font-size: 0.75rem;
+}
+
+.indicador strong {
+  color: var(--texto);
+}
+
+.indicador.quitada {
+  border-color: #b7e3cd;
+  background: #d3f2e2;
+}
+
+.indicador.quitada strong {
+  color: #05603a;
+}
+
+.indicador.atraso {
+  border-color: #f6cfcb;
+  background: var(--vermelho-suave);
+}
+
+.indicador.atraso strong {
+  color: #b42318;
+}
+
+/* Filtros ---------------------------------------------------------------- */
+
+.filtros {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.campo-busca {
+  display: flex;
+  min-width: min(260px, 100%);
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid var(--borda-forte);
+  border-radius: 6px;
+  background: var(--superficie);
+}
+
+.campo-busca:focus-within {
+  border-color: var(--verde);
+}
+
+.campo-busca .icone {
+  stroke: #9da3a4;
+  stroke-width: 2;
+}
+
+.campo-busca input {
+  width: 100%;
+  height: 40px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 0.875rem;
+}
+
+.filtros select {
+  min-width: min(190px, 100%);
+  height: 42px;
+  padding: 0 10px;
+  border: 1px solid var(--borda-forte);
+  border-radius: 6px;
+  outline: 0;
+  color: var(--texto-suave);
+  background: var(--superficie);
+  font: inherit;
+  font-size: 0.875rem;
+}
+
+.filtros select:focus {
+  border-color: var(--verde);
+}
+
+/* Lista de vendas -------------------------------------------------------- */
+
+.lista-vendas {
+  display: grid;
+  gap: 12px;
+}
+
+.venda {
+  display: grid;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+  transition: border-color 150ms ease;
+}
+
+.venda:hover {
+  border-color: #c6d3cf;
+}
+
+.linha-venda {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.marcador {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 10px;
+  color: #2c4f96;
+  background: #e5edfb;
+  place-items: center;
+}
+
+.venda[data-situacao='QUITADA'] .marcador {
+  color: #05603a;
+  background: #d3f2e2;
+}
+
+.venda[data-situacao='EM_ATRASO'] .marcador {
+  color: #b42318;
+  background: var(--vermelho-suave);
+}
+
+.dados-venda {
+  display: grid;
+  min-width: 180px;
+  flex: 1;
+  gap: 2px;
+  color: var(--texto-suave);
+  font-size: 0.813rem;
+}
+
+.nome-cliente {
+  color: var(--texto);
+  font-size: 0.938rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.nome-cliente:hover {
+  color: var(--verde);
+  text-decoration: underline;
+}
+
+.sem-quebra {
+  white-space: nowrap;
+}
+
+.valores-venda {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.valor {
+  display: grid;
+  gap: 2px;
+}
+
+.valor span {
+  color: var(--texto-suave);
+  font-size: 0.75rem;
+}
+
+.valor strong {
+  font-size: 0.938rem;
+  white-space: nowrap;
+}
+
+.destaque-vermelho {
+  color: var(--vermelho);
+}
+
+/* "No prazo": deve, mas nada venceu — o azul do "a vencer" dos gráficos. */
+.selo-no-prazo {
+  color: #2c4f96;
+  background: #e5edfb;
+}
+
+.progresso-venda {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.progresso-venda .barra-progresso {
+  flex: 1;
+}
+
+.texto-progresso {
+  min-width: 64px;
+  color: var(--texto-suave);
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+@media (max-width: 560px) {
+  .filtros select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 760px) {
+  .valores-venda {
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
+  }
+}

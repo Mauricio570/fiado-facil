@@ -194,12 +194,3 @@
     padding: 16px 14px 26px;
   }
 }
-
-.item-navegacao.desabilitado {
-  cursor: default;
-  opacity: 80%;
-}
-
-.item-navegacao.desabilitado:hover {
-  background: transparent;
-}

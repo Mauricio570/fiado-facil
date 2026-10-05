@@ -1,0 +1,150 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.topo-grafico {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.legenda {
+  display: flex;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  color: var(--texto-suave);
+  flex-wrap: wrap;
+  font-size: 0.813rem;
+  list-style: none;
+}
+
+.legenda li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.legenda strong {
+  color: var(--texto);
+  font-weight: 600;
+}
+
+.amostra {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border-radius: 3px;
+}
+
+/* No gráfico de linha a amostra imita a marca: um traço, não um quadrado. */
+.amostra.linha {
+  width: 14px;
+  height: 3px;
+  border-radius: 999px;
+}
+
+.alternar-tabela {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 0 10px;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  color: var(--texto-suave);
+  background: var(--superficie);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.alternar-tabela:hover {
+  border-color: var(--verde);
+  color: var(--verde);
+  background: var(--verde-suave);
+}
+
+.alternar-tabela .icone {
+  width: 15px;
+  height: 15px;
+}
+
+.area-grafico {
+  position: relative;
+  width: 100%;
+}
+
+.destaque-central {
+  display: grid;
+  position: absolute;
+  inset: 0;
+  align-content: center;
+  justify-items: center;
+  pointer-events: none;
+  text-align: center;
+}
+
+.destaque-central strong {
+  font-size: 1.75rem;
+  line-height: 1.1;
+}
+
+.destaque-central span {
+  color: var(--texto-suave);
+  font-size: 0.75rem;
+}
+
+.tabela .numero {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* O cabeçalho de linha não herda o fundo cinza do cabeçalho de coluna. */
+.tabela tbody th {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--borda);
+  color: var(--texto);
+  background: transparent;
+  font-weight: 500;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tabela tbody tr:last-child th {
+  border-bottom: 0;
+}
+
+.tabela .total {
+  font-weight: 700;
+}
+
+/* Números da tabela alinhados em coluna. */
+.tabela td {
+  font-variant-numeric: tabular-nums;
+}
+
+.grafico-vazio {
+  align-content: center;
+}
+
+.grafico-vazio p {
+  max-width: 36ch;
+  font-size: 0.875rem;
+}
+
+.somente-leitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

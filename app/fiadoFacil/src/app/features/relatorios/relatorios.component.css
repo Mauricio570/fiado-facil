@@ -1,0 +1,175 @@
+.cabecalho-pagina {
+  margin-bottom: 18px;
+}
+
+/* Abas ------------------------------------------------------------------- */
+
+.abas {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--borda-forte);
+}
+
+.abas a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: -1px;
+  padding: 0 16px;
+  border-bottom: 3px solid transparent;
+  color: var(--texto-suave);
+  font-size: 0.938rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.abas a:hover {
+  color: var(--texto);
+}
+
+.abas a.ativa {
+  border-bottom-color: var(--verde);
+  color: var(--verde);
+}
+
+/* Filtro de período ------------------------------------------------------ */
+
+.filtro-periodo {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.linha-periodo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  flex-wrap: wrap;
+}
+
+.opcoes-periodo {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--borda-forte);
+  border-radius: 8px;
+  background: var(--superficie);
+}
+
+.opcoes-periodo button {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--texto-suave);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.opcoes-periodo button:hover:not(.ativa) {
+  color: var(--texto);
+  background: var(--fundo);
+}
+
+.opcoes-periodo button.ativa {
+  color: #fff;
+  background: var(--verde);
+}
+
+.periodo-atual {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--texto-suave);
+  font-size: 0.875rem;
+}
+
+.periodo-atual .icone {
+  width: 16px;
+  height: 16px;
+}
+
+.intervalo {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+  flex-wrap: wrap;
+}
+
+.intervalo .campo {
+  min-width: min(170px, 100%);
+}
+
+.intervalo .campo label {
+  font-size: 0.813rem;
+}
+
+.acoes-intervalo {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+.aviso-situacao-atual {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 11px 14px;
+  border: 1px solid #c9d8f5;
+  border-radius: 8px;
+  color: #2c4f96;
+  background: #eef3fc;
+  font-size: 0.875rem;
+}
+
+.aviso-situacao-atual .icone {
+  flex: none;
+}
+
+@media (max-width: 560px) {
+  /* No celular as abas dividem a largura e ficam só com o rótulo curto. */
+  .abas a {
+    flex: 1;
+    justify-content: center;
+    padding: 0 6px;
+    font-size: 0.875rem;
+  }
+
+  .abas .icone,
+  .rotulo-longo {
+    display: none;
+  }
+
+  .opcoes-periodo {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .acoes-intervalo {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .acoes-intervalo button {
+    flex: 1;
+  }
+
+  .intervalo .campo {
+    flex: 1;
+  }
+}

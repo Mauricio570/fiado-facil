@@ -26,6 +26,7 @@ export class GuiaComponent {
     { id: 'recebimentos', titulo: 'Dar baixa em uma parcela' },
     { id: 'alterar-vendas', titulo: 'Editar ou excluir uma compra' },
     { id: 'valores', titulo: 'Entendendo os valores das telas' },
+    { id: 'relatorios', titulo: 'Acompanhar o negócio nos relatórios' },
     { id: 'personalizacao', titulo: 'Personalizar o sistema' },
   ];
 }

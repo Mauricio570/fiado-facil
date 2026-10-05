@@ -1,0 +1,191 @@
+@if (carregando() && !relatorio()) {
+  <p class="mensagem-estado">Carregando relatório...</p>
+} @else if (mensagemErro()) {
+  <div class="mensagem-estado">
+    <p class="mensagem-erro">{{ mensagemErro() }}</p>
+    <button class="botao-secundario" type="button" (click)="tentarNovamente()">
+      Tentar novamente
+    </button>
+  </div>
+} @else if (relatorio(); as dados) {
+  <!-- Ao trocar o período, os números antigos ficam esmaecidos até os novos
+       chegarem, em vez de a tela piscar com uma mensagem de carregamento. -->
+  <div class="conteudo-aba" [class.atualizando]="carregando()" [attr.aria-busy]="carregando()">
+    <h2 class="titulo-grupo">No período escolhido</h2>
+    <section class="cartoes-resumo" aria-label="Números do período">
+      <article class="cartao-resumo">
+        <span class="icone-cartao azul" aria-hidden="true">
+          <svg class="icone" viewBox="0 0 24 24">
+            <path d="M3 5h2l2.4 10.2a1 1 0 0 0 1 .8h7.6a1 1 0 0 0 1-.8L19 8H6" />
+            <circle cx="10" cy="19" r="1.4" />
+            <circle cx="16" cy="19" r="1.4" />
+          </svg>
+        </span>
+        <div>
+          <span class="rotulo-cartao">Total vendido</span>
+          <strong>{{ dados.totalVendido | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+          <small>
+            {{ dados.quantidadeVendas }} {{ dados.quantidadeVendas === 1 ? 'venda' : 'vendas' }}, com
+            juros
+          </small>
+        </div>
+      </article>
+
+      <article class="cartao-resumo">
+        <span class="icone-cartao verde" aria-hidden="true">
+          <svg class="icone" viewBox="0 0 24 24">
+            <path
+              d="M12 4v16M15.5 8.2C15 7 13.7 6.3 12 6.3c-2 0-3.3 1-3.3 2.4 0 3.6 7 1.8 7 5.4 0 1.6-1.5 2.6-3.7 2.6-1.9 0-3.3-.8-3.8-2.1"
+            />
+          </svg>
+        </span>
+        <div>
+          <span class="rotulo-cartao">Já recebido</span>
+          <strong>{{ dados.totalRecebido | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+          <small>
+            {{ dados.recebidoEsteMes | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }} entraram
+            neste mês
+          </small>
+        </div>
+      </article>
+
+      <article class="cartao-resumo">
+        <span class="icone-cartao roxo" aria-hidden="true">
+          <svg class="icone" viewBox="0 0 24 24">
+            <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z" />
+            <path d="M9 8h6M9 12h6" />
+          </svg>
+        </span>
+        <div>
+          <span class="rotulo-cartao">Ticket médio</span>
+          <strong>{{ dados.ticketMedio | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+          <small>Valor médio de cada venda</small>
+        </div>
+      </article>
+    </section>
+
+    <h2 class="titulo-grupo">Situação de hoje</h2>
+    <section class="cartoes-resumo" aria-label="Situação de hoje">
+      <article class="cartao-resumo">
+        <span class="icone-cartao azul" aria-hidden="true">
+          <svg class="icone" viewBox="0 0 24 24">
+            <rect x="4" y="5" width="16" height="15" rx="2" />
+            <path d="M4 10h16M9 3v4M15 3v4" />
+          </svg>
+        </span>
+        <div>
+          <span class="rotulo-cartao">A receber</span>
+          <strong>{{ dados.totalAReceber | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+          <small>Soma das parcelas em aberto</small>
+        </div>
+      </article>
+
+      <article class="cartao-resumo" [class.cartao-alerta]="dados.totalEmAtraso > 0">
+        <span class="icone-cartao vermelho" aria-hidden="true">
+          <svg class="icone" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7.5v5M12 15.8v.2" />
+          </svg>
+        </span>
+        <div>
+          <span class="rotulo-cartao">Em atraso</span>
+          <strong>{{ dados.totalEmAtraso | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+          <small>
+            @if (dados.quantidadeParcelasEmAtraso === 0) {
+              Nenhuma parcela vencida
+            } @else {
+              {{ dados.quantidadeParcelasEmAtraso }}
+              {{ dados.quantidadeParcelasEmAtraso === 1 ? 'parcela vencida' : 'parcelas vencidas' }}
+            }
+          </small>
+        </div>
+      </article>
+
+      <article class="cartao-resumo">
+        <span class="icone-cartao laranja" aria-hidden="true">
+          <svg class="icone" viewBox="0 0 24 24">
+            <path d="M19 5 5 19" />
+            <circle cx="7" cy="7" r="2.5" />
+            <circle cx="17" cy="17" r="2.5" />
+          </svg>
+        </span>
+        <div>
+          <span class="rotulo-cartao">Inadimplência</span>
+          @if (dados.percentualInadimplencia === null) {
+            <strong>—</strong>
+            <small>Nenhuma parcela venceu ainda</small>
+          } @else {
+            <strong>{{ dados.percentualInadimplencia | number: '1.1-1' : 'pt-BR' }}%</strong>
+            <span
+              class="medidor"
+              role="meter"
+              aria-label="Inadimplência"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              [attr.aria-valuenow]="dados.percentualInadimplencia"
+            >
+              <span [style.width.%]="dados.percentualInadimplencia"></span>
+            </span>
+            <small>do valor que já venceu não foi pago</small>
+          }
+        </div>
+      </article>
+    </section>
+
+    <section class="painel cartao-grafico">
+      <header class="cabecalho-grafico">
+        <h2 class="titulo-secao">Vendido × pago por mês</h2>
+        <p>
+          Cada barra é o total vendido no mês, com juros, dividido entre o que o cliente já pagou, o
+          que ainda vai vencer e o que está atrasado.
+        </p>
+      </header>
+      <app-grafico
+        tipo="colunas"
+        [empilhado]="true"
+        [rotulos]="rotulosDosMeses()"
+        [series]="seriesVendidoPago()"
+        rotuloEixo="Mês"
+        descricao="Gráfico de colunas com o total vendido em cada mês, dividido em já pago, a vencer e em atraso."
+        mensagemVazio="Nenhuma venda registrada neste período."
+      />
+    </section>
+
+    <div class="grade-graficos">
+      <section class="painel cartao-grafico">
+        <header class="cabecalho-grafico">
+          <h2 class="titulo-secao">Recebido por mês</h2>
+          <p>
+            Dinheiro que entrou em cada mês: entradas e parcelas pagas, inclusive de vendas antigas.
+          </p>
+        </header>
+        <app-grafico
+          tipo="area"
+          [rotulos]="rotulosDosMeses()"
+          [series]="seriesRecebido()"
+          rotuloEixo="Mês"
+          [altura]="240"
+          descricao="Gráfico de linha com o valor recebido em cada mês do período."
+          mensagemVazio="Nenhum pagamento recebido neste período."
+        />
+      </section>
+
+      <section class="painel cartao-grafico">
+        <header class="cabecalho-grafico">
+          <h2 class="titulo-secao">Previsão de recebimento</h2>
+          <p>Quanto deve entrar nos próximos meses, pelas parcelas em aberto.</p>
+        </header>
+        <app-grafico
+          tipo="colunas"
+          [rotulos]="previsao().rotulos"
+          [series]="previsao().series"
+          [legenda]="legendaPrevisao"
+          rotuloEixo="Mês"
+          [altura]="240"
+          descricao="Gráfico de colunas com o valor em atraso e o valor previsto para entrar em cada um dos próximos seis meses."
+          mensagemVazio="Nenhuma parcela em aberto. Não há nada para receber."
+        />
+      </section>
+    </div>
+  </div>
+}

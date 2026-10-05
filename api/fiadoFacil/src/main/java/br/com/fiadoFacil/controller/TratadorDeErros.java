@@ -13,6 +13,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -76,6 +77,18 @@ public class TratadorDeErros {
 
         return ResponseEntity.badRequest()
                 .body(montar(HttpStatus.BAD_REQUEST, "Não foi possível ler os dados enviados.", null));
+    }
+
+    /**
+     * Parâmetro da URL com tipo errado (por exemplo, uma data fora do formato
+     * aaaa-mm-dd). Sem este tratador o erro viraria 500.
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErroResponse> tratarParametroInvalido(MethodArgumentTypeMismatchException excecao) {
+        log.warn("Parâmetro inválido '{}': {}", excecao.getName(), excecao.getValue());
+
+        return ResponseEntity.badRequest()
+                .body(montar(HttpStatus.BAD_REQUEST, "Um dos valores informados na consulta é inválido."));
     }
 
     /**

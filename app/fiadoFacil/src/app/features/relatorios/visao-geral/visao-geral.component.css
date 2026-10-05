@@ -1,0 +1,37 @@
+.cartoes-resumo {
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+}
+
+/* Em atraso só ganha destaque quando há de fato algo atrasado. */
+.cartao-alerta {
+  border-color: #f2c1bc;
+  background: #fffafa;
+}
+
+.cartao-alerta strong {
+  color: var(--vermelho);
+}
+
+/* Medidor da inadimplência: o vermelho preenche um trilho do mesmo tom, mais claro. */
+.medidor {
+  display: block;
+  height: 6px;
+  margin: 4px 0 2px;
+  border-radius: 999px;
+  background: var(--vermelho-suave);
+  overflow: hidden;
+}
+
+.medidor span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--vermelho);
+}
+
+.grade-graficos {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
+  margin-top: 18px;
+}

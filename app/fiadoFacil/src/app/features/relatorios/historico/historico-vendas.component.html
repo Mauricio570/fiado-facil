@@ -1,0 +1,176 @@
+@if (carregando() && !vendas()) {
+  <p class="mensagem-estado">Carregando histórico de vendas...</p>
+} @else if (mensagemErro()) {
+  <div class="mensagem-estado">
+    <p class="mensagem-erro">{{ mensagemErro() }}</p>
+    <button class="botao-secundario" type="button" (click)="tentarNovamente()">
+      Tentar novamente
+    </button>
+  </div>
+} @else if (vendas()) {
+  <section class="painel historico" [class.atualizando]="carregando()" [attr.aria-busy]="carregando()">
+    <div class="topo-historico">
+      <div class="titulo-historico">
+        <h2 class="titulo-secao">Vendas de todos os clientes</h2>
+        <div class="indicadores">
+          <span class="indicador">
+            <strong>{{ resumo().quantidade }}</strong>
+            {{ resumo().quantidade === 1 ? 'venda' : 'vendas' }}
+          </span>
+          <span class="indicador">
+            <strong>{{ resumo().total | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+            vendidos
+          </span>
+          <span class="indicador quitada">
+            <strong>{{ resumo().quitadas }}</strong>
+            {{ resumo().quitadas === 1 ? 'quitada' : 'quitadas' }}
+          </span>
+          @if (resumo().emAtraso > 0) {
+            <span class="indicador atraso">
+              <strong>{{ resumo().emAtraso }}</strong> em atraso
+            </span>
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (resumo().quantidade > 0) {
+      <div class="filtros">
+        <label class="campo-busca">
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5" />
+            <path d="m16 16 4.5 4.5" />
+          </svg>
+          <input
+            type="search"
+            placeholder="Buscar pelo nome do cliente"
+            aria-label="Buscar pelo nome do cliente"
+            [ngModel]="busca()"
+            (ngModelChange)="alterarBusca($event)"
+          />
+        </label>
+
+        <select
+          aria-label="Filtrar por situação"
+          [ngModel]="filtroSituacao()"
+          (ngModelChange)="alterarSituacao($event)"
+        >
+          <option value="TODAS">Todas as situações</option>
+          <option value="QUITADA">Quitadas</option>
+          <option value="NO_PRAZO">No prazo</option>
+          <option value="EM_ATRASO">Em atraso</option>
+        </select>
+      </div>
+    }
+
+    <div class="lista-vendas">
+      @for (venda of vendasDaPagina(); track venda.vendaId) {
+        <article class="venda" [attr.data-situacao]="situacao(venda)">
+          <div class="linha-venda">
+            <span class="marcador" aria-hidden="true">
+              <svg class="icone" viewBox="0 0 24 24">
+                <path d="M3 5h2l2.4 10.2a1 1 0 0 0 1 .8h7.6a1 1 0 0 0 1-.8L19 8H6" />
+                <circle cx="10" cy="19" r="1.4" />
+                <circle cx="16" cy="19" r="1.4" />
+              </svg>
+            </span>
+
+            <div class="dados-venda">
+              <a class="nome-cliente" [routerLink]="['/clientes', venda.clienteId]">
+                {{ venda.clienteNome }}
+              </a>
+              <span>
+                Venda #{{ venda.vendaId }} · {{ venda.dataCriacao | date: 'dd/MM/yyyy' }} ·
+                <span class="sem-quebra">{{ formaDePagamento(venda) }}</span>
+              </span>
+            </div>
+
+            <div class="valores-venda">
+              <div class="valor">
+                <span>Total</span>
+                <strong>
+                  {{ venda.valorTotalComJuros | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                </strong>
+              </div>
+              <div class="valor">
+                <span>Pago</span>
+                <strong>{{ venda.valorPago | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+              </div>
+              <div class="valor">
+                <span>Falta</span>
+                <strong [class.destaque-vermelho]="venda.valorEmAtraso > 0">
+                  {{
+                    venda.valorAVencer + venda.valorEmAtraso
+                      | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'
+                  }}
+                </strong>
+              </div>
+            </div>
+
+            @switch (situacao(venda)) {
+              @case ('QUITADA') {
+                <span class="selo com-ponto selo-em-dia">Quitada</span>
+              }
+              @case ('EM_ATRASO') {
+                <span class="selo com-ponto selo-aberto">Em atraso</span>
+              }
+              @default {
+                <span class="selo com-ponto selo-no-prazo">No prazo</span>
+              }
+            }
+          </div>
+
+          <div class="progresso-venda">
+            <div
+              class="barra-progresso"
+              role="progressbar"
+              [attr.aria-label]="'Quanto já foi pago da venda ' + venda.vendaId"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              [attr.aria-valuenow]="percentualPago(venda)"
+            >
+              <span [style.width.%]="percentualPago(venda)"></span>
+            </div>
+            <span class="texto-progresso">{{ percentualPago(venda) }}% pago</span>
+          </div>
+        </article>
+      } @empty {
+        <div class="estado-vazio">
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="4" y="4" width="16" height="16" rx="2" />
+            <path d="M8 10h8M8 14h5" />
+          </svg>
+          @if (resumo().quantidade === 0) {
+            <p>Nenhuma venda registrada neste período.</p>
+          } @else {
+            <p>Nenhuma venda encontrada para a busca e a situação escolhidas.</p>
+          }
+        </div>
+      }
+    </div>
+
+    @if (vendasFiltradas().length > 0) {
+      <div class="paginacao">
+        <span>Página {{ pagina() }} de {{ totalPaginas() }}</span>
+        <div class="controles">
+          <button
+            class="botao-secundario"
+            type="button"
+            [disabled]="pagina() <= 1"
+            (click)="irParaPagina(pagina() - 1)"
+          >
+            Anterior
+          </button>
+          <button
+            class="botao-primario"
+            type="button"
+            [disabled]="pagina() >= totalPaginas()"
+            (click)="irParaPagina(pagina() + 1)"
+          >
+            Próximo
+          </button>
+        </div>
+      </div>
+    }
+  </section>
+}

@@ -1,0 +1,128 @@
+<div class="cabecalho-pagina">
+  <h1 class="titulo-pagina">Relatórios</h1>
+  <p class="subtitulo-pagina">
+    Acompanhe o que foi vendido, o que já entrou no caixa e quem está devendo. Todos os valores já
+    incluem os juros cobrados.
+  </p>
+</div>
+
+<nav class="abas" aria-label="Seções dos relatórios">
+  <a
+    routerLink="visao-geral"
+    routerLinkActive="ativa"
+    ariaCurrentWhenActive="page"
+    queryParamsHandling="preserve"
+  >
+    <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 20h16M7 16v-5M12 16V8M17 16v-3" />
+    </svg>
+    Visão geral
+  </a>
+  <a
+    routerLink="clientes"
+    routerLinkActive="ativa"
+    ariaCurrentWhenActive="page"
+    queryParamsHandling="preserve"
+  >
+    <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="9" cy="8" r="3" />
+      <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 5.5a3 3 0 0 1 0 5M18 14c1.8.6 3 2.3 3 4.3" />
+    </svg>
+    Clientes
+  </a>
+  <a
+    routerLink="historico"
+    routerLinkActive="ativa"
+    ariaCurrentWhenActive="page"
+    queryParamsHandling="preserve"
+  >
+    <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="4" y="4" width="16" height="16" rx="2" />
+      <path d="M8 9h8M8 13h8M8 17h5" />
+    </svg>
+    <span>Histórico<span class="rotulo-longo"> de vendas</span></span>
+  </a>
+</nav>
+
+@if (abaUsaPeriodo()) {
+  <section class="filtro-periodo" aria-label="Período do relatório">
+    <div class="linha-periodo">
+      <div class="opcoes-periodo" role="group" aria-label="Escolha o período">
+        @for (meses of atalhos; track meses) {
+          <button
+            type="button"
+            [class.ativa]="!editandoIntervalo() && filtro().meses === meses"
+            [attr.aria-pressed]="!editandoIntervalo() && filtro().meses === meses"
+            (click)="selecionarAtalho(meses)"
+          >
+            {{ meses }} meses
+          </button>
+        }
+        <button
+          type="button"
+          [class.ativa]="editandoIntervalo() || filtro().meses === null"
+          [attr.aria-pressed]="editandoIntervalo() || filtro().meses === null"
+          (click)="abrirIntervalo()"
+        >
+          Personalizado
+        </button>
+      </div>
+
+      <p class="periodo-atual">
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="4" y="5" width="16" height="15" rx="2" />
+          <path d="M4 10h16M9 3v4M15 3v4" />
+        </svg>
+        {{ filtro().inicio | date: 'dd/MM/yyyy' : 'UTC' }} até
+        {{ filtro().fim | date: 'dd/MM/yyyy' : 'UTC' }}
+      </p>
+    </div>
+
+    @if (editandoIntervalo()) {
+      <form class="intervalo" (ngSubmit)="aplicarIntervalo()">
+        <div class="campo">
+          <label for="periodo-inicio">De</label>
+          <input
+            id="periodo-inicio"
+            name="inicio"
+            type="date"
+            [ngModel]="inicioDigitado()"
+            (ngModelChange)="inicioDigitado.set($event)"
+          />
+        </div>
+        <div class="campo">
+          <label for="periodo-fim">Até</label>
+          <input
+            id="periodo-fim"
+            name="fim"
+            type="date"
+            [ngModel]="fimDigitado()"
+            (ngModelChange)="fimDigitado.set($event)"
+          />
+        </div>
+        <div class="acoes-intervalo">
+          <button class="botao-secundario" type="button" (click)="editandoIntervalo.set(false)">
+            Cancelar
+          </button>
+          <button
+            class="botao-primario"
+            type="submit"
+            [disabled]="!inicioDigitado() || !fimDigitado()"
+          >
+            Aplicar período
+          </button>
+        </div>
+      </form>
+    }
+  </section>
+} @else {
+  <p class="aviso-situacao-atual">
+    <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </svg>
+    Esta aba mostra a situação de hoje, por isso não usa o filtro de período.
+  </p>
+}
+
+<router-outlet />

@@ -71,6 +71,37 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'relatorios',
+        loadComponent: () =>
+          import('./features/relatorios/relatorios.component').then((m) => m.RelatoriosComponent),
+        children: [
+          {
+            path: 'visao-geral',
+            loadComponent: () =>
+              import('./features/relatorios/visao-geral/visao-geral.component').then(
+                (m) => m.VisaoGeralComponent,
+              ),
+          },
+          {
+            path: 'clientes',
+            // Dívida é situação de hoje: a aba não usa o filtro de período.
+            data: { usaPeriodo: false },
+            loadComponent: () =>
+              import('./features/relatorios/clientes/relatorio-clientes.component').then(
+                (m) => m.RelatorioClientesComponent,
+              ),
+          },
+          {
+            path: 'historico',
+            loadComponent: () =>
+              import('./features/relatorios/historico/historico-vendas.component').then(
+                (m) => m.HistoricoVendasComponent,
+              ),
+          },
+          { path: '', pathMatch: 'full', redirectTo: 'visao-geral' },
+        ],
+      },
+      {
         path: 'guia',
         loadComponent: () =>
           import('./features/guia/guia.component').then((m) => m.GuiaComponent),

@@ -1,0 +1,165 @@
+.cartoes-resumo {
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+}
+
+.cartao-alerta {
+  border-color: #f2c1bc;
+  background: #fffafa;
+}
+
+.cartao-alerta strong {
+  color: var(--vermelho);
+}
+
+.grade-graficos {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
+  margin-bottom: 18px;
+}
+
+/* Lista de cobrança ------------------------------------------------------ */
+
+.topo-cobranca {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.titulo-cobranca {
+  display: grid;
+  gap: 4px;
+}
+
+.titulo-cobranca p {
+  color: var(--texto-suave);
+  font-size: 0.875rem;
+}
+
+.indicadores {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.indicador {
+  padding: 3px 11px;
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  color: var(--texto-suave);
+  background: #f7f9f9;
+  font-size: 0.75rem;
+}
+
+.indicador.atraso {
+  border-color: #f6cfcb;
+  background: var(--vermelho-suave);
+}
+
+.indicador.atraso strong {
+  color: #b42318;
+}
+
+.lista-cobranca {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item-cobranca {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid #f2c1bc;
+  border-left: 4px solid var(--vermelho);
+  border-radius: var(--raio);
+  background: #fffafa;
+  flex-wrap: wrap;
+}
+
+.cliente-cobranca {
+  display: grid;
+  min-width: 150px;
+  flex: 1;
+  gap: 2px;
+  color: var(--texto-suave);
+  font-size: 0.813rem;
+}
+
+.nome-cliente {
+  color: var(--texto);
+  font-size: 0.938rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.nome-cliente:hover {
+  color: var(--verde);
+  text-decoration: underline;
+}
+
+.dados-parcela {
+  display: grid;
+  gap: 3px;
+  color: var(--texto-suave);
+  font-size: 0.813rem;
+}
+
+.vencimento {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #b42318;
+  font-weight: 600;
+}
+
+.vencimento .icone {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.2;
+}
+
+.valor-parcela {
+  min-width: 96px;
+  font-size: 1rem;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.botao-cliente {
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 0.813rem;
+}
+
+.sem-atraso .icone {
+  stroke: var(--verde);
+}
+
+.mostrar-mais {
+  width: 100%;
+  margin-top: 12px;
+}
+
+@media (max-width: 640px) {
+  .dados-parcela {
+    width: 100%;
+    order: 3;
+  }
+
+  .valor-parcela {
+    min-width: 0;
+    margin-left: auto;
+  }
+
+  .botao-cliente {
+    width: 100%;
+    order: 4;
+  }
+}
