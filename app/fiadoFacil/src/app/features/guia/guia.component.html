@@ -1,0 +1,238 @@
+<div class="cabecalho-pagina">
+  <h1 class="titulo-pagina">Guia do sistema</h1>
+  <p class="subtitulo-pagina">
+    Passo a passo de tudo que dá para fazer no SafeBook, organizado por tarefa.
+  </p>
+</div>
+
+<div class="layout-guia">
+  <nav class="indice" aria-label="Índice do guia">
+    <h2>Neste guia</h2>
+    <ol>
+      @for (secao of secoes; track secao.id) {
+        <li><a routerLink="/guia" [fragment]="secao.id">{{ secao.titulo }}</a></li>
+      }
+    </ol>
+  </nav>
+
+  <div class="conteudo-guia">
+    <section class="painel secao-guia" id="primeiros-passos">
+      <h2 class="titulo-secao">Primeiros passos</h2>
+      <p>
+        O SafeBook serve para você parar de anotar o fiado no caderno. A ideia é simples: você
+        cadastra o cliente uma vez, registra cada compra que ele leva sem pagar na hora, e o
+        sistema controla quanto ele deve e quando cada parcela está prevista para ser paga.
+      </p>
+      <ol class="passos">
+        <li>Cadastre seus clientes — só o nome, telefone e CPF já bastam para começar.</li>
+        <li>Registre uma venda para o cliente, listando os produtos que ele levou.</li>
+        <li>Escolha se a venda foi à vista ou a prazo, e em quantas vezes.</li>
+        <li>Conforme o cliente pagar, marque cada parcela como paga.</li>
+      </ol>
+      <p class="observacao">
+        Cada conta enxerga apenas os próprios clientes e as próprias vendas. Nada do seu comércio
+        aparece para outra empresa cadastrada no sistema.
+      </p>
+    </section>
+
+    <section class="painel secao-guia" id="clientes">
+      <h2 class="titulo-secao">Cadastrar e gerenciar clientes</h2>
+      <p>
+        Em <strong>Clientes</strong>, o cartão "Novo Cliente" abre o formulário de cadastro. Nome,
+        telefone e CPF são obrigatórios; o endereço é opcional e serve só para você ter o contato
+        completo.
+      </p>
+      <h3>Por que não consigo cadastrar dois clientes iguais?</h3>
+      <p>
+        O sistema não deixa repetir CPF nem telefone dentro da sua conta. Isso evita que a mesma
+        pessoa vire dois cadastros e a dívida fique dividida em dois lugares. Se aparecer o aviso
+        de duplicado, procure o cliente na lista — ele já está cadastrado.
+      </p>
+      <h3>O que significam "Em aberto" e "Em dia"</h3>
+      <p>
+        O selo no cartão do cliente vem do saldo: <strong>Em aberto</strong> quando existe qualquer
+        parcela a pagar, <strong>Em dia</strong> quando ele não deve nada. O selo não indica
+        atraso — uma parcela que ainda vai vencer também deixa o cliente "Em aberto".
+      </p>
+      <h3>Excluir um cliente</h3>
+      <p>
+        Só é possível excluir um cliente que nunca teve venda registrada. Se ele já comprou, o
+        sistema bloqueia a exclusão para não apagar o histórico financeiro junto.
+      </p>
+    </section>
+
+    <section class="painel secao-guia" id="vendas">
+      <h2 class="titulo-secao">Registrar uma venda fiada</h2>
+      <p>
+        O botão <strong>Nova Venda</strong> aparece no cartão do cliente e também dentro do perfil
+        dele. O registro tem duas etapas.
+      </p>
+      <ol class="passos">
+        <li>
+          <strong>Produtos:</strong> clique em "Adicionar novo item" e informe o nome, a quantidade
+          e o valor unitário de cada produto. Dá para ajustar a quantidade na própria lista pelos
+          botões de mais e menos, ou remover um item pela lixeira.
+        </li>
+        <li>
+          <strong>Pagamento:</strong> escolha entre <strong>À vista</strong> ou
+          <strong>Crédito</strong>. No crédito você define em quantas vezes, o percentual de juros
+          ao mês e quanto o cliente está deixando de entrada.
+        </li>
+      </ol>
+      <p>
+        O resumo mostra o valor final antes de você confirmar, então dá para testar combinações de
+        parcelas e juros e ver o efeito na hora.
+      </p>
+      <h3>Qual a diferença entre à vista e crédito?</h3>
+      <p>
+        A venda <strong>à vista</strong> já nasce quitada: não gera parcela e não entra na dívida
+        do cliente. A venda no <strong>crédito</strong> gera as parcelas e passa a compor o total
+        em aberto dele.
+      </p>
+    </section>
+
+    <section class="painel secao-guia" id="parcelamento">
+      <h2 class="titulo-secao">Como funcionam as parcelas e os juros</h2>
+      <h3>O cálculo dos juros</h3>
+      <p>
+        O sistema usa <strong>juros simples</strong>. A taxa mensal é multiplicada pelo número de
+        parcelas e aplicada uma única vez sobre o valor financiado — não há juros sobre juros.
+      </p>
+      <div class="exemplo">
+        <strong>Exemplo</strong>
+        <p>
+          Compra de R$ 300,00, com R$ 100,00 de entrada, em 4 vezes a 5% ao mês:
+        </p>
+        <ul>
+          <li>Valor financiado: R$ 300,00 − R$ 100,00 = <strong>R$ 200,00</strong></li>
+          <li>Juros: 5% × 4 meses = 20% sobre R$ 200,00 = <strong>R$ 40,00</strong></li>
+          <li>Total a parcelar: <strong>R$ 240,00</strong> → 4 parcelas de R$ 60,00</li>
+        </ul>
+      </div>
+      <p>
+        Repare que a entrada é abatida <em>antes</em> do cálculo dos juros: quanto maior a entrada,
+        menos juros o cliente paga.
+      </p>
+      <h3>As datas de vencimento</h3>
+      <p>
+        Cada parcela recebe uma data prevista de pagamento: a data da compra mais o número de meses
+        da parcela. Uma compra feita em 15/07 parcelada em três vezes fica prevista para 15/08,
+        15/09 e 15/10.
+      </p>
+      <p class="observacao">
+        É apenas uma previsão para você se organizar. O cliente pode pagar antes sem nenhum
+        problema, e o sistema não cobra multa nem juros por atraso.
+      </p>
+      <h3>Por que a última parcela às vezes tem centavos a mais?</h3>
+      <p>
+        Quando o total não divide exatamente pelo número de parcelas, a diferença de centavos é
+        colocada na última. Assim a soma das parcelas bate exatamente com o valor devido.
+      </p>
+    </section>
+
+    <section class="painel secao-guia" id="recebimentos">
+      <h2 class="titulo-secao">Dar baixa em uma parcela</h2>
+      <ol class="passos">
+        <li>Abra o perfil do cliente pelo botão "Ver Contas".</li>
+        <li>Em "Histórico de compras", clique em <strong>Ver detalhes</strong> na compra.</li>
+        <li>Na lista de parcelas, use <strong>Marcar como paga</strong> na parcela recebida.</li>
+        <li>Confirme no aviso que aparece.</li>
+      </ol>
+      <p>
+        A confirmação existe para evitar clique errado: registrar um pagamento não pode ser
+        desfeito pelo sistema. A parcela paga passa a mostrar a data em que foi quitada, e o total
+        em aberto do cliente diminui na hora.
+      </p>
+      <h3>Parcela em atraso</h3>
+      <p>
+        Parcela cuja data prevista já passou e que continua em aberto fica destacada em vermelho,
+        com há quantos dias venceu. É só um lembrete visual para você saber quem cobrar.
+      </p>
+    </section>
+
+    <section class="painel secao-guia" id="alterar-vendas">
+      <h2 class="titulo-secao">Editar ou excluir uma compra</h2>
+      <p>
+        No histórico de compras, cada registro tem os botões de lápis (editar) e lixeira (excluir).
+        Eles só ficam disponíveis enquanto <strong>nenhum pagamento foi registrado</strong> naquela
+        compra.
+      </p>
+      <p>Uma compra fica bloqueada quando:</p>
+      <ul>
+        <li>já está quitada — inclui toda venda à vista, que nasce paga;</li>
+        <li>alguma parcela já foi marcada como paga;</li>
+        <li>houve valor de entrada, porque esse dinheiro já entrou no caixa.</li>
+      </ul>
+      <p>
+        Quando a compra está bloqueada, o motivo aparece escrito embaixo dela. A regra existe para
+        que o histórico financeiro não seja reescrito depois que o dinheiro já circulou.
+      </p>
+    </section>
+
+    <section class="painel secao-guia" id="valores">
+      <h2 class="titulo-secao">Entendendo os valores das telas</h2>
+      <dl class="glossario">
+        <div>
+          <dt>Total dos produtos</dt>
+          <dd>Soma dos itens da compra, sem juros.</dd>
+        </div>
+        <div>
+          <dt>Valor total</dt>
+          <dd>
+            Quanto o cliente vai pagar por aquela compra, já com os juros incluídos. Em uma venda à
+            vista é igual ao total dos produtos.
+          </dd>
+        </div>
+        <div>
+          <dt>Falta pagar</dt>
+          <dd>
+            O que ainda resta daquela compra: a soma das parcelas em aberto. Diminui a cada baixa.
+          </dd>
+        </div>
+        <div>
+          <dt>Total em aberto</dt>
+          <dd>
+            No perfil e no cartão do cliente, é a soma das parcelas em aberto de
+            <em>todas</em> as compras dele. É o quanto ele deve para você hoje.
+          </dd>
+        </div>
+        <div>
+          <dt>Total a receber</dt>
+          <dd>Na Home, é a soma do que todos os seus clientes devem somados.</dd>
+        </div>
+        <div>
+          <dt>Recebido esse mês</dt>
+          <dd>
+            Tudo que entrou no caixa no mês corrente: as entradas das vendas feitas no mês mais as
+            parcelas marcadas como pagas dentro dele.
+          </dd>
+        </div>
+        <div>
+          <dt>Clientes em débito</dt>
+          <dd>Quantos clientes têm pelo menos uma compra em aberto.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="painel secao-guia" id="personalizacao">
+      <h2 class="titulo-secao">Personalizar o sistema</h2>
+      <p>
+        Em <a routerLink="/personalizacao">Personalização</a> você ajusta duas coisas.
+      </p>
+      <h3>Tamanho do texto</h3>
+      <p>
+        Três opções — pequeno, padrão e grande. A escolha vale para todas as telas e fica salva na
+        sua conta, então segue igual em qualquer computador ou celular que você usar.
+      </p>
+      <h3>Dados da conta</h3>
+      <p>
+        Na mesma tela dá para alterar o nome da empresa, o CNPJ e o e-mail de acesso. Para trocar a
+        senha é preciso informar a senha atual — é o que impede que alguém que encontre sua sessão
+        aberta assuma a conta.
+      </p>
+      <p class="observacao">
+        Se você trocar o e-mail, é o novo endereço que passa a valer no próximo login.
+      </p>
+    </section>
+  </div>
+</div>

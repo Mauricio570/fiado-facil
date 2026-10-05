@@ -16,6 +16,34 @@
   </button>
 </div>
 } @else if (painel(); as resumo) {
+@if (resumo.totalClientes === 0) {
+<!-- Primeiro acesso: uma parede de zeros não diz o que fazer, então a Home
+     convida para o primeiro passo em vez de mostrar o painel vazio. -->
+<section class="painel boas-vindas">
+  <span class="icone-vazio" aria-hidden="true">
+    <svg class="icone" viewBox="0 0 24 24">
+      <path d="M5 4.5h11.5A2.5 2.5 0 0 1 19 7v12.5H7.5A2.5 2.5 0 0 1 5 17V4.5Z" />
+      <path d="M5 17a2.5 2.5 0 0 1 2.5-2.5H19" />
+    </svg>
+  </span>
+  <h2 class="titulo-secao">Bem-vindo ao SafeBook!</h2>
+  <p>
+    Ainda não há nada para mostrar aqui. Assim que você cadastrar clientes e registrar as primeiras
+    vendas, esta tela passa a exibir quanto você tem a receber, o que já entrou no mês e quem está
+    devendo.
+  </p>
+  <div class="acoes-boas-vindas">
+    <a class="botao-primario" routerLink="/clientes/novo">
+      Cadastrar primeiro cliente
+      <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 8v8M8 12h8" />
+      </svg>
+    </a>
+    <a class="botao-secundario" routerLink="/guia">Ler o guia do sistema</a>
+  </div>
+</section>
+} @else {
 <section class="cartoes-resumo" aria-label="Resumo financeiro">
   <article class="cartao-resumo">
     <span class="icone-cartao azul" aria-hidden="true">
@@ -113,4 +141,5 @@
     </table>
   </div>
 </section>
+}
 }

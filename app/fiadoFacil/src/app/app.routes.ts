@@ -71,6 +71,11 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'guia',
+        loadComponent: () =>
+          import('./features/guia/guia.component').then((m) => m.GuiaComponent),
+      },
+      {
         path: 'personalizacao',
         loadComponent: () =>
           import('./features/personalizacao/personalizacao.component').then(
