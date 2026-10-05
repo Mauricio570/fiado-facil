@@ -1,0 +1,160 @@
+.cabecalho-pagina {
+  margin-bottom: 18px;
+}
+
+.layout-guia {
+  display: grid;
+  gap: 20px;
+  align-items: start;
+  grid-template-columns: 250px minmax(0, 1fr);
+  max-width: 1100px;
+}
+
+/* Índice ----------------------------------------------------------------- */
+
+.indice {
+  position: sticky;
+  top: 18px;
+  padding: 18px 20px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+}
+
+.indice h2 {
+  margin-bottom: 10px;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--texto-suave);
+}
+
+.indice ol {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.875rem;
+}
+
+.indice a {
+  display: block;
+  padding: 5px 0;
+  color: var(--texto);
+  text-decoration: none;
+}
+
+.indice a:hover {
+  color: var(--verde);
+  text-decoration: underline;
+}
+
+/* Conteúdo --------------------------------------------------------------- */
+
+.conteudo-guia {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.secao-guia {
+  display: grid;
+  gap: 12px;
+  padding: 24px 26px;
+  /* Compensa a barra superior fixa ao rolar até a âncora. */
+  scroll-margin-top: 18px;
+}
+
+.secao-guia p,
+.secao-guia li {
+  color: var(--texto-suave);
+  font-size: 0.938rem;
+  line-height: 1.6;
+}
+
+.secao-guia strong {
+  color: var(--texto);
+}
+
+.secao-guia h3 {
+  margin-top: 6px;
+  color: var(--texto);
+  font-size: 1rem;
+}
+
+.secao-guia ul,
+.passos {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 22px;
+}
+
+.observacao {
+  padding: 10px 14px;
+  border-left: 3px solid var(--verde);
+  border-radius: 0 6px 6px 0;
+  background: var(--verde-suave);
+}
+
+.exemplo {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: #fafbfb;
+}
+
+.exemplo strong {
+  font-size: 0.875rem;
+}
+
+/* Glossário -------------------------------------------------------------- */
+
+.glossario {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.glossario > div {
+  display: grid;
+  gap: 3px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--borda);
+}
+
+.glossario > div:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.glossario dt {
+  color: var(--texto);
+  font-size: 0.938rem;
+  font-weight: 700;
+}
+
+.glossario dd {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 0.938rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 900px) {
+  .layout-guia {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* No celular o índice rola junto com a página, no topo. */
+  .indice {
+    position: static;
+  }
+
+  .secao-guia {
+    padding: 18px 16px;
+  }
+}

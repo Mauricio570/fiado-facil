@@ -26,6 +26,11 @@ export class ClientesListaComponent {
   protected readonly carregando = signal(true);
   protected readonly mensagemErro = signal('');
 
+  /** Verdadeiro só quando a conta ainda não tem nenhum cliente cadastrado. */
+  protected readonly semNenhumCliente = computed(
+    () => !this.carregando() && this.clientes().length === 0,
+  );
+
   protected readonly busca = signal('');
   protected readonly filtroStatus = signal<FiltroStatus>('TODOS');
   protected readonly ordenacao = signal<Ordenacao>('NOME_ASC');

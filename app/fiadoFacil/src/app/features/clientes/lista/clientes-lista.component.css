@@ -189,3 +189,45 @@
     flex: 1;
   }
 }
+
+/* Estado de primeiro acesso: sem nenhum cliente, a grade mostra um convite
+   em vez de uma lista vazia. */
+.primeiro-cliente {
+  display: grid;
+  gap: 10px;
+  padding: 32px 24px;
+  grid-column: 1 / -1;
+  justify-items: center;
+  text-align: center;
+}
+
+.icone-vazio {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  color: var(--verde);
+  background: var(--verde-suave);
+  place-items: center;
+}
+
+.icone-vazio .icone {
+  width: 28px;
+  height: 28px;
+}
+
+.primeiro-cliente h3 {
+  font-size: 1.125rem;
+}
+
+.primeiro-cliente p {
+  max-width: 46ch;
+  color: var(--texto-suave);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.primeiro-cliente a {
+  margin-top: 6px;
+}

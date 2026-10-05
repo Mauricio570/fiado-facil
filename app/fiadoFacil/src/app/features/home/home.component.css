@@ -91,3 +91,44 @@
   padding: 0 12px;
   font-size: 0.813rem;
 }
+
+/* Boas-vindas do primeiro acesso, quando ainda não há cliente cadastrado. */
+.boas-vindas {
+  display: grid;
+  gap: 10px;
+  max-width: 720px;
+  padding: 34px 28px;
+  justify-items: center;
+  text-align: center;
+}
+
+.icone-vazio {
+  display: grid;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  color: var(--verde);
+  background: var(--verde-suave);
+  place-items: center;
+}
+
+.icone-vazio .icone {
+  width: 30px;
+  height: 30px;
+}
+
+.boas-vindas p {
+  max-width: 54ch;
+  color: var(--texto-suave);
+  font-size: 0.938rem;
+  line-height: 1.55;
+}
+
+.acoes-boas-vindas {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}

@@ -6,6 +6,7 @@
   </p>
 </div>
 
+@if (!semNenhumCliente()) {
 <div class="filtros">
   <label class="campo-busca">
     <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
@@ -38,6 +39,7 @@
     <option value="ULTIMA_COMPRA">Última compra</option>
   </select>
 </div>
+}
 
 @if (carregando()) {
   <p class="mensagem-estado">Carregando clientes...</p>
@@ -46,6 +48,29 @@
     <p class="mensagem-erro">{{ mensagemErro() }}</p>
     <button class="botao-secundario" type="button" (click)="carregar()">Tentar novamente</button>
   </div>
+} @else if (semNenhumCliente()) {
+  <section class="painel">
+    <div class="primeiro-cliente">
+      <span class="icone-vazio" aria-hidden="true">
+        <svg class="icone" viewBox="0 0 24 24">
+          <circle cx="9" cy="8" r="3.2" />
+          <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M18 8v6M15 11h6" />
+        </svg>
+      </span>
+      <h3>Comece cadastrando seu primeiro cliente</h3>
+      <p>
+        Depois de cadastrar, você pode registrar vendas fiadas, acompanhar o que cada um deve e
+        marcar as parcelas conforme for recebendo.
+      </p>
+      <a class="botao-primario" routerLink="/clientes/novo">
+        Cadastrar primeiro cliente
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 8v8M8 12h8" />
+        </svg>
+      </a>
+    </div>
+  </section>
 } @else {
   <section class="painel">
     <div class="grade-clientes">
