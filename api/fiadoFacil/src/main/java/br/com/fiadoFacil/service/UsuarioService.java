@@ -93,8 +93,6 @@ public class UsuarioService {
         return request.getNovaSenha() != null && !request.getNovaSenha().isBlank();
     }
 
-    // A senha atual é conferida antes de qualquer troca: sem isso, quem
-    // encontrasse uma sessão aberta poderia assumir a conta trocando a senha.
     private void aplicarNovaSenha(Usuario usuario, UsuarioAtualizacaoRequest request) {
         if (request.getSenhaAtual() == null || request.getSenhaAtual().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,

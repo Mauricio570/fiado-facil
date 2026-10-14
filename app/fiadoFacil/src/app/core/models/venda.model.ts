@@ -35,7 +35,6 @@ export interface Parcela {
   id: number;
   numero: number;
   valor: number;
-  /** Data prevista de pagamento (LocalDate 'aaaa-mm-dd'). É só previsão. */
   dataVencimento: string;
   dataPagamento: string | null;
   status: StatusParcela;
@@ -65,11 +64,8 @@ export interface VendaResumo {
   id: number;
   status: StatusVenda;
   dataCriacao: string;
-  /** Soma dos produtos, sem juros. */
   valorTotal: number;
-  /** Total que o cliente paga pela venda, já com juros. */
   valorTotalComJuros: number;
   totalEmAberto: number;
-  /** Falso assim que qualquer pagamento é registrado (entrada, parcela paga ou venda quitada). */
   podeAlterar: boolean;
 }

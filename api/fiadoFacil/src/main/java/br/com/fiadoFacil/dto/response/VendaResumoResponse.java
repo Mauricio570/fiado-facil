@@ -20,9 +20,5 @@ public class VendaResumoResponse {
     private BigDecimal valorTotalComJuros;
     private BigDecimal totalEmAberto;
 
-    /**
-     * Indica se a venda ainda pode ser editada ou excluída — falso assim que
-     * qualquer pagamento é registrado (entrada, parcela paga ou venda quitada).
-     */
     private boolean podeAlterar;
 }

@@ -130,8 +130,6 @@ public class VendaService {
         clienteRepository.findByIdAndUsuarioId(clienteId, usuarioLogado.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
 
-        // Saldo devedor, parcelas pagas e entrada de cada venda, buscados de
-        // uma vez só para não repetir a consulta a cada linha do histórico.
         Map<Long, VendaResumoFinanceiroResponse> resumoPorVenda = pagamentoRepository
                 .buscarResumoPorVendaDoCliente(clienteId, StatusParcela.EM_ABERTO, StatusParcela.PAGO)
                 .stream()
@@ -171,11 +169,6 @@ public class VendaService {
         return vendaMapper.toResponse(venda, itens, pagamento, parcelas);
     }
 
-    // Uma venda só pode ser alterada ou excluída enquanto o cliente
-    // não pagou nada por ela. Bloqueia em três situações: venda já
-    // quitada (cobre a venda à vista, que nasce paga), qualquer
-    // parcela já paga, e entrada recebida — o dinheiro da entrada já
-    // está no caixa e editar a venda apagaria esse registro.
     private void validarEdicaoOuExclusaoPermitida(Venda venda) {
         if (venda.getStatus() == StatusVenda.PAGO) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
@@ -205,9 +198,6 @@ public class VendaService {
         return valorEntrada != null && valorEntrada.compareTo(BigDecimal.ZERO) > 0;
     }
 
-    // Mesma regra de validarEdicaoOuExclusaoPermitida, porém em forma
-    // de predicado, para a listagem informar à tela quais botões de
-    // editar/excluir devem ficar habilitados.
     private boolean podeAlterar(Venda venda, VendaResumoFinanceiroResponse resumo) {
         if (venda.getStatus() == StatusVenda.PAGO || resumo == null) {
             return false;
@@ -216,13 +206,6 @@ public class VendaService {
         return resumo.getParcelasPagas() == 0 && !temEntradaPaga(resumo.getValorEntrada());
     }
 
-    // Apaga item_venda, parcela e pagamento EXPLICITAMENTE pelo
-    // Hibernate — não dá pra confiar só no ON DELETE CASCADE do
-    // banco aqui, porque validarEdicaoOuExclusaoPermitida() já
-    // carregou pagamento/parcelas na memória da sessão do Hibernate.
-    // Se a gente deixasse o banco apagar por trás, o Hibernate ainda
-    // acha que esses objetos "vivem", e reclama de inconsistência na
-    // hora do commit. Usado tanto em editar() quanto em excluir().
     private void apagarItensPagamentoEParcelas(Venda venda) {
         itemVendaRepository.deleteAll(itemVendaRepository.findAllByVendaId(venda.getId()));
 
@@ -248,10 +231,6 @@ public class VendaService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    // Calcula (sem persistir ainda) o Pagamento e as Parcelas com
-    // base na forma de pagamento escolhida — usado tanto no cadastro
-    // quanto na edição, pra não duplicar a regra de juros em dois
-    // lugares.
     private PagamentoCalculado processarPagamento(Venda venda, PagamentoRequest pagamentoRequest, BigDecimal valorItens) {
         if (pagamentoRequest.getFormaPagamento() == FormaPagamento.A_VISTA) {
             Pagamento pagamento = Pagamento.builder()
@@ -312,19 +291,10 @@ public class VendaService {
         return parcelasSalvas;
     }
 
-    // Data base do parcelamento. A venda já foi salva quando chegamos aqui,
-    // então o @CreationTimestamp já preencheu dataCriacao; o fallback cobre
-    // só o caso de a venda ainda não ter sido persistida.
     private LocalDate dataDaVenda(Venda venda) {
         return venda.getDataCriacao() != null ? venda.getDataCriacao().toLocalDate() : LocalDate.now();
     }
 
-    // Divide valorFinal em N parcelas iguais; a última absorve a
-    // diferença de arredondamento, pra soma das parcelas bater
-    // exatamente com valorFinal. Cada parcela vence N meses após a venda —
-    // compra em 15/07 parcelada em 3x vence em 15/08, 15/09 e 15/10.
-    // O plusMonths já ajusta o dia quando o mês de destino é mais curto
-    // (31/01 + 1 mês = 28/02), então não existe data inválida.
     private List<Parcela> gerarParcelas(BigDecimal valorFinal, int quantidade, LocalDate dataDaVenda) {
         List<Parcela> parcelas = new ArrayList<>();
         BigDecimal valorParcela = valorFinal.divide(BigDecimal.valueOf(quantidade), 2, RoundingMode.DOWN);

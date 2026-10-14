@@ -31,10 +31,6 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    /**
-     * Os dados da conta são sempre resolvidos pelo token, nunca por um id vindo
-     * da URL — assim um usuário não consegue ler nem alterar a conta de outro.
-     */
     @GetMapping("/me")
     public ResponseEntity<UsuarioResponse> buscarLogado() {
         return ResponseEntity.ok(usuarioService.buscarLogado());

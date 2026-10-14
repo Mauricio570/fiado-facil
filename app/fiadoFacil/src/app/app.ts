@@ -13,8 +13,6 @@ export class App {
   private readonly preferenciaService = inject(PreferenciaService);
 
   constructor() {
-    // Aplica o último tamanho conhecido antes da primeira pintura, para o
-    // texto não aparecer no tamanho padrão e mudar depois que a API responde.
     this.preferenciaService.aplicarTamanhoSalvoLocalmente();
   }
 }

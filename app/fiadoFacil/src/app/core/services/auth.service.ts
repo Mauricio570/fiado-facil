@@ -49,7 +49,6 @@ export class AuthService {
     return true;
   }
 
-  /** Lê os dados do usuário direto das claims do JWT — a API não expõe um endpoint /me. */
   getUsuarioLogado(): UsuarioLogado | null {
     const token = this.getToken();
 

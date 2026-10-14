@@ -59,8 +59,6 @@ export class NovaVendaComponent implements OnInit {
   }
 
   private carregarVendaParaEdicao(vendaId: number): void {
-    // Se o usuário voltou da tela de finalizar, o carrinho já está montado —
-    // recarregar apagaria as alterações que ele fez até aqui.
     if (this.store.vendaEmEdicao() === vendaId) {
       return;
     }

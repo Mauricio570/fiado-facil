@@ -1,17 +1,10 @@
-/**
- * Formatação dos campos que o usuário digita apenas com números.
- * Cada função ignora o que não for dígito, corta no limite do formato e
- * acrescenta a pontuação conforme o texto cresce — assim o campo já vai
- * ficando formatado enquanto o usuário digita.
- */
 export type TipoMascara = 'telefone' | 'cpf' | 'cnpj' | 'cep';
 
-/** Quantidade máxima de caracteres do campo já formatado. */
 export const TAMANHO_MAXIMO: Record<TipoMascara, number> = {
-  telefone: 15, // (51) 99932-3245
-  cpf: 14, // 123.456.789-01
-  cnpj: 18, // 12.345.678/0001-90
-  cep: 9, // 90000-000
+  telefone: 15,
+  cpf: 14,
+  cnpj: 18,
+  cep: 9,
 };
 
 export function aplicarMascara(valor: string, tipo: TipoMascara): string {
@@ -31,7 +24,6 @@ function somenteDigitos(valor: string, maximo: number): string {
   return valor.replace(/\D/g, '').slice(0, maximo);
 }
 
-/** Aceita fixo com 10 dígitos — (51) 3232-1010 — e celular com 11. */
 function formatarTelefone(valor: string): string {
   const digitos = somenteDigitos(valor, 11);
 

@@ -1,0 +1,92 @@
+@if (vazio()) {
+  <div class="estado-vazio grafico-vazio" [style.min-height.px]="altura()">
+    <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 20h16M7 16v-5M12 16V8M17 16v-3" />
+    </svg>
+    <p>{{ mensagemVazio() }}</p>
+  </div>
+} @else {
+  <div class="topo-grafico">
+    @if (itensLegenda().length) {
+      <ul class="legenda" aria-label="Legenda">
+        @for (item of itensLegenda(); track item.nome) {
+          <li>
+            <span
+              class="amostra"
+              [class.linha]="tipo() === 'area'"
+              [style.background]="item.cor"
+              aria-hidden="true"
+            ></span>
+            {{ item.nome }}
+            @if (item.valor) {
+              <strong>{{ item.valor }}</strong>
+            }
+          </li>
+        }
+      </ul>
+    }
+
+    <button
+      class="alternar-tabela"
+      type="button"
+      [attr.aria-pressed]="modoTabela()"
+      (click)="modoTabela.set(!modoTabela())"
+    >
+      @if (modoTabela()) {
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 20h16M7 16v-5M12 16V8M17 16v-3" />
+        </svg>
+        Ver gráfico
+      } @else {
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="4" y="5" width="16" height="14" rx="1.5" />
+          <path d="M4 10h16M4 14.5h16M10 10v9" />
+        </svg>
+        Ver tabela
+      }
+    </button>
+  </div>
+
+  @if (modoTabela()) {
+    <div class="envolucro-tabela">
+      <table class="tabela">
+        <caption class="somente-leitor">{{ descricao() }}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{{ rotuloEixo() }}</th>
+            @for (serie of series(); track $index) {
+              <th scope="col" class="numero">{{ serie.nome }}</th>
+            }
+            @if (empilhado()) {
+              <th scope="col" class="numero">Total</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (linha of linhasTabela(); track $index) {
+            <tr>
+              <th scope="row">{{ linha.rotulo }}</th>
+              @for (valor of linha.valores; track $index) {
+                <td class="numero">{{ valor }}</td>
+              }
+              @if (empilhado()) {
+                <td class="numero total">{{ linha.total }}</td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="area-grafico" [style.height.px]="altura()">
+      <canvas #canvas role="img" [attr.aria-label]="descricao()"></canvas>
+
+      @if (destaque(); as numero) {
+        <div class="destaque-central" aria-hidden="true">
+          <strong>{{ numero.valor }}</strong>
+          <span>{{ numero.rotulo }}</span>
+        </div>
+      }
+    </div>
+  }
+}

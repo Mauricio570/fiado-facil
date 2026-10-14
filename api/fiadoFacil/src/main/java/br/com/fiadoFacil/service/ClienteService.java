@@ -97,9 +97,6 @@ public class ClienteService {
         }
     }
 
-    // Um cliente recém-cadastrado ainda não tem vendas, então cadastrar()
-    // usa o mapper direto (total zerado). Nos demais casos o resumo
-    // financeiro precisa vir do banco para a resposta não mentir o saldo.
     private ClienteResponse montarRespostaComResumo(Cliente cliente) {
         Usuario usuarioLogado = usuarioAutenticadoService.get();
 

@@ -1,0 +1,190 @@
+@if (carregando() && !relatorio()) {
+  <p class="mensagem-estado">Carregando relatório...</p>
+} @else if (mensagemErro()) {
+  <div class="mensagem-estado">
+    <p class="mensagem-erro">{{ mensagemErro() }}</p>
+    <button class="botao-secundario" type="button" (click)="tentarNovamente()">
+      Tentar novamente
+    </button>
+  </div>
+} @else if (relatorio(); as dados) {
+  @if (dados.totalClientes === 0) {
+    <div class="estado-vazio">
+      <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="9" cy="8" r="3" />
+        <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 5.5a3 3 0 0 1 0 5M18 14c1.8.6 3 2.3 3 4.3" />
+      </svg>
+      <p>Nenhum cliente cadastrado ainda. Assim que houver clientes, esta aba mostra quem está devendo.</p>
+      <a class="botao-primario" routerLink="/clientes/novo">Cadastrar cliente</a>
+    </div>
+  } @else {
+    <section class="cartoes-resumo" aria-label="Resumo dos clientes">
+      <article class="cartao-resumo">
+        <span class="icone-cartao laranja" aria-hidden="true">
+          <svg class="icone" viewBox="0 0 24 24">
+            <circle cx="9" cy="8" r="3" />
+            <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 5.5a3 3 0 0 1 0 5M18 14c1.8.6 3 2.3 3 4.3" />
+          </svg>
+        </span>
+        <div>
+          <span class="rotulo-cartao">Clientes devendo</span>
+          <strong>{{ dados.clientesDevendo }}</strong>
+          <small>de {{ dados.totalClientes }} cadastrados</small>
+        </div>
+      </article>
+
+      <article class="cartao-resumo" [class.cartao-alerta]="dados.clientesEmAtraso > 0">
+        <span class="icone-cartao vermelho" aria-hidden="true">
+          <svg class="icone" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7.5v5M12 15.8v.2" />
+          </svg>
+        </span>
+        <div>
+          <span class="rotulo-cartao">Com parcela em atraso</span>
+          <strong>{{ dados.clientesEmAtraso }}</strong>
+          <small>Precisam ser cobrados</small>
+        </div>
+      </article>
+
+      <article class="cartao-resumo">
+        <span class="icone-cartao azul" aria-hidden="true">
+          <svg class="icone" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 2" />
+          </svg>
+        </span>
+        <div>
+          <span class="rotulo-cartao">No prazo</span>
+          <strong>{{ dados.clientesNoPrazo }}</strong>
+          <small>Devem, mas nada venceu ainda</small>
+        </div>
+      </article>
+
+      <article class="cartao-resumo">
+        <span class="icone-cartao verde" aria-hidden="true">
+          <svg class="icone" viewBox="0 0 24 24">
+            <path d="M5 12.5 10 17l9-10" />
+          </svg>
+        </span>
+        <div>
+          <span class="rotulo-cartao">Sem débito</span>
+          <strong>{{ dados.clientesSemDebito }}</strong>
+          <small>Não devem nada</small>
+        </div>
+      </article>
+    </section>
+
+    <div class="grade-graficos">
+      <section class="painel cartao-grafico">
+        <header class="cabecalho-grafico">
+          <h2 class="titulo-secao">Situação dos clientes</h2>
+          <p>Como estão os clientes cadastrados hoje.</p>
+        </header>
+        <app-grafico
+          tipo="rosca"
+          [rotulos]="situacao().rotulos"
+          [series]="situacao().series"
+          [destaque]="situacao().destaque"
+          formato="inteiro"
+          [unidade]="['cliente', 'clientes']"
+          rotuloEixo="Situação"
+          [altura]="220"
+          descricao="Gráfico de rosca com a quantidade de clientes sem débito, no prazo e em atraso."
+        />
+      </section>
+
+      <section class="painel cartao-grafico">
+        <header class="cabecalho-grafico">
+          <h2 class="titulo-secao">Maiores devedores</h2>
+          <p>Os cinco clientes com mais dinheiro em aberto, separando o que já está atrasado.</p>
+        </header>
+        <app-grafico
+          tipo="barras"
+          [empilhado]="true"
+          [rotulos]="devedores().rotulos"
+          [series]="devedores().series"
+          rotuloEixo="Cliente"
+          [altura]="220"
+          descricao="Gráfico de barras com o saldo em aberto dos cinco clientes que mais devem, dividido em a vencer e em atraso."
+          mensagemVazio="Nenhum cliente está devendo."
+        />
+      </section>
+    </div>
+
+    <section class="painel cobranca">
+      <div class="topo-cobranca">
+        <div class="titulo-cobranca">
+          <h2 class="titulo-secao">Lista de cobrança</h2>
+          <p>Parcelas vencidas e não pagas, da mais antiga para a mais recente.</p>
+        </div>
+
+        @if (cobranca().quantidade > 0) {
+          <div class="indicadores">
+            <span class="indicador atraso">
+              <strong>{{ cobranca().quantidade }}</strong>
+              {{ cobranca().quantidade === 1 ? 'parcela' : 'parcelas' }}
+            </span>
+            <span class="indicador atraso">
+              <strong>{{ cobranca().total | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+              em atraso
+            </span>
+          </div>
+        }
+      </div>
+
+      <ul class="lista-cobranca">
+        @for (parcela of cobranca().visiveis; track parcela.parcelaId) {
+          <li class="item-cobranca">
+            <span class="iniciais">{{ iniciais(parcela.clienteNome) }}</span>
+
+            <div class="cliente-cobranca">
+              <a class="nome-cliente" [routerLink]="['/clientes', parcela.clienteId]">
+                {{ parcela.clienteNome }}
+              </a>
+              <span>{{ parcela.clienteTelefone || 'Telefone não informado' }}</span>
+            </div>
+
+            <div class="dados-parcela">
+              <span>
+                Parcela {{ parcela.numero }} de {{ parcela.quantidadeParcelas }} · Venda #{{
+                  parcela.vendaId
+                }}
+              </span>
+              <span class="vencimento">
+                <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 7.5v5M12 15.8v.2" />
+                </svg>
+                {{ textoDoAtraso(parcela.diasEmAtraso) }} ·
+                {{ parcela.dataVencimento | date: 'dd/MM/yyyy' : 'UTC' }}
+              </span>
+            </div>
+
+            <strong class="valor-parcela">
+              {{ parcela.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+            </strong>
+
+            <a class="botao-secundario botao-cliente" [routerLink]="['/clientes', parcela.clienteId]">
+              Ver cliente
+            </a>
+          </li>
+        } @empty {
+          <li class="estado-vazio sem-atraso">
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="m8 12.5 3 3 5-6" />
+            </svg>
+            <p>Nenhuma parcela em atraso. Ninguém está devendo fora do prazo.</p>
+          </li>
+        }
+      </ul>
+
+      @if (cobranca().restantes > 0) {
+        <button class="botao-secundario mostrar-mais" type="button" (click)="mostrarMais()">
+          Mostrar mais ({{ cobranca().restantes }})
+        </button>
+      }
+    </section>
+  }
+}

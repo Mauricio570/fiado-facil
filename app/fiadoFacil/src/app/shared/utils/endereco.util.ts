@@ -1,11 +1,3 @@
-/**
- * A API guarda o endereço em um único campo `endereco` (String, máx. 255),
- * mas a tela de cadastro trabalha com os campos separados do layout.
- * Estas funções fazem a ponte entre os dois formatos.
- *
- * Formato gerado (partes vazias são omitidas):
- *   `logradouro, numero, complemento - bairro - cidade/UF - CEP 00000-000`
- */
 export interface EnderecoDetalhado {
   cep: string;
   logradouro: string;
@@ -57,7 +49,6 @@ export function separarEndereco(endereco: string | null): EnderecoDetalhado {
   const [semCep, cep = ''] = endereco.split(SEPARADOR_CEP);
   const blocos = semCep.split(' - ').map((bloco) => bloco.trim());
 
-  // O último bloco só é cidade/UF quando existe a barra separando os dois.
   const blocoLocalidade = blocos.length > 1 && blocos[blocos.length - 1].includes('/')
     ? blocos.pop()!
     : '';

@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/fiado_facil
-    username: postgres
-    password: 369147
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/fiado_facil}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:369147}
 
   jpa:
     hibernate:
       ddl-auto: validate
-    show_sql: true
+    show_sql: ${SHOW_SQL:true}
     properties:
       hibernate:
         format_sql: true
@@ -17,15 +17,19 @@ spring:
       matching-strategy: ANT_PATH_MATCHER
 
 server:
+  port: ${PORT:8080}
   error:
     include-message: always
 
 jwt:
   public:
-    key: classpath:authz.pub
+    key: ${JWT_PUBLIC_KEY:classpath:authz.pub}
   private:
-    key: classpath:authz.pem
+    key: ${JWT_PRIVATE_KEY:classpath:authz.pem}
+
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200}
 
 logging:
   level:
-    org.springframework.security: DEBUG
+    org.springframework.security: ${LOG_LEVEL_SECURITY:DEBUG}

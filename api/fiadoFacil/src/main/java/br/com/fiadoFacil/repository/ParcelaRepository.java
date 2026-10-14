@@ -41,4 +41,26 @@ public interface ParcelaRepository extends JpaRepository<Parcela, Long> {
             "ORDER BY SUM(p.valor) DESC")
     List<ClienteEmDebitoResponse> buscarClientesComContasEmAberto(@Param("usuarioId") Long usuarioId,
                                                                   @Param("status") StatusParcela status);
+
+    @Query("SELECT p FROM Parcela p " +
+            "WHERE p.status = :status AND p.dataPagamento BETWEEN :inicio AND :fim " +
+            "AND p.pagamento.venda.cliente.usuario.id = :usuarioId")
+    List<Parcela> buscarPorStatusEPeriodoDePagamento(@Param("usuarioId") Long usuarioId,
+                                                     @Param("status") StatusParcela status,
+                                                     @Param("inicio") LocalDate inicio,
+                                                     @Param("fim") LocalDate fim);
+
+    @Query("SELECT p FROM Parcela p " +
+            "JOIN FETCH p.pagamento pg " +
+            "JOIN FETCH pg.venda v " +
+            "JOIN FETCH v.cliente c " +
+            "WHERE p.status = :status AND c.usuario.id = :usuarioId")
+    List<Parcela> buscarPorStatusComCliente(@Param("usuarioId") Long usuarioId,
+                                            @Param("status") StatusParcela status);
+
+    @Query("SELECT COALESCE(SUM(p.valor), 0) FROM Parcela p " +
+            "WHERE p.dataVencimento < :data " +
+            "AND p.pagamento.venda.cliente.usuario.id = :usuarioId")
+    BigDecimal somarComVencimentoAntesDe(@Param("usuarioId") Long usuarioId,
+                                         @Param("data") LocalDate data);
 }

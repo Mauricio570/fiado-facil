@@ -6,7 +6,6 @@ import { filter } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { PreferenciaService } from '../../core/services/preferencia.service';
 
-/** Acima disso a barra lateral é fixa; abaixo, vira gaveta sobreposta. */
 const LARGURA_DESKTOP = 760;
 
 @Component({
@@ -21,20 +20,12 @@ export class LayoutComponent implements OnInit {
   private readonly documento = inject(DOCUMENT);
   private readonly preferenciaService = inject(PreferenciaService);
 
-  /**
-   * No desktop indica se o menu está expandido ou recolhido em ícones; no
-   * celular indica se a gaveta está aberta. Começa fechado no celular para o
-   * conteúdo ocupar a largura inteira.
-   */
   protected readonly menuExpandido = signal(!this.ehTelaEstreita());
   protected readonly usuario = this.authService.getUsuarioLogado();
 
   ngOnInit(): void {
-    // Sincroniza a escala de texto com o que está salvo na conta. Se falhar,
-    // segue valendo o que já foi aplicado a partir do navegador.
     this.preferenciaService.carregar().subscribe({ error: () => undefined });
 
-    // No celular a gaveta cobre a tela, então precisa fechar ao navegar.
     this.router.events
       .pipe(filter((evento) => evento instanceof NavigationEnd))
       .subscribe(() => this.fecharSeEstreita());
