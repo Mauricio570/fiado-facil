@@ -1,16 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-/**
- * Guia de uso do sistema, organizado por tarefa ("como faço X") e não por tela.
- * O lojista chega com uma intenção, não com o nome de uma tela.
- *
- * O conteúdo vive no template, versionado junto do código — as telas que ele
- * descreve mudam no mesmo commit que o texto. Não há edição pelo sistema.
- *
- * Os `id` das seções são as âncoras usadas pelo link "Ver no guia" dos botões
- * de ajuda (`<app-ajuda secaoGuia="...">`).
- */
 @Component({
   selector: 'app-guia',
   imports: [RouterLink],

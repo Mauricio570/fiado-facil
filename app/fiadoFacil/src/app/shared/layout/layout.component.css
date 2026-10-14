@@ -15,7 +15,6 @@
   grid-template-columns: 210px minmax(0, 1fr);
 }
 
-/* O fundo escuro só existe quando a gaveta está aberta no celular. */
 .fundo-gaveta {
   display: none;
   position: fixed;
@@ -148,8 +147,6 @@
 }
 
 @media (max-width: 760px) {
-  /* A barra lateral sai do fluxo e vira gaveta: em 360px de tela, os 68px do
-     trilho de ícones custavam quase 20% da largura útil do conteúdo. */
   .casca,
   .casca.menu-expandido {
     grid-template-columns: minmax(0, 1fr);
@@ -170,7 +167,6 @@
     box-shadow: 0 0 40px rgb(16 24 40 / 35%);
   }
 
-  /* Na gaveta o menu é sempre por extenso — não existe modo só de ícones. */
   .marca-nome,
   .rotulo {
     display: inline;

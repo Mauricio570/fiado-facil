@@ -44,8 +44,6 @@
   color: #b42318;
 }
 
-/* Filtros ---------------------------------------------------------------- */
-
 .filtros {
   display: flex;
   align-items: center;
@@ -101,8 +99,6 @@
 .filtros select:focus {
   border-color: var(--verde);
 }
-
-/* Lista de vendas -------------------------------------------------------- */
 
 .lista-vendas {
   display: grid;
@@ -201,7 +197,6 @@
   color: var(--vermelho);
 }
 
-/* "No prazo": deve, mas nada venceu — o azul do "a vencer" dos gráficos. */
 .selo-no-prazo {
   color: #2c4f96;
   background: #e5edfb;

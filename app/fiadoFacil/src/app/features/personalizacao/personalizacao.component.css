@@ -24,8 +24,6 @@
   font-size: 1.063rem;
 }
 
-/* Escolha do tamanho do texto ------------------------------------------- */
-
 .opcoes-tamanho {
   display: grid;
   gap: 14px;
@@ -63,8 +61,6 @@
   opacity: 70%;
 }
 
-/* A amostra usa px de propósito: ela precisa mostrar a diferença entre os
-   tamanhos mesmo antes de o usuário escolher, então não acompanha a escala. */
 .amostra {
   display: grid;
   width: 46px;
@@ -117,8 +113,6 @@
   height: 13px;
   stroke-width: 3;
 }
-
-/* Meus dados ------------------------------------------------------------- */
 
 .coluna-inteira {
   grid-column: 1 / -1;

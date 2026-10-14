@@ -26,7 +26,6 @@ export class ClientesListaComponent {
   protected readonly carregando = signal(true);
   protected readonly mensagemErro = signal('');
 
-  /** Verdadeiro só quando a conta ainda não tem nenhum cliente cadastrado. */
   protected readonly semNenhumCliente = computed(
     () => !this.carregando() && this.clientes().length === 0,
   );
@@ -36,7 +35,6 @@ export class ClientesListaComponent {
   protected readonly ordenacao = signal<Ordenacao>('NOME_ASC');
   protected readonly pagina = signal(1);
 
-  /** A busca do topo da tela chega por query param e recarrega a lista. */
   private readonly buscaDaRota = toSignal(this.rotaAtiva.queryParamMap, { initialValue: null });
 
   protected readonly clientesFiltrados = computed(() => {
@@ -74,7 +72,6 @@ export class ClientesListaComponent {
       this.busca.set(this.buscaDaRota()?.get('busca') ?? '');
     });
 
-    // Ao mudar filtros a paginação volta para a primeira página.
     effect(() => {
       this.clientesFiltrados();
       this.pagina.set(1);

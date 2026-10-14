@@ -37,11 +37,6 @@ export class FinalizarVendaComponent implements OnInit {
     initialValue: this.formulario.getRawValue(),
   });
 
-  /**
-   * Repete a mesma regra de juros simples do back-end
-   * (VendaService.processarPagamento) para que o resumo mostrado aqui
-   * bata exatamente com o que será gravado.
-   */
   protected readonly ehCredito = computed(() => this.valores().formaPagamento !== 'A_VISTA');
 
   protected readonly resumo = computed(() => {
@@ -84,13 +79,11 @@ export class FinalizarVendaComponent implements OnInit {
   ngOnInit(): void {
     this.clienteId = Number(this.rotaAtiva.snapshot.paramMap.get('id'));
 
-    // Sem itens no carrinho não há o que finalizar — volta para a montagem da venda.
     if (this.store.itens().length === 0) {
       void this.router.navigate(['/clientes', this.clienteId, 'vendas', 'nova']);
       return;
     }
 
-    // Ao editar, o formulário já abre com a forma de pagamento atual da venda.
     const pagamento = this.store.pagamentoOriginal();
 
     if (pagamento) {

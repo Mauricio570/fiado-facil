@@ -1,20 +1,16 @@
 import { FormaPagamento, StatusVenda } from './venda.model';
 
-/** Intervalo de datas do relatório, no formato 'aaaa-mm-dd'. */
 export interface PeriodoRelatorio {
   inicio: string;
   fim: string;
 }
 
 export interface RelatorioMes {
-  /** Mês no formato 'aaaa-mm'. */
   mes: string;
-  /** Total vendido no mês, com juros (= pago + a vencer + em atraso). */
   valorVendido: number;
   valorPago: number;
   valorAVencer: number;
   valorEmAtraso: number;
-  /** Dinheiro que entrou no mês, inclusive parcelas de vendas antigas. */
   valorRecebido: number;
 }
 
@@ -35,7 +31,6 @@ export interface RelatorioVisaoGeral {
   totalAReceber: number;
   totalEmAtraso: number;
   quantidadeParcelasEmAtraso: number;
-  /** Nulo quando nenhuma parcela venceu ainda. */
   percentualInadimplencia: number | null;
   meses: RelatorioMes[];
   previsaoRecebimento: PrevisaoRecebimento[];
@@ -58,7 +53,6 @@ export interface ParcelaEmAtraso {
   numero: number;
   quantidadeParcelas: number;
   valor: number;
-  /** LocalDate 'aaaa-mm-dd' — exibir com timezone 'UTC'. */
   dataVencimento: string;
   diasEmAtraso: number;
 }

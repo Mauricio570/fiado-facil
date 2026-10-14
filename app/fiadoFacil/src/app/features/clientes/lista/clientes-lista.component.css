@@ -174,13 +174,10 @@
 }
 
 @media (max-width: 560px) {
-  /* O telefone é curto e não deve quebrar: sem isso ele partia em três
-     linhas ('(51)' / '99932-' / '3245') dentro do cartão estreito. */
   .telefone {
     white-space: nowrap;
   }
 
-  /* Lado a lado, 'Ver Contas' e 'Nova Venda' quebravam em duas linhas cada. */
   .acoes-cartao {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -190,8 +187,6 @@
   }
 }
 
-/* Estado de primeiro acesso: sem nenhum cliente, a grade mostra um convite
-   em vez de uma lista vazia. */
 .primeiro-cliente {
   display: grid;
   gap: 10px;

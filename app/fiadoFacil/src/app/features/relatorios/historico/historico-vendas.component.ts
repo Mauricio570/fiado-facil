@@ -20,7 +20,6 @@ import { RelatorioService } from '../../../core/services/relatorio.service';
 import { mensagemDoErro } from '../../../shared/utils/erro.util';
 import { lerFiltroPeriodo, mesmoPeriodo } from '../periodo-relatorio';
 
-/** Situação da venda vista pelo comerciante: quitada, devendo no prazo ou com atraso. */
 type SituacaoVenda = 'QUITADA' | 'NO_PRAZO' | 'EM_ATRASO';
 
 type FiltroSituacao = 'TODAS' | SituacaoVenda;
@@ -57,7 +56,6 @@ export class HistoricoVendasComponent {
     );
   });
 
-  /** Números do cabeçalho, sobre todas as vendas do período (antes da busca). */
   protected readonly resumo = computed(() => {
     const vendas = this.vendas() ?? [];
 

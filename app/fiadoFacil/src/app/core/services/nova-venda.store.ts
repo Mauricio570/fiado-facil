@@ -2,14 +2,6 @@ import { Injectable, computed, signal } from '@angular/core';
 
 import { ItemVendaRequest, PagamentoRequest } from '../models/venda.model';
 
-/**
- * Guarda os itens da venda em andamento enquanto o usuário navega entre a
- * tela "Nova venda" e a tela "Finalizar venda". Como o carrinho só existe
- * no navegador até o POST/PUT em /api/vendas, o estado vive em memória.
- *
- * O mesmo fluxo atende o cadastro e a edição: quando `vendaEmEdicao` está
- * preenchido, a tela de finalizar chama o PUT em vez do POST.
- */
 @Injectable({ providedIn: 'root' })
 export class NovaVendaStore {
   private readonly _clienteId = signal<number | null>(null);
@@ -26,7 +18,6 @@ export class NovaVendaStore {
     this._itens().reduce((total, item) => total + item.quantidade * item.valorUnitario, 0),
   );
 
-  /** Zera o carrinho quando o usuário começa uma venda nova para um cliente. */
   iniciarParaCliente(clienteId: number): void {
     if (this._clienteId() !== clienteId || this._vendaEmEdicao() !== null) {
       this._clienteId.set(clienteId);
@@ -36,7 +27,6 @@ export class NovaVendaStore {
     }
   }
 
-  /** Carrega uma venda existente no carrinho para edição. */
   iniciarEdicao(
     clienteId: number,
     vendaId: number,

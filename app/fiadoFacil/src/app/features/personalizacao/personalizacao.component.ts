@@ -83,7 +83,6 @@ export class PersonalizacaoComponent implements OnInit {
       .pipe(finalize(() => this.salvandoTamanho.set(false)))
       .subscribe({
         error: (erro) => {
-          // Não deixa a tela em um tamanho que o banco não guardou.
           this.preferenciaService.salvar(anterior).subscribe({ error: () => undefined });
           this.mensagemErroTamanho.set(
             mensagemDoErro(erro, 'Não foi possível salvar o tamanho do texto.'),

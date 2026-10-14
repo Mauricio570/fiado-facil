@@ -10,8 +10,6 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  /* A tabela já rola na horizontal, então o nome não precisa quebrar —
-     em telas estreitas ele virava três linhas dentro da célula. */
   white-space: nowrap;
 }
 
@@ -21,7 +19,6 @@
   font-size: 0.813rem;
 }
 
-/* Boas-vindas do primeiro acesso, quando ainda não há cliente cadastrado. */
 .boas-vindas {
   display: grid;
   gap: 10px;

@@ -2,8 +2,6 @@
   margin-bottom: 18px;
 }
 
-/* Cartão do perfil ------------------------------------------------------- */
-
 .cartao-perfil {
   display: grid;
   gap: 18px;
@@ -73,8 +71,6 @@
   font-size: 1.438rem;
 }
 
-/* Cabeçalho do histórico ------------------------------------------------- */
-
 .topo-historico {
   display: flex;
   align-items: flex-start;
@@ -138,8 +134,6 @@
   font: inherit;
   font-size: 0.875rem;
 }
-
-/* Lista de compras ------------------------------------------------------- */
 
 .lista-compras {
   display: grid;
@@ -294,8 +288,6 @@
   flex: none;
 }
 
-/* Painel de detalhe ------------------------------------------------------ */
-
 .detalhe {
   padding: 16px;
   border-top: 1px solid var(--borda);
@@ -393,8 +385,6 @@
   color: var(--texto);
   font-size: 0.938rem;
 }
-
-/* Parcelas --------------------------------------------------------------- */
 
 .topo-parcelas {
   display: flex;

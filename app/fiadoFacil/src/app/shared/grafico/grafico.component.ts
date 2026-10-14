@@ -28,7 +28,6 @@ import {
   TooltipItem,
 } from 'chart.js';
 
-// Registra só as peças do Chart.js usadas aqui, para o bundle não levar a biblioteca inteira.
 Chart.register(
   ArcElement,
   BarController,
@@ -48,14 +47,12 @@ export type TipoGrafico = 'colunas' | 'barras' | 'area' | 'rosca';
 export interface SerieGrafico {
   nome: string;
   valores: number[];
-  /** Uma cor para a série toda, ou uma por ponto (rosca e colunas com destaque). */
   cor: string | string[];
 }
 
 export interface ItemLegenda {
   nome: string;
   cor: string;
-  /** Valor exibido ao lado do nome, usado na rosca. */
   valor?: string;
 }
 
@@ -79,7 +76,6 @@ const formatoMoedaCompacta = new Intl.NumberFormat('pt-BR', {
 });
 const formatoInteiro = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 });
 
-/** Linha vertical fina que acompanha o ponteiro no gráfico de área, marcando o mês lido. */
 const linhaGuia: Plugin<'line'> = {
   id: 'linhaGuia',
   beforeDatasetsDraw(grafico) {
@@ -100,15 +96,6 @@ const linhaGuia: Plugin<'line'> = {
   },
 };
 
-/**
- * Gráfico dos relatórios sobre o Chart.js, com o visual do SafeBook já
- * aplicado: barras finas com canto arredondado só na ponta, fresta branca
- * entre segmentos empilhados, grade discreta, valores em reais e tooltip.
- *
- * A legenda é HTML (e não desenhada no canvas) para seguir a tipografia do
- * sistema, e todo gráfico tem uma visão em tabela com os mesmos números —
- * o canvas sozinho não é lido por leitores de tela.
- */
 @Component({
   selector: 'app-grafico',
   templateUrl: './grafico.component.html',
@@ -118,17 +105,12 @@ export class GraficoComponent {
   readonly tipo = input.required<TipoGrafico>();
   readonly rotulos = input.required<string[]>();
   readonly series = input.required<SerieGrafico[]>();
-  /** Frase que descreve o gráfico para leitores de tela. */
   readonly descricao = input.required<string>();
-  /** Cabeçalho da primeira coluna na visão em tabela ("Mês", "Cliente"...). */
   readonly rotuloEixo = input('');
   readonly empilhado = input(false);
   readonly formato = input<'moeda' | 'inteiro'>('moeda');
-  /** Singular e plural da unidade dos valores inteiros, como ['cliente', 'clientes']. */
   readonly unidade = input<[string, string]>(['', '']);
-  /** Legenda própria, para quando as cores não seguem uma por série. */
   readonly legenda = input<ItemLegenda[] | null>(null);
-  /** Número no centro da rosca. */
   readonly destaque = input<DestaqueCentral | null>(null);
   readonly mensagemVazio = input('Nada para mostrar neste período.');
   readonly altura = input(280);
@@ -155,13 +137,11 @@ export class GraficoComponent {
       }));
     }
 
-    // Uma série só não precisa de legenda: o título do cartão já diz o que é.
     return series.length < 2
       ? []
       : series.map((serie, indice) => ({ nome: serie.nome, cor: this.corDoPonto(indice, 0) }));
   });
 
-  /** Nas colunas empilhadas as séries são partes de um todo, então a tabela ganha o total. */
   protected readonly linhasTabela = computed(() =>
     this.rotulos().map((rotulo, indice) => {
       const valores = this.series().map((serie) => serie.valores[indice] ?? 0);
@@ -177,12 +157,9 @@ export class GraficoComponent {
 
   private readonly canvas = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
   private grafico: Chart | null = null;
-  /** Tipo do gráfico desenhado no canvas atual; trocar de tipo exige recriar o gráfico. */
   private tipoDesenhado: TipoGrafico | null = null;
 
   constructor() {
-    // O canvas só existe com dados e fora do modo tabela; quando some, o
-    // gráfico é destruído, e quando os dados mudam ele é atualizado no lugar.
     effect(() => {
       const canvas = this.canvas()?.nativeElement;
       const tipo = this.tipo();
@@ -264,9 +241,7 @@ export class GraficoComponent {
           data: serie.valores,
           backgroundColor: serie.cor,
           borderColor: COR_SUPERFICIE,
-          // Fresta de 2px na cor do fundo entre os segmentos empilhados.
           borderWidth: empilhado ? (horizontal ? { right: 2 } : { top: 2 }) : 0,
-          // Com números, o Chart.js arredonda só a ponta da pilha; a base fica reta.
           borderRadius: 4,
           borderSkipped: 'start',
           maxBarThickness: 24,
@@ -295,13 +270,11 @@ export class GraficoComponent {
             label: serie.nome,
             data: serie.valores,
             borderColor: cor,
-            // Área em 10% de opacidade: um véu, nunca um bloco saturado.
             backgroundColor: `${cor}1a`,
             fill: 'origin',
             borderWidth: 2,
             borderCapStyle: 'round',
             borderJoinStyle: 'round',
-            // Curva suave que não "afunda" abaixo de zero entre dois meses.
             cubicInterpolationMode: 'monotone',
             pointRadius: 4,
             pointHoverRadius: 6,
@@ -358,12 +331,10 @@ export class GraficoComponent {
           bodyFont: { family: FONTE, size: 12 },
           padding: 10,
           cornerRadius: 6,
-          // Marca da série em forma de traço curto, não de caixa.
           boxWidth: 12,
           boxHeight: 3,
           boxPadding: 6,
           callbacks: {
-            // O valor vem primeiro: quem passa o mouse já sabe a série e quer o número.
             label: (item: TooltipItem<'bar' | 'line' | 'doughnut'>) => {
               const nome = this.tipo() === 'rosca' ? item.label : item.dataset.label;
               return ` ${this.formatar(Number(item.raw))} · ${nome}`;
@@ -387,10 +358,8 @@ export class GraficoComponent {
         color: COR_TEXTO_SUAVE,
         font: { family: FONTE, size: 12 },
         autoSkip: !horizontal,
-        // Rótulos sempre retos: sem espaço, o Chart.js pula alguns em vez de inclinar.
         maxRotation: 0,
         autoSkipPadding: 10,
-        // Nomes longos de cliente encurtados no eixo; o nome inteiro aparece no tooltip.
         callback: (valor: string | number) => encurtar(this.rotulos()[Number(valor)] ?? '', 16),
       },
     };

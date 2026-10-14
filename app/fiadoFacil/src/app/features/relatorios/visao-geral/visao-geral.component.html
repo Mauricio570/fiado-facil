@@ -8,8 +8,6 @@
     </button>
   </div>
 } @else if (relatorio(); as dados) {
-  <!-- Ao trocar o período, os números antigos ficam esmaecidos até os novos
-       chegarem, em vez de a tela piscar com uma mensagem de carregamento. -->
   <div class="conteudo-aba" [class.atualizando]="carregando()" [attr.aria-busy]="carregando()">
     <h2 class="titulo-grupo">No período escolhido</h2>
     <section class="cartoes-resumo" aria-label="Números do período">

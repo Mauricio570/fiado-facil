@@ -2,8 +2,6 @@
   margin-bottom: 18px;
 }
 
-/* Abas ------------------------------------------------------------------- */
-
 .abas {
   display: flex;
   gap: 4px;
@@ -35,8 +33,6 @@
   border-bottom-color: var(--verde);
   color: var(--verde);
 }
-
-/* Filtro de período ------------------------------------------------------ */
 
 .filtro-periodo {
   display: grid;
@@ -141,7 +137,6 @@
 }
 
 @media (max-width: 560px) {
-  /* No celular as abas dividem a largura e ficam só com o rótulo curto. */
   .abas a {
     flex: 1;
     justify-content: center;

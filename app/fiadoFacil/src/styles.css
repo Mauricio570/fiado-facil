@@ -1,8 +1,3 @@
-/* ==========================================================================
-   Estilos globais do SafeBook — tokens de design e componentes reutilizados
-   pelas telas (cards, tabelas, botões, formulários, badges e paginação).
-   ========================================================================== */
-
 :root {
   --verde: #008562;
   --verde-escuro: #006e51;
@@ -25,9 +20,6 @@
   margin: 0;
 }
 
-/* Escala de texto escolhida em Personalização. Como todos os tamanhos de
-   fonte do sistema estão em rem, mudar a base aqui redimensiona o texto
-   inteiro sem alterar espaçamentos, ícones ou alturas de campo. */
 html {
   font-size: 16px;
 }
@@ -50,8 +42,6 @@ body {
   background: var(--fundo);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
-
-/* Cabeçalho de página ---------------------------------------------------- */
 
 .titulo-pagina {
   font-size: 1.625rem;
@@ -85,8 +75,6 @@ body {
   background: var(--verde-escuro);
 }
 
-/* Superfícies ------------------------------------------------------------ */
-
 .painel {
   padding: 20px 22px;
   border: 1px solid var(--borda);
@@ -98,8 +86,6 @@ body {
 .titulo-secao {
   font-size: 1.313rem;
 }
-
-/* Botões ----------------------------------------------------------------- */
 
 .botao-primario,
 .botao-secundario,
@@ -182,8 +168,6 @@ body {
   stroke-linejoin: round;
   stroke-width: 1.8;
 }
-
-/* Formulários ------------------------------------------------------------ */
 
 .grade-campos {
   display: grid;
@@ -282,8 +266,6 @@ body {
   box-shadow: none;
 }
 
-/* Cartões de resumo (números de destaque da Home e dos Relatórios) ------ */
-
 .cartoes-resumo {
   display: grid;
   gap: 16px;
@@ -360,8 +342,6 @@ body {
   background: var(--vermelho-suave);
 }
 
-/* Cartão de gráfico e grupos dos relatórios ------------------------------ */
-
 .cartao-grafico {
   display: grid;
   min-width: 0;
@@ -390,14 +370,11 @@ body {
   text-transform: uppercase;
 }
 
-/* Conteúdo sendo atualizado: fica esmaecido no lugar, sem piscar a tela. */
 .atualizando {
   opacity: 55%;
   pointer-events: none;
   transition: opacity 150ms ease;
 }
-
-/* Tabelas ---------------------------------------------------------------- */
 
 .envolucro-tabela {
   overflow-x: auto;
@@ -437,8 +414,6 @@ body {
   text-align: center;
 }
 
-/* Indicadores ------------------------------------------------------------ */
-
 .selo {
   display: inline-flex;
   padding: 3px 12px;
@@ -469,8 +444,6 @@ body {
   font-weight: 700;
   place-items: center;
 }
-
-/* Estados ---------------------------------------------------------------- */
 
 .mensagem-estado {
   padding: 22px;
@@ -506,8 +479,6 @@ body {
   flex: none;
   stroke-width: 2;
 }
-
-/* Paginação -------------------------------------------------------------- */
 
 .paginacao {
   display: flex;
@@ -545,8 +516,6 @@ body {
 
 @media (max-width: 560px) {
 
-  /* Em telas estreitas os controles de paginação ocupam a linha inteira:
-     lado a lado com o texto, os rótulos quebravam em três linhas. */
   .paginacao {
     flex-wrap: wrap;
     justify-content: center;
@@ -572,8 +541,6 @@ body {
     white-space: nowrap;
   }
 }
-
-/* Modais ----------------------------------------------------------------- */
 
 .fundo-modal {
   display: grid;
@@ -626,8 +593,6 @@ body {
   justify-content: center;
 }
 
-/* Menu suspenso ---------------------------------------------------------- */
-
 .menu-mais {
   position: relative;
 }
@@ -662,8 +627,6 @@ body {
   background: var(--vermelho-suave);
 }
 
-/* Barra de progresso ----------------------------------------------------- */
-
 .barra-progresso {
   height: 6px;
   border-radius: 999px;
@@ -678,8 +641,6 @@ body {
   background: var(--verde);
   transition: width 220ms ease;
 }
-
-/* Selo com marcador e estado vazio --------------------------------------- */
 
 .selo.com-ponto::before {
   width: 6px;

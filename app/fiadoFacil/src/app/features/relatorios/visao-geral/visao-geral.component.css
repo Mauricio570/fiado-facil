@@ -2,7 +2,6 @@
   grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
 }
 
-/* Em atraso só ganha destaque quando há de fato algo atrasado. */
 .cartao-alerta {
   border-color: #f2c1bc;
   background: #fffafa;
@@ -12,7 +11,6 @@
   color: var(--vermelho);
 }
 
-/* Medidor da inadimplência: o vermelho preenche um trilho do mesmo tom, mais claro. */
 .medidor {
   display: block;
   height: 6px;

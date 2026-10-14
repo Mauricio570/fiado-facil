@@ -14,7 +14,6 @@ import {
 } from '../../../shared/grafico/grafico.component';
 import { mensagemDoErro } from '../../../shared/utils/erro.util';
 
-/** Quantas parcelas da lista de cobrança aparecem antes do "Mostrar mais". */
 const PARCELAS_POR_VEZ = 8;
 
 @Component({

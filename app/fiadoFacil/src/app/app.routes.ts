@@ -84,7 +84,6 @@ export const routes: Routes = [
           },
           {
             path: 'clientes',
-            // Dívida é situação de hoje: a aba não usa o filtro de período.
             data: { usaPeriodo: false },
             loadComponent: () =>
               import('./features/relatorios/clientes/relatorio-clientes.component').then(

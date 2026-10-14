@@ -4,14 +4,6 @@ import { NgControl } from '@angular/forms';
 
 import { TAMANHO_MAXIMO, TipoMascara, aplicarMascara } from '../utils/mascara.util';
 
-/**
- * Formata o campo enquanto o usuário digita e limita o total de caracteres
- * ao tamanho do formato. Funciona junto do Reactive Forms: o valor guardado
- * no FormControl é sempre o texto já formatado, que é o mesmo que vai para a
- * API e o mesmo que volta dela.
- *
- * Uso: <input formControlName="cpf" appMascara="cpf" />
- */
 @Directive({
   selector: '[appMascara]',
   host: {
@@ -34,9 +26,6 @@ export class MascaraDirective implements OnInit {
   ngOnInit(): void {
     const controle = this.ngControl?.control;
 
-    // Ao editar um cadastro, o valor chega da API depois que a tela montou.
-    // Ele também passa pela máscara, para o campo nunca exibir um formato
-    // diferente do que o usuário digitaria.
     controle?.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.normalizarValorExterno());

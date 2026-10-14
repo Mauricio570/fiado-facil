@@ -39,15 +39,12 @@ export class ClientePerfilComponent implements OnInit {
   protected readonly detalheVenda = signal<Venda | null>(null);
   protected readonly carregandoDetalhe = signal(false);
 
-  /** Parcela aguardando confirmação no modal — evita marcar como paga por engano. */
   protected readonly parcelaParaConfirmar = signal<Parcela | null>(null);
   protected readonly confirmandoPagamento = signal(false);
 
-  /** Exclusão do cliente também passa por modal próprio, nunca pelo confirm() do navegador. */
   protected readonly confirmandoExclusao = signal(false);
   protected readonly excluindo = signal(false);
 
-  /** Venda aguardando confirmação de exclusão no modal. */
   protected readonly vendaParaExcluir = signal<VendaResumo | null>(null);
   protected readonly excluindoVenda = signal(false);
 
@@ -57,7 +54,6 @@ export class ClientePerfilComponent implements OnInit {
     return this.vendas().filter((venda) => status === 'TODOS' || venda.status === status);
   });
 
-  /** Números do cabeçalho do histórico, calculados sobre as vendas já carregadas. */
   protected readonly resumoHistorico = computed(() => {
     const vendas = this.vendas();
     const emAberto = vendas.filter((venda) => venda.status === 'EM_ABERTO');
@@ -69,7 +65,6 @@ export class ClientePerfilComponent implements OnInit {
     };
   });
 
-  /** Progresso das parcelas da venda aberta, para a barra do painel de detalhe. */
   protected readonly progressoParcelas = computed(() => {
     const parcelas = this.detalheVenda()?.pagamento.parcelas ?? [];
     const pagas = parcelas.filter((parcela) => parcela.status === 'PAGO').length;
@@ -247,7 +242,6 @@ export class ClientePerfilComponent implements OnInit {
       });
   }
 
-  /** Texto do tooltip explicando por que os botões estão travados. */
   protected motivoBloqueio(venda: VendaResumo): string {
     if (venda.podeAlterar) {
       return '';
@@ -262,11 +256,6 @@ export class ClientePerfilComponent implements OnInit {
     this.pagina.set(Math.min(Math.max(1, destino), this.totalPaginas()));
   }
 
-  /**
-   * Dias entre o vencimento previsto e hoje (positivo = atrasada). A conta é
-   * feita sobre a data em si, sem hora e sem fuso: `dataVencimento` chega como
-   * LocalDate ('aaaa-mm-dd'), e converter para Date local deslocaria um dia.
-   */
   protected diasDeAtraso(parcela: Parcela): number {
     const [ano, mes, dia] = parcela.dataVencimento.split('-').map(Number);
     const vencimento = Date.UTC(ano, mes - 1, dia);

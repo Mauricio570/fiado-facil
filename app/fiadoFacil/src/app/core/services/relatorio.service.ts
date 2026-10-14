@@ -21,7 +21,6 @@ export class RelatorioService {
     });
   }
 
-  /** Situação de hoje — não depende do período. */
   buscarClientes(): Observable<RelatorioClientes> {
     return this.http.get<RelatorioClientes>(`${this.urlBase}/clientes`);
   }

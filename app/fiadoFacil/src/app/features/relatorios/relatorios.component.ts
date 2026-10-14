@@ -15,10 +15,6 @@ import { filter, map } from 'rxjs';
 
 import { ATALHOS_DE_MESES, AtalhoDeMeses, lerFiltroPeriodo } from './periodo-relatorio';
 
-/**
- * Casca da tela de relatórios: cabeçalho, abas e o filtro de período. Cada
- * aba é uma rota filha que lê o período da URL e busca os próprios dados.
- */
 @Component({
   selector: 'app-relatorios',
   imports: [DatePipe, FormsModule, RouterLink, RouterLinkActive, RouterOutlet],
@@ -35,7 +31,6 @@ export class RelatoriosComponent {
     requireSync: true,
   });
 
-  /** A aba Clientes mostra a situação de hoje, então o filtro de período some nela. */
   protected readonly abaUsaPeriodo = toSignal(
     this.router.events.pipe(
       filter((evento) => evento instanceof NavigationEnd),
@@ -66,12 +61,11 @@ export class RelatoriosComponent {
     this.editandoIntervalo.set(false);
   }
 
-  // Sem comandos, a navegação mantém a aba atual e troca só os parâmetros.
   private navegar(parametros: Params): void {
     void this.router.navigate([], { relativeTo: this.rotaAtiva, queryParams: parametros });
   }
 
   private usaPeriodo(): boolean {
-    return this.rotaAtiva.firstChild?.snapshot.data['usaPeriodo'] !== false;
+    return this.rotaAtiva.snapshot.firstChild?.data['usaPeriodo'] !== false;
   }
 }

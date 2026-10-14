@@ -44,7 +44,6 @@ export class VisaoGeralComponent {
     () => this.relatorio()?.meses.map((mes) => rotuloDoMes(mes.mes)) ?? [],
   );
 
-  /** Cada barra é o vendido do mês, dividido entre pago, a vencer e em atraso. */
   protected readonly seriesVendidoPago = computed<SerieGrafico[]>(() => {
     const meses = this.relatorio()?.meses ?? [];
 
@@ -63,7 +62,6 @@ export class VisaoGeralComponent {
     },
   ]);
 
-  /** A primeira coluna é o que já venceu e não foi pago; as demais, os próximos meses. */
   protected readonly previsao = computed(() => {
     const relatorio = this.relatorio();
     const meses = relatorio?.previsaoRecebimento ?? [];
@@ -95,7 +93,6 @@ export class VisaoGeralComponent {
           this.carregando.set(true);
           this.mensagemErro.set('');
         }),
-        // Ao trocar o período, a busca anterior é cancelada e só vale a última.
         switchMap(([periodo]) =>
           this.relatorioService.buscarVisaoGeral(periodo).pipe(
             catchError((erro: unknown) => {

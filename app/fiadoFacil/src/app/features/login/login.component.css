@@ -9,8 +9,6 @@
   grid-template-columns: repeat(2, minmax(min(340px, 100%), 1fr));
 }
 
-/* Painel da marca — conteúdo centralizado nos dois eixos. */
-
 .brand-panel {
   display: grid;
   position: relative;
@@ -104,8 +102,6 @@
   font-size: 0.813rem;
   text-align: center;
 }
-
-/* Painel do formulário — card centralizado nos dois eixos. */
 
 .login-panel {
   display: grid;

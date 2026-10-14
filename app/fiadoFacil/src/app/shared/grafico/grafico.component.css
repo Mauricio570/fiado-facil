@@ -41,7 +41,6 @@
   border-radius: 3px;
 }
 
-/* No gráfico de linha a amostra imita a marca: um traço, não um quadrado. */
 .amostra.linha {
   width: 14px;
   height: 3px;
@@ -107,7 +106,6 @@
   white-space: nowrap;
 }
 
-/* O cabeçalho de linha não herda o fundo cinza do cabeçalho de coluna. */
 .tabela tbody th {
   padding: 13px 16px;
   border-bottom: 1px solid var(--borda);
@@ -126,7 +124,6 @@
   font-weight: 700;
 }
 
-/* Números da tabela alinhados em coluna. */
 .tabela td {
   font-variant-numeric: tabular-nums;
 }
