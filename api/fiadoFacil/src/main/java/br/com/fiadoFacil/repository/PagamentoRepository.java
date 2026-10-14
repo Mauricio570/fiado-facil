@@ -26,11 +26,6 @@ public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
                                       @Param("inicio") LocalDateTime inicio,
                                       @Param("fim") LocalDateTime fim);
 
-    /**
-     * Reúne, em uma consulta só, tudo que o histórico de compras precisa saber
-     * sobre cada venda do cliente: saldo devedor, quantas parcelas já foram
-     * pagas e quanto foi pago de entrada.
-     */
     @Query("SELECT new br.com.fiadoFacil.dto.response.VendaResumoFinanceiroResponse(" +
             "v.id, " +
             "COALESCE(SUM(CASE WHEN p.status = :statusEmAberto THEN p.valor ELSE 0bd END), 0bd), " +
@@ -47,11 +42,6 @@ public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
             @Param("statusEmAberto") StatusParcela statusEmAberto,
             @Param("statusPago") StatusParcela statusPago);
 
-    /**
-     * Vendas feitas no período, de todos os clientes do usuário, com as somas
-     * das parcelas de cada uma (total, pagas e vencidas em aberto). Base do
-     * histórico de vendas e dos gráficos mensais dos relatórios.
-     */
     @Query("SELECT new br.com.fiadoFacil.dto.response.RelatorioVendaResponse(" +
             "v.id, v.dataCriacao, c.id, c.nome, v.status, " +
             "pg.formaPagamento, pg.quantidadeParcelas, pg.valorEntrada, " +

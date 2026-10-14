@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-/** Saldo em aberto de um cliente, separando o que ainda vai vencer do que já está atrasado. */
 @Getter
 @Builder
 @AllArgsConstructor

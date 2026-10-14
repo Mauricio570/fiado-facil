@@ -13,7 +13,6 @@ import br.com.fiadoFacil.dto.response.ParcelaEmAtrasoResponse;
 @Component
 public class RelatorioMapper {
 
-    /** Espera a parcela com pagamento, venda e cliente já carregados. */
     public ParcelaEmAtrasoResponse toParcelaEmAtrasoResponse(Parcela parcela, LocalDate hoje) {
         Pagamento pagamento = parcela.getPagamento();
         Cliente cliente = pagamento.getVenda().getCliente();

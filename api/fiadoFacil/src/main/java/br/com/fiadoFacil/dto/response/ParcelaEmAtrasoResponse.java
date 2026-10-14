@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-/** Linha da lista de cobrança: uma parcela vencida e ainda não paga. */
 @Getter
 @Builder
 @AllArgsConstructor

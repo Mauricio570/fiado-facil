@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-/** Quanto está previsto para entrar em um mês, pelas parcelas que ainda vão vencer nele. */
 @Getter
 @Builder
 @AllArgsConstructor

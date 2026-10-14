@@ -44,11 +44,6 @@ import br.com.fiadoFacil.repository.ClienteRepository;
 import br.com.fiadoFacil.repository.PagamentoRepository;
 import br.com.fiadoFacil.repository.ParcelaRepository;
 
-/**
- * Regras de cálculo dos relatórios, com os repositórios simulados. As datas
- * são relativas a hoje porque o service usa a data atual para decidir o que
- * está em atraso.
- */
 @ExtendWith(MockitoExtension.class)
 class RelatorioServiceTest {
 
@@ -106,7 +101,6 @@ class RelatorioServiceTest {
                 .containsExactly("João", "Maria", "Ana");
         assertThat(relatorio.getMaioresDevedores().get(1).getValorEmAtraso()).isEqualByComparingTo("50.00");
         assertThat(relatorio.getMaioresDevedores().get(1).getValorAVencer()).isEqualByComparingTo("30.00");
-        // Parcela que vence hoje ainda não está atrasada.
         assertThat(relatorio.getMaioresDevedores().get(0).getValorEmAtraso()).isEqualByComparingTo("0");
 
         assertThat(relatorio.getParcelasEmAtraso())
@@ -121,8 +115,6 @@ class RelatorioServiceTest {
         LocalDate inicio = YearMonth.from(hoje).minusMonths(2).atDay(1);
         Cliente maria = cliente(1L, "Maria");
 
-        // Venda de dois meses atrás: R$ 10 de entrada + R$ 90 em parcelas,
-        // das quais R$ 30 pagas e R$ 30 vencidas sem pagamento.
         RelatorioVendaResponse venda = new RelatorioVendaResponse(1L, inicio.atTime(10, 0), 1L, "Maria",
                 StatusVenda.EM_ABERTO, FormaPagamento.CREDITO, 3, new BigDecimal("10.00"),
                 new BigDecimal("90.00"), new BigDecimal("30.00"), new BigDecimal("30.00"));
@@ -168,7 +160,6 @@ class RelatorioServiceTest {
         assertThat(meses.get(1).getValorVendido()).isEqualByComparingTo("0");
         assertThat(meses.get(2).getValorRecebido()).isEqualByComparingTo("30.00");
 
-        // A parcela atrasada fica fora da previsão; a que vence no mês que vem entra nele.
         assertThat(relatorio.getPrevisaoRecebimento()).hasSize(6);
         assertThat(relatorio.getPrevisaoRecebimento().get(0).getMes()).isEqualTo(YearMonth.from(hoje));
         assertThat(relatorio.getPrevisaoRecebimento().get(0).getValor()).isEqualByComparingTo("0");

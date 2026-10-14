@@ -35,10 +35,6 @@ public class PreferenciaService {
         return toResponse(preferenciaRepository.save(preferencia));
     }
 
-    /**
-     * Contas criadas antes desta funcionalidade não têm linha em `preferencia`.
-     * Em vez de falhar, a primeira leitura cria a linha com o padrão.
-     */
     private Preferencia buscarOuCriar(Usuario usuario) {
         return preferenciaRepository.findByUsuarioId(usuario.getId())
                 .orElseGet(() -> preferenciaRepository.save(Preferencia.builder()

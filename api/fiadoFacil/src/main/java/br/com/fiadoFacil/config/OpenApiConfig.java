@@ -20,9 +20,6 @@ public class OpenApiConfig {
                         .title("Fiado Fácil API")
                         .description("API REST do sistema de controle de vendas fiado (TCC).")
                         .version("v1"))
-                // Faz o Swagger UI mostrar o botão "Authorize" — cola o
-                // token JWT (sem o prefixo "Bearer ", ele adiciona sozinho)
-                // e todas as chamadas de teste já saem autenticadas.
                 .addSecurityItem(new SecurityRequirement().addList(schemeName))
                 .components(new Components().addSecuritySchemes(schemeName,
                         new SecurityScheme()

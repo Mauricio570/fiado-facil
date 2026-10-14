@@ -19,18 +19,11 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import br.com.fiadoFacil.dto.response.ErroResponse;
 
-/**
- * Centraliza a resposta de erro de toda a API em um formato único, com uma
- * mensagem já pronta para ser exibida ao usuário. Sem isso o Spring devolve
- * apenas o status e o path, e as mensagens escritas nos services nunca chegam
- * ao front-end.
- */
 @RestControllerAdvice
 public class TratadorDeErros {
 
     private static final Logger log = LoggerFactory.getLogger(TratadorDeErros.class);
 
-    /** Erros de regra de negócio lançados pelos services (duplicidade, conflito, não encontrado). */
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ErroResponse> tratarErroDeRegra(ResponseStatusException excecao) {
         HttpStatus status = HttpStatus.valueOf(excecao.getStatusCode().value());
@@ -39,7 +32,6 @@ public class TratadorDeErros {
         return ResponseEntity.status(status).body(montar(status, mensagem, null));
     }
 
-    /** Falha de Bean Validation no corpo da requisição. */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErroResponse> tratarErroDeValidacao(MethodArgumentNotValidException excecao) {
         Map<String, String> campos = new LinkedHashMap<>();
@@ -51,17 +43,12 @@ public class TratadorDeErros {
                 .body(montar(HttpStatus.BAD_REQUEST, "Verifique os campos informados.", campos));
     }
 
-    /**
-     * Rota inexistente. Sem este tratador a exceção cairia na rede de
-     * segurança abaixo e uma URL errada viraria 500 em vez de 404.
-     */
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErroResponse> tratarRotaInexistente(NoResourceFoundException excecao) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(montar(HttpStatus.NOT_FOUND, "Endereço não encontrado na API."));
     }
 
-    /** Método HTTP que a rota não aceita (por exemplo, POST onde só há GET). */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErroResponse> tratarMetodoInvalido(
             HttpRequestMethodNotSupportedException excecao) {
@@ -70,7 +57,6 @@ public class TratadorDeErros {
                         "Esta operação não é permitida neste endereço."));
     }
 
-    /** JSON malformado ou tipo de campo incompatível. */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErroResponse> tratarCorpoInvalido(HttpMessageNotReadableException excecao) {
         log.warn("Corpo de requisição inválido: {}", excecao.getMessage());
@@ -79,10 +65,6 @@ public class TratadorDeErros {
                 .body(montar(HttpStatus.BAD_REQUEST, "Não foi possível ler os dados enviados.", null));
     }
 
-    /**
-     * Parâmetro da URL com tipo errado (por exemplo, uma data fora do formato
-     * aaaa-mm-dd). Sem este tratador o erro viraria 500.
-     */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErroResponse> tratarParametroInvalido(MethodArgumentTypeMismatchException excecao) {
         log.warn("Parâmetro inválido '{}': {}", excecao.getName(), excecao.getValue());
@@ -91,10 +73,6 @@ public class TratadorDeErros {
                 .body(montar(HttpStatus.BAD_REQUEST, "Um dos valores informados na consulta é inválido."));
     }
 
-    /**
-     * Rede de segurança para o que não foi previsto. A causa real vai para o
-     * log; a resposta não expõe detalhes internos ao cliente.
-     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErroResponse> tratarErroInesperado(Exception excecao) {
         log.error("Erro inesperado ao processar a requisição", excecao);

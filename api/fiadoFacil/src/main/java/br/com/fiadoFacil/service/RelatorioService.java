@@ -33,21 +33,13 @@ import br.com.fiadoFacil.repository.ClienteRepository;
 import br.com.fiadoFacil.repository.PagamentoRepository;
 import br.com.fiadoFacil.repository.ParcelaRepository;
 
-/**
- * Relatórios do comerciante. Todo valor de venda aqui é o valor final cobrado
- * do cliente, já com juros (entrada + parcelas). Uma parcela está em atraso
- * quando continua em aberto depois do dia do vencimento, sem tolerância.
- */
 @Service
 public class RelatorioService {
 
-    /** Período usado quando a tela não informa datas: o mês atual e os cinco anteriores. */
     private static final int MESES_PADRAO = 6;
 
-    /** Limite do período, para os gráficos mensais continuarem legíveis. */
     private static final int MESES_MAXIMOS = 24;
 
-    /** Quantos meses a previsão de recebimento cobre, contando o mês atual. */
     private static final int MESES_PREVISAO = 6;
 
     private static final int LIMITE_MAIORES_DEVEDORES = 5;
@@ -157,9 +149,6 @@ public class RelatorioService {
         return buscarVendas(usuarioId, periodo, LocalDate.now());
     }
 
-    // Sem datas, o relatório mostra os últimos seis meses. Com datas, as duas
-    // são obrigatórias, a inicial não pode passar da final e o intervalo tem
-    // um limite de meses.
     private Periodo resolverPeriodo(LocalDate inicio, LocalDate fim) {
         if (inicio == null && fim == null) {
             LocalDate hoje = LocalDate.now();
@@ -195,10 +184,6 @@ public class RelatorioService {
                 StatusParcela.EM_ABERTO);
     }
 
-    // Um item por mês do período, inclusive os meses sem movimento, para o
-    // gráfico não pular meses. As colunas de venda olham para as vendas feitas
-    // no mês; o recebido soma as entradas dessas vendas e as parcelas pagas no
-    // mês, de qualquer venda — a mesma regra do "Recebido este mês" da Home.
     private List<RelatorioMesResponse> montarMeses(Periodo periodo,
                                                    List<RelatorioVendaResponse> vendas,
                                                    List<Parcela> parcelasPagas) {
@@ -227,8 +212,6 @@ public class RelatorioService {
                 .toList();
     }
 
-    // Parcelas que ainda vão vencer, agrupadas pelo mês do vencimento. As já
-    // atrasadas ficam de fora: elas aparecem separadas, no total em atraso.
     private List<PrevisaoRecebimentoResponse> montarPrevisao(List<Parcela> parcelasEmAberto, LocalDate hoje) {
         Map<YearMonth, List<Parcela>> aVencerPorMes = parcelasEmAberto.stream()
                 .filter(parcela -> !estaAtrasada(parcela, hoje))
@@ -264,8 +247,6 @@ public class RelatorioService {
                 .build();
     }
 
-    // Mesma conta do "Recebido este mês" da Home (PainelService), para os
-    // dois números baterem.
     private BigDecimal calcularRecebidoNoMes(Long usuarioId, YearMonth mes) {
         BigDecimal entradas = pagamentoRepository.somarEntradasNoPeriodo(
                 usuarioId, mes.atDay(1).atStartOfDay(), mes.atEndOfMonth().atTime(LocalTime.MAX));
@@ -275,7 +256,6 @@ public class RelatorioService {
         return entradas.add(parcelasPagas);
     }
 
-    // Do total que já venceu (pago ou não), quanto ficou sem pagar.
     private BigDecimal calcularInadimplencia(Long usuarioId, BigDecimal totalEmAtraso, LocalDate hoje) {
         BigDecimal totalVencido = parcelaRepository.somarComVencimentoAntesDe(usuarioId, hoje);
         if (totalVencido.signum() == 0) {

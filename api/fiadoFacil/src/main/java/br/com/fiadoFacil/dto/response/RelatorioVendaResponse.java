@@ -7,11 +7,6 @@ import br.com.fiadoFacil.domain.enums.FormaPagamento;
 import br.com.fiadoFacil.domain.enums.StatusVenda;
 import lombok.Getter;
 
-/**
- * Uma venda do histórico dos relatórios, com a situação financeira já
- * resolvida: quanto o cliente paga no total (com juros), quanto já pagou,
- * quanto ainda vai vencer e quanto está em atraso.
- */
 @Getter
 public class RelatorioVendaResponse {
 
@@ -28,11 +23,6 @@ public class RelatorioVendaResponse {
     private final BigDecimal valorAVencer;
     private final BigDecimal valorEmAtraso;
 
-    /**
-     * Usado pela consulta JPQL, que entrega as somas das parcelas da venda.
-     * A entrada entra como paga no ato; o que sobra das parcelas, nem pago
-     * nem atrasado, é o valor que ainda vai vencer.
-     */
     public RelatorioVendaResponse(Long vendaId,
                                   LocalDateTime dataCriacao,
                                   Long clienteId,
