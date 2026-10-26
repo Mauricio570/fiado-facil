@@ -1,0 +1,40 @@
+@if (aberto()) {
+  <div class="fundo-modal" role="dialog" aria-modal="true" aria-labelledby="titulo-aviso-saida">
+    <div class="modal-confirmacao">
+      <span class="icone-alerta" aria-hidden="true">
+        <svg class="icone" viewBox="0 0 24 24">
+          <path d="M12 4.5 21 19.5H3L12 4.5Z" />
+          <path d="M12 10v4M12 16.8v.2" />
+        </svg>
+      </span>
+
+      @if (store.vendaEmEdicao()) {
+        <h2 id="titulo-aviso-saida" class="titulo-secao">Sair sem salvar as alterações?</h2>
+        <p>
+          As alterações desta venda ainda não foram salvas. Se sair agora, elas serão
+          descartadas e a venda continua como estava antes.
+        </p>
+      } @else {
+        <h2 id="titulo-aviso-saida" class="titulo-secao">Sair sem finalizar a venda?</h2>
+        <p>
+          Você adicionou
+          <strong>
+            {{ store.itens().length }} {{ store.itens().length === 1 ? 'produto' : 'produtos' }}
+          </strong>
+          (<strong>{{ store.valorTotal() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>)
+          nesta venda, mas ela ainda não foi finalizada. Se sair agora, esses produtos serão
+          descartados.
+        </p>
+      }
+
+      <div class="acoes-modal">
+        <button class="botao-secundario" type="button" (click)="continuarNaVenda()">
+          Continuar na venda
+        </button>
+        <button class="botao-perigo preenchido" type="button" (click)="sairEDescartar()">
+          Sair e descartar
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -42,9 +42,12 @@ export class LayoutComponent implements OnInit {
   }
 
   protected sair(): void {
-    this.authService.logout();
-    this.preferenciaService.limpar();
-    void this.router.navigate(['/login']);
+    void this.router.navigate(['/login']).then((saiu) => {
+      if (saiu) {
+        this.authService.logout();
+        this.preferenciaService.limpar();
+      }
+    });
   }
 
   private ehTelaEstreita(): boolean {

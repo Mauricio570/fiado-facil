@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { authGuard } from './core/guards/auth.guard';
+import { vendaEmAndamentoGuard } from './core/guards/venda-em-andamento.guard';
 
 export const routes: Routes = [
   {
@@ -48,11 +49,13 @@ export const routes: Routes = [
       },
       {
         path: 'clientes/:id/vendas/nova',
+        canDeactivate: [vendaEmAndamentoGuard],
         loadComponent: () =>
           import('./features/vendas/nova/nova-venda.component').then((m) => m.NovaVendaComponent),
       },
       {
         path: 'clientes/:id/vendas/nova/finalizar',
+        canDeactivate: [vendaEmAndamentoGuard],
         loadComponent: () =>
           import('./features/vendas/finalizar/finalizar-venda.component').then(
             (m) => m.FinalizarVendaComponent,
@@ -60,11 +63,13 @@ export const routes: Routes = [
       },
       {
         path: 'clientes/:id/vendas/:vendaId/editar',
+        canDeactivate: [vendaEmAndamentoGuard],
         loadComponent: () =>
           import('./features/vendas/nova/nova-venda.component').then((m) => m.NovaVendaComponent),
       },
       {
         path: 'clientes/:id/vendas/:vendaId/editar/finalizar',
+        canDeactivate: [vendaEmAndamentoGuard],
         loadComponent: () =>
           import('./features/vendas/finalizar/finalizar-venda.component').then(
             (m) => m.FinalizarVendaComponent,

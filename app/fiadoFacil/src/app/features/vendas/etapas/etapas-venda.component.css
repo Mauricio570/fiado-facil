@@ -1,0 +1,182 @@
+:host {
+  display: block;
+  margin-bottom: 18px;
+}
+
+.lista-etapas {
+  display: grid;
+  align-items: center;
+  gap: 18px;
+  padding: 0;
+  list-style: none;
+  grid-template-columns: minmax(0, auto) minmax(48px, 1fr) minmax(0, auto);
+}
+
+.conteudo-etapa {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+a.conteudo-etapa[href] {
+  margin: -6px -8px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: background 150ms ease;
+}
+
+a.conteudo-etapa[href]:hover {
+  background: var(--verde-suave);
+}
+
+a.conteudo-etapa[href]:focus-visible {
+  outline: 2px solid var(--verde);
+  outline-offset: 2px;
+}
+
+.marcador {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: none;
+  border: 2px solid var(--borda-forte);
+  border-radius: 50%;
+  color: var(--texto-suave);
+  background: var(--superficie);
+  font-size: 0.938rem;
+  font-weight: 700;
+  place-items: center;
+}
+
+.marcador .icone {
+  stroke-width: 2.6;
+}
+
+.atual .marcador {
+  border-color: var(--verde);
+  color: #fff;
+  background: var(--verde);
+  box-shadow: 0 0 0 5px var(--verde-suave);
+}
+
+.concluida .marcador {
+  border-color: var(--verde);
+  color: var(--verde);
+  background: var(--verde-suave);
+}
+
+.texto-etapa {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.situacao {
+  color: var(--texto-suave);
+  font-size: 0.688rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.atual .situacao,
+.concluida .situacao {
+  color: var(--verde);
+}
+
+.texto-etapa strong {
+  font-size: 0.938rem;
+}
+
+.etapa:not(.atual, .concluida) strong {
+  color: var(--texto-suave);
+}
+
+.descricao {
+  color: var(--texto-suave);
+  font-size: 0.813rem;
+}
+
+.trilho {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--borda);
+  overflow: hidden;
+}
+
+.preenchimento {
+  display: block;
+  width: 50%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--verde), var(--verde-claro));
+  animation: preencher-metade 700ms ease-out both;
+}
+
+.em-pagamento .preenchimento {
+  width: 100%;
+  animation-name: completar;
+}
+
+@keyframes preencher-metade {
+  from {
+    width: 0;
+  }
+}
+
+@keyframes completar {
+  from {
+    width: 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preenchimento {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .lista-etapas {
+    position: relative;
+    align-items: start;
+    justify-content: space-between;
+    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, auto));
+  }
+
+  .conteudo-etapa {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .etapa:last-child .conteudo-etapa {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .numero-etapa,
+  .descricao {
+    display: none;
+  }
+
+  .texto-etapa strong {
+    font-size: 0.875rem;
+  }
+
+  .trilho {
+    position: absolute;
+    top: calc(1.125rem - 3px);
+    right: 3.25rem;
+    left: 3.25rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .texto-etapa strong {
+    font-size: 0.813rem;
+  }
+}

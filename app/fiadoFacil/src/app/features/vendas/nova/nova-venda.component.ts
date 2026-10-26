@@ -1,20 +1,30 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, viewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { TelaDeVenda } from '../../../core/guards/venda-em-andamento.guard';
 import { Cliente } from '../../../core/models/cliente.model';
 import { ClienteService } from '../../../core/services/cliente.service';
 import { NovaVendaStore } from '../../../core/services/nova-venda.store';
 import { VendaService } from '../../../core/services/venda.service';
+import { AvisoSaidaVendaComponent } from '../aviso-saida/aviso-saida-venda.component';
+import { EtapasVendaComponent } from '../etapas/etapas-venda.component';
 
 @Component({
   selector: 'app-nova-venda',
-  imports: [CurrencyPipe, DatePipe, ReactiveFormsModule, RouterLink],
+  imports: [
+    AvisoSaidaVendaComponent,
+    CurrencyPipe,
+    DatePipe,
+    EtapasVendaComponent,
+    ReactiveFormsModule,
+    RouterLink,
+  ],
   templateUrl: './nova-venda.component.html',
   styleUrl: './nova-venda.component.css',
 })
-export class NovaVendaComponent implements OnInit {
+export class NovaVendaComponent implements OnInit, TelaDeVenda {
   private readonly clienteService = inject(ClienteService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly rotaAtiva = inject(ActivatedRoute);
@@ -26,6 +36,8 @@ export class NovaVendaComponent implements OnInit {
   protected readonly carregando = signal(true);
   protected readonly mensagemErro = signal('');
   protected readonly modalAberto = signal(false);
+
+  private readonly avisoSaida = viewChild.required(AvisoSaidaVendaComponent);
 
   protected readonly formularioItem = this.formBuilder.nonNullable.group({
     nome: ['', [Validators.required, Validators.maxLength(150)]],
@@ -128,6 +140,10 @@ export class NovaVendaComponent implements OnInit {
       : ['/clientes', this.clienteId, 'vendas', 'nova', 'finalizar'];
 
     void this.router.navigate(destino);
+  }
+
+  confirmarSaida(): Promise<boolean> {
+    return this.avisoSaida().confirmar();
   }
 
   protected iniciais(nome: string): string {

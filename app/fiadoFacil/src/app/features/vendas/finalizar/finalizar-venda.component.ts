@@ -1,22 +1,31 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
+import { TelaDeVenda } from '../../../core/guards/venda-em-andamento.guard';
 import { FormaPagamento } from '../../../core/models/venda.model';
 import { NovaVendaStore } from '../../../core/services/nova-venda.store';
 import { VendaService } from '../../../core/services/venda.service';
 import { mensagemDoErro } from '../../../shared/utils/erro.util';
+import { AvisoSaidaVendaComponent } from '../aviso-saida/aviso-saida-venda.component';
+import { EtapasVendaComponent } from '../etapas/etapas-venda.component';
 
 @Component({
   selector: 'app-finalizar-venda',
-  imports: [CurrencyPipe, ReactiveFormsModule, RouterLink],
+  imports: [
+    AvisoSaidaVendaComponent,
+    CurrencyPipe,
+    EtapasVendaComponent,
+    ReactiveFormsModule,
+    RouterLink,
+  ],
   templateUrl: './finalizar-venda.component.html',
   styleUrl: './finalizar-venda.component.css',
 })
-export class FinalizarVendaComponent implements OnInit {
+export class FinalizarVendaComponent implements OnInit, TelaDeVenda {
   private readonly formBuilder = inject(FormBuilder);
   private readonly vendaService = inject(VendaService);
   private readonly rotaAtiva = inject(ActivatedRoute);
@@ -25,6 +34,8 @@ export class FinalizarVendaComponent implements OnInit {
 
   protected readonly salvando = signal(false);
   protected readonly mensagemErro = signal('');
+
+  private readonly avisoSaida = viewChild.required(AvisoSaidaVendaComponent);
 
   protected readonly formulario = this.formBuilder.nonNullable.group({
     formaPagamento: 'CREDITO' as FormaPagamento,
@@ -137,6 +148,10 @@ export class FinalizarVendaComponent implements OnInit {
           ),
         ),
     });
+  }
+
+  confirmarSaida(): Promise<boolean> {
+    return this.avisoSaida().confirmar();
   }
 
   private arredondar(valor: number): number {

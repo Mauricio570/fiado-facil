@@ -14,6 +14,8 @@
   </p>
 </div>
 
+<app-etapas-venda [etapaAtual]="2" />
+
 <form [formGroup]="formulario" (ngSubmit)="finalizar()">
   <section class="painel pagamento">
     <h2 class="titulo-secao">Forma de pagamento</h2>
@@ -127,3 +129,5 @@
     </div>
   </section>
 </form>
+
+<app-aviso-saida-venda />
