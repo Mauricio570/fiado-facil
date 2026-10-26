@@ -13,6 +13,8 @@
   </p>
 </div>
 
+<app-etapas-venda [etapaAtual]="1" />
+
 @if (carregando()) {
   <p class="mensagem-estado">Carregando dados do cliente...</p>
 } @else {
@@ -203,3 +205,5 @@
     </form>
   </div>
 }
+
+<app-aviso-saida-venda />

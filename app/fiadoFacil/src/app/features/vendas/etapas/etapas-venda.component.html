@@ -1,0 +1,59 @@
+<nav class="painel" aria-label="Etapas da venda">
+  <ol class="lista-etapas" [class.em-pagamento]="etapaAtual() === 2">
+    <li
+      class="etapa"
+      [class.atual]="etapaAtual() === 1"
+      [class.concluida]="etapaAtual() === 2"
+      [attr.aria-current]="etapaAtual() === 1 ? 'step' : null"
+    >
+      <a class="conteudo-etapa" [routerLink]="etapaAtual() === 2 ? linkProdutos() : null">
+        <span class="marcador">
+          @if (etapaAtual() === 2) {
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m6 12.5 4 4 8-9" />
+            </svg>
+          } @else {
+            1
+          }
+        </span>
+        <span class="texto-etapa">
+          <span class="situacao">
+            <span class="numero-etapa">Etapa 1 ·</span>
+            {{ etapaAtual() === 2 ? 'Concluída' : 'Em andamento' }}
+          </span>
+          <strong>Adicionar produtos</strong>
+          <span class="descricao">
+            @if (quantidadeProdutos() === 0) {
+              Itens que o cliente está levando
+            } @else {
+              {{ quantidadeProdutos() }} {{ quantidadeProdutos() === 1 ? 'produto' : 'produtos' }} ·
+              {{ store.valorTotal() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+            }
+          </span>
+        </span>
+      </a>
+    </li>
+
+    <li class="trilho" aria-hidden="true">
+      <span class="preenchimento"></span>
+    </li>
+
+    <li
+      class="etapa"
+      [class.atual]="etapaAtual() === 2"
+      [attr.aria-current]="etapaAtual() === 2 ? 'step' : null"
+    >
+      <span class="conteudo-etapa">
+        <span class="marcador">2</span>
+        <span class="texto-etapa">
+          <span class="situacao">
+            <span class="numero-etapa">Etapa 2 ·</span>
+            {{ etapaAtual() === 2 ? 'Em andamento' : 'Próxima' }}
+          </span>
+          <strong>Parcelas e juros</strong>
+          <span class="descricao">Forma de pagamento e resumo da venda</span>
+        </span>
+      </span>
+    </li>
+  </ol>
+</nav>
