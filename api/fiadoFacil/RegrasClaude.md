@@ -1,4 +1,4 @@
-# Regras de colaboração — Projeto Fiado Fácil (SafeBook)
+# Regras de colaboração — Projeto Fiado Fácil
 
 ## Contexto do projeto
 - Sistema web de controle de vendas fiado para pequenos comércios.
