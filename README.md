@@ -1,4 +1,4 @@
-# Fiado Fácil (SafeBook) — Contexto do Projeto
+# Fiado Fácil — Contexto do Projeto
 
 > Documento de contexto técnico para dar continuidade ao desenvolvimento com apoio de IA.
 > TCC de Análise e Desenvolvimento de Sistemas (IFRS - Campus Rolante).
@@ -10,7 +10,7 @@ comércios (mercearias, açougues, padarias). Substitui o caderno físico de ano
 uma plataforma segura onde o comerciante cadastra clientes, registra vendas, controla
 pagamentos parcelados com juros, e acompanha em tempo real quem está devendo.
 
-**Nome do sistema:** SafeBook / Fiado Fácil (usados como sinônimos)
+**Nome do sistema:** Fiado Fácil
 **Nome do repositório/artifactId:** `fiadoFacil`
 
 ## 2. Stack tecnológica
