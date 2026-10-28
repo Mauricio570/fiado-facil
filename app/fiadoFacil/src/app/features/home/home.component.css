@@ -2,6 +2,10 @@
   margin-bottom: 20px;
 }
 
+.contas-em-aberto {
+  container-type: inline-size;
+}
+
 .contas-em-aberto .titulo-secao {
   margin-bottom: 14px;
 }
@@ -17,6 +21,10 @@
   min-height: 32px;
   padding: 0 12px;
   font-size: 0.813rem;
+}
+
+.rotulo-coluna {
+  display: none;
 }
 
 .boas-vindas {
@@ -57,4 +65,93 @@
   margin-top: 8px;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+@container (max-width: 600px) {
+  .contas-em-aberto .envolucro-tabela {
+    overflow: visible;
+    border: 0;
+  }
+
+  .contas-em-aberto thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .contas-em-aberto .tabela,
+  .contas-em-aberto tbody {
+    display: block;
+  }
+
+  .contas-em-aberto tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  .contas-em-aberto tr {
+    display: grid;
+    grid-template-areas:
+      'cliente cliente'
+      'total status'
+      'acoes acoes';
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid var(--borda);
+    border-radius: var(--raio);
+  }
+
+  .contas-em-aberto td {
+    padding: 0;
+    border: 0;
+  }
+
+  .coluna-cliente {
+    grid-area: cliente;
+  }
+
+  .celula-cliente {
+    white-space: normal;
+  }
+
+  .celula-cliente .iniciais {
+    flex: none;
+  }
+
+  .coluna-total {
+    display: grid;
+    grid-area: total;
+    gap: 2px;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .rotulo-coluna {
+    display: block;
+    color: var(--texto-suave);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .coluna-status {
+    grid-area: status;
+  }
+
+  .coluna-acoes {
+    grid-area: acoes;
+  }
+
+  .botao-tabela {
+    width: 100%;
+    min-height: 40px;
+  }
+
+  .contas-em-aberto .celula-vazia {
+    grid-column: 1 / -1;
+  }
 }
