@@ -1,7 +1,7 @@
 <div class="cabecalho-pagina">
   <h1 class="titulo-pagina">Olá{{ primeiroNome ? ', ' + primeiroNome : '' }}!</h1>
   <p class="subtitulo-pagina">
-    Está é a página Home, aqui exibe algumas estatísticas de todos os clientes cadastrados e exibe
+    Esta é a página Home, aqui exibe algumas estatísticas de todos os clientes cadastrados e exibe
     dados gerais.
   </p>
 </div>
@@ -116,15 +116,18 @@
       <tbody>
         @for (cliente of resumo.clientesComContasEmAberto; track cliente.clienteId) {
         <tr>
-          <td>
+          <td class="coluna-cliente">
             <span class="celula-cliente">
               <span class="iniciais">{{ iniciais(cliente.nome) }}</span>
               {{ cliente.nome }}
             </span>
           </td>
-          <td>{{ cliente.totalEmAberto | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</td>
-          <td><span class="selo selo-aberto">Em aberto</span></td>
-          <td>
+          <td class="coluna-total">
+            <span class="rotulo-coluna">Total em aberto</span>
+            {{ cliente.totalEmAberto | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+          </td>
+          <td class="coluna-status"><span class="selo selo-aberto">Em aberto</span></td>
+          <td class="coluna-acoes">
             <a class="botao-secundario botao-tabela" [routerLink]="['/clientes', cliente.clienteId]">
               Ver detalhes
             </a>
